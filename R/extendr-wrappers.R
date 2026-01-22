@@ -11,8 +11,7 @@
 NULL
 
 #' Read GTFS-RT vehicle positions
-#' @export
-read_gtfsrt_positions <- function(file) .Call(wrap__read_gtfsrt_positions, file)
+read_gtfsrt_positions_internal <- function(file) .Call(wrap__read_gtfsrt_positions_internal, file)
 
 
 # nolint end

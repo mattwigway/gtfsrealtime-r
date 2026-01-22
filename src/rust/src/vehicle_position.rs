@@ -38,9 +38,8 @@ pub struct RVehiclePosition {
 }
 
 /// Read GTFS-RT vehicle positions
-/// @export
 #[extendr]
-pub fn read_gtfsrt_positions(file: String) -> Result<Dataframe<RVehiclePosition>> {
+pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehiclePosition>> {
     let msg = read_feed(file)?;
     let content: Vec<RVehiclePosition> = msg.entity.iter()
         .filter(|entity| entity.vehicle.is_some())
@@ -85,5 +84,5 @@ pub fn read_gtfsrt_positions(file: String) -> Result<Dataframe<RVehiclePosition>
 
 extendr_module! {
     mod gtfsrealtime;
-    fn read_gtfsrt_positions;
+    fn read_gtfsrt_positions_internal;
 }
