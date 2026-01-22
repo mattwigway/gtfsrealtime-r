@@ -53,8 +53,22 @@
   <main id="main" class="col-md-9"><div class="section level2">
 <h2 id="gtfsrealtime">{gtfsrealtime}<a class="anchor" aria-label="anchor" href="#gtfsrealtime"></a>
 </h2>
-<p>Fast library to read GTFS-realtime files into R data frames, using compiled Rust code and <a href="https://extendr.rs/" class="external-link">extendr</a></p>
+<p>Fast library to read GTFS-realtime files into R data frames.</p>
 </div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>The package is installable from <a href="https://mattwigway.r-universe.dev/gtfsrealtime" class="external-link">mattwigway.r-universe.dev</a>. Run the following at your R prompt:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'gtfsrealtime'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://mattwigway.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>If you want to build from source, this package contains compiled <a href="https://extendr.rs" class="external-link">extendr</a> Rust code to efficiently read GTFS-realtime. You will need a Rust development environment; you can build the Rust code by running <code>rextendr::document()</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
+<p>Currently, this library only supports reading vehicle position feeds. See <a href="https://projects.indicatrix.org/gtfsrealtime-r/articles/positions.html" class="external-link">this vignette</a> for a walkthrough.</p>
+</div>
+
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
