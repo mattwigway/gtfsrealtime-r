@@ -1,0 +1,23 @@
+[package]
+name = 'gtfsrt'
+publish = false
+version = '0.1.0'
+edition = '2021'
+rust-version = '1.82'
+
+[lib]
+crate-type = [ 'staticlib' ]
+name = 'gtfsrt'
+
+[dependencies]
+bytes = "1.11.0"
+extendr-api = '0.8.1'
+prost = "0.14.3"
+prost-types = "0.14.3"
+
+[profile.release]
+lto = true
+codegen-units = 1
+
+[build-dependencies]
+prost-build = "0.12.3"
