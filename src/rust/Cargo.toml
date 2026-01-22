@@ -1,5 +1,5 @@
 [package]
-name = 'gtfsrt'
+name = 'gtfsrealtime'
 publish = false
 version = '0.1.0'
 edition = '2021'
@@ -7,11 +7,13 @@ rust-version = '1.82'
 
 [lib]
 crate-type = [ 'staticlib' ]
-name = 'gtfsrt'
+name = 'gtfsrealtime'
 
 [dependencies]
 bytes = "1.11.0"
+bzip2 = "0.6.1"
 extendr-api = '0.8.1'
+flate2 = "1.1.8"
 prost = "0.14.3"
 prost-types = "0.14.3"
 

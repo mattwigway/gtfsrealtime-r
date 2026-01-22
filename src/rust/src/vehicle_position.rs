@@ -35,6 +35,6 @@ pub fn read_gtfsrt_positions(file: String) -> Result<Dataframe<RVehiclePosition>
 }
 
 extendr_module! {
-    mod gtfsrt;
+    mod gtfsrealtime;
     fn read_gtfsrt_positions;
 }

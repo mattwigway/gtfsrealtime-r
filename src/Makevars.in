@@ -1,7 +1,7 @@
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/@LIBDIR@
-STATLIB = $(LIBDIR)/libgtfsrt.a
-PKG_LIBS = -L$(LIBDIR) -lgtfsrt
+STATLIB = $(LIBDIR)/libgtfsrealtime.a
+PKG_LIBS = -L$(LIBDIR) -lgtfsrealtime
 
 all: $(SHLIB) rust_clean
 

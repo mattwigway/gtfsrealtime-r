@@ -4,10 +4,10 @@
 
 #
 # This file was created with the following call:
-#   .Call("wrap__make_gtfsrt_wrappers", use_symbols = TRUE, package_name = "gtfsrt")
+#   .Call("wrap__make_gtfsrealtime_wrappers", use_symbols = TRUE, package_name = "gtfsrealtime")
 
 #' @usage NULL
-#' @useDynLib gtfsrt, .registration = TRUE
+#' @useDynLib gtfsrealtime, .registration = TRUE
 NULL
 
 #' Read GTFS-RT vehicle positions
