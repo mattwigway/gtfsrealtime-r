@@ -2,3 +2,7 @@
 src/rust/vendor
 src/Makevars
 src/Makevars.win
+inst/doc
+docs
+/doc/
+/Meta/

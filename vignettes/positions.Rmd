@@ -1,0 +1,49 @@
+---
+title: "Vehicle positions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{positions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+In this vignette, I will demonstrate reading vehicle positions, using a GTFS-realtime file that ships with {gtfsrealtime}.
+
+## Load libraries
+
+First, we need to load libraries. I will be using the {gtfsrealtime} package, as well as the {ggplot2} package for mapping.
+
+```{r setup}
+library(gtfsrealtime)
+library(ggplot2)
+```
+
+## Load a GTFS-realtime vehicle positions feed
+
+This feed comes from the New York City bus network. This file is included with {gtfsrealtime} and is bzipped to save space. {gtfsrealtime} can automatically detect and read uncompressed files as well as those compressed with gzip and bzip2. `as_sf` tells {gtfsrealtime} to load the positions to an {sf} object rather than a plain data frame.
+
+```{r}
+positions = read_gtfsrt_positions(
+  system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime"),
+  as_sf = TRUE
+)
+```
+
+## Explore the feed
+
+We can get some idea what the feed looks like. The hierarchical [GTFS-realtime vehicle position](https://gtfs.org/documentation/realtime/reference/#message-vehicleposition) is flattened to a tabular format as that is what R is best suited for, but otherwise shows all of the data available in the feed other than status of individual carriages in trains (as those do not map neatly to the tabular format).
+
+```{r}
+head(positions)
+```
+
+## Map the feed
+
+Since we requested a spatial object (`as_sf = TRUE`) when reading positions, we can also map the positions. We will color them based on occupancy. We see the outline of New York City and the current bus positions.
+
+```{r, fig.width=8, fig.height=6}
+positions |>
+  ggplot(aes(color=occupancy_status)) +
+    geom_sf() +
+    theme_minimal()
+```

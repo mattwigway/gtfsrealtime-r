@@ -13,5 +13,10 @@ SystemRequirements: Cargo (Rust's package manager), rustc >= 1.65.0, xz
 Depends: 
     R (>= 4.2)
 Imports: 
-    forcats,
     sf
+Suggests: 
+    knitr,
+    rmarkdown,
+    ggplot2
+VignetteBuilder: knitr
+URL: http://projects.indicatrix.org/gtfsrealtime-r/

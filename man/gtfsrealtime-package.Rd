@@ -8,6 +8,13 @@
 \description{
 Read GTFS-realtime data to data frames.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://projects.indicatrix.org/gtfsrealtime-r/}
+}
+
+}
 \author{
 \strong{Maintainer}: Matthew Bhagat-Conway \email{mwbc@unc.edu}
 
