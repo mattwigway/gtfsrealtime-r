@@ -2,8 +2,9 @@
 #' 
 #' @param filename filename to read. can be uncompressed or compressed with
 #'      gzip or bzip2.
+#' @param as_sf return an sf (spatial) object rather than a data frame.
 #' @export
-read_gtfsrt_positions = function (filename) {
+read_gtfsrt_positions = function (filename, as_sf=FALSE) {
     result = read_gtfsrt_positions_internal(filename)
 
     result$schedule_relationship = factor(
@@ -49,6 +50,10 @@ read_gtfsrt_positions = function (filename) {
             "NOT_BOARDABLE"
         )
     )
+
+    if (as_sf) {
+        result = st_as_sf(result, coords=c("longitude", "latitude"), crs=4326)
+    }
 
     return(result)
 }

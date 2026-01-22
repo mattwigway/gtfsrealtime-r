@@ -4,11 +4,13 @@
 \alias{read_gtfsrt_positions}
 \title{Read GTFS-realtime vehicle positions into a data frame}
 \usage{
-read_gtfsrt_positions(filename)
+read_gtfsrt_positions(filename, as_sf = FALSE)
 }
 \arguments{
 \item{filename}{filename to read. can be uncompressed or compressed with
 gzip or bzip2.}
+
+\item{as_sf}{return an sf (spatial) object rather than a data frame.}
 }
 \description{
 Read GTFS-realtime vehicle positions into a data frame
