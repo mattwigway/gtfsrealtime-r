@@ -1,5 +1,5 @@
 use extendr_api::prelude::*;
-use crate::{read::read_feed, transit_realtime::vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus}};
+use crate::read::read_feed;
 
 #[derive(IntoDataFrameRow, Debug, PartialEq)]
 pub struct RVehiclePosition {
