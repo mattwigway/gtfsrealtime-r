@@ -12,6 +12,6 @@ gzip or bzip2. Can also be an http:// or https:// URL.}
 }
 \description{
 Note that each trip update becomes multiple rows, one per stop time update, with
-the trip_id, etc., duplicated in each row. The column feed_index can be used
+the trip_id, etc., duplicated in each row. The column id can be used
 to identify which rows came from the same trip update.
 }

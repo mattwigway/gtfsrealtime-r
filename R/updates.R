@@ -1,7 +1,7 @@
 #' Read GTFS-realtime trip updates
 #' 
 #' Note that each trip update becomes multiple rows, one per stop time update, with
-#' the trip_id, etc., duplicated in each row. The column feed_index can be used
+#' the trip_id, etc., duplicated in each row. The column id can be used
 #' to identify which rows came from the same trip update.
 #' 
 #' @param filename filename to read. Can be uncompressed or compressed with
