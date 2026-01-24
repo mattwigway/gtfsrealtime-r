@@ -53,9 +53,7 @@
   <main id="main" class="col-md-9"><div class="section level2">
 <h2 id="gtfsrealtime">{gtfsrealtime}<a class="anchor" aria-label="anchor" href="#gtfsrealtime"></a>
 </h2>
-<div class="float">
-<img src="https://img.shields.io/badge/maintenance-experimental-blue.svg" alt="maintenance-status"><div class="figcaption">maintenance-status</div>
-</div>
+<p><img src="https://img.shields.io/badge/maintenance-experimental-blue.svg" alt="maintenance-status: experimental"></p>
 <p>Fast library to read GTFS-realtime files into R data frames.</p>
 </div>
 <div class="section level2">
@@ -70,7 +68,7 @@
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
 <p>See <a href="https://projects.indicatrix.org/gtfsrealtime-r/articles/positions.html">this vignette</a> for a walkthrough of working with vehicle position feeds. Working with alerts and trip updates is similar; see the documentation for the relevant functions in the Reference tab.</p>
-<p>GTFS-realtime is a hierarchical format.</p>
+<p>GTFS-realtime is a hierarchical format, and R data frames are flat tables. Thus, a single trip update or alert will become multiple rows in the output, with a common <code>id</code>. See the individual function documentation for details.</p>
 </div>
 
   </main><aside class="col-md-3"><div class="license">

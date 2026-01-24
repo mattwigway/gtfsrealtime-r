@@ -1,8 +1,7 @@
 ## {gtfsrealtime}
 
-![maintenance-status](https://img.shields.io/badge/maintenance-experimental-blue.svg)
-
-maintenance-status
+![maintenance-status:
+experimental](https://img.shields.io/badge/maintenance-experimental-blue.svg)
 
 Fast library to read GTFS-realtime files into R data frames.
 
@@ -29,4 +28,7 @@ for a walkthrough of working with vehicle position feeds. Working with
 alerts and trip updates is similar; see the documentation for the
 relevant functions in the Reference tab.
 
-GTFS-realtime is a hierarchical format.
+GTFS-realtime is a hierarchical format, and R data frames are flat
+tables. Thus, a single trip update or alert will become multiple rows in
+the output, with a common `id`. See the individual function
+documentation for details.
