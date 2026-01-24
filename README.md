@@ -14,4 +14,7 @@ If you want to build from source, this package contains compiled [extendr](https
 
 ## Usage
 
-Currently, this library only supports reading vehicle position feeds. See [this vignette](https://projects.indicatrix.org/gtfsrealtime-r/articles/positions.html) for a walkthrough.
+See [this vignette](https://projects.indicatrix.org/gtfsrealtime-r/articles/positions.html) for a walkthrough of working with vehicle position feeds. Working with alerts and trip updates is similar; see the documentation for
+the relevant functions in the Reference tab.
+
+GTFS-realtime is a hierarchical format. 
