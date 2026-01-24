@@ -1,5 +1,5 @@
 url: https://projects.indicatrix.org/gtfsrealtime-r/
-repo: https://github.com/mattwigway/gtfsrealtime-r/
+BugReports: https://github.com/mattwigway/gtfsrealtime-r/issues/
 template:
   bootstrap: 5
 
