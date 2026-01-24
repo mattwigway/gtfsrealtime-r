@@ -1,8 +1,8 @@
-use std::{collections::HashSet, hash::Hash};
+use std::collections::HashSet;
 
 use extendr_api::prelude::*;
 
-use crate::{read::read_feed, transit_realtime::{EntitySelector, TimeRange, TranslatedString, translated_string::Translation}};
+use crate::{read::read_feed, transit_realtime::{EntitySelector, TimeRange, TranslatedString}};
 
 #[derive(IntoDataFrameRow, Debug, PartialEq)]
 pub struct RAlert {
@@ -86,7 +86,7 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
 
     let content = msg.entity.iter()
         .filter(|e| e.alert.is_some())
-        .map(|(entity)| {
+        .map(|entity| {
             let alert = entity.alert.as_ref().unwrap();
 
             // figure out what languages we have
