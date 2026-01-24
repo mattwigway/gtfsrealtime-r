@@ -7,7 +7,8 @@
 #' for every combination of applicability, entity, and language. All
 #' rows from a single alert can be identified through a common id.
 #' 
-#' @param filename the filename to fetch
+#' @param filename filename to read. Can be uncompressed or compressed with
+#'      gzip or bzip2. Can also be an http:// or https:// URL.
 #' @export
 read_gtfsrt_alerts = function (filename) {
     result = read_gtfsrt_alerts_internal(filename)

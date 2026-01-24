@@ -7,8 +7,8 @@
 read_gtfsrt_positions(filename, as_sf = FALSE)
 }
 \arguments{
-\item{filename}{filename to read. can be uncompressed or compressed with
-gzip or bzip2.}
+\item{filename}{filename to read. Can be uncompressed or compressed with
+gzip or bzip2. Can also be an http:// or https:// URL.}
 
 \item{as_sf}{return an sf (spatial) object rather than a data frame.}
 }

@@ -1,7 +1,7 @@
 #' Read GTFS-realtime vehicle positions into a data frame
 #' 
-#' @param filename filename to read. can be uncompressed or compressed with
-#'      gzip or bzip2.
+#' @param filename filename to read. Can be uncompressed or compressed with
+#'      gzip or bzip2. Can also be an http:// or https:// URL.
 #' @param as_sf return an sf (spatial) object rather than a data frame.
 #' @export
 read_gtfsrt_positions = function (filename, as_sf=FALSE) {

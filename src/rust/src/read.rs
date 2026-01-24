@@ -11,9 +11,20 @@ const BZIP2_MAGIC_BYTES: [u8; 3] = [b'B', b'Z', b'h'];
 const GZIP_MAGIC_BYTES: [u8; 3] = [0x1f, 0x8b, 0x08];
 
 pub fn read_feed(path: String) -> Result<FeedMessage, Box<dyn std::error::Error>> {
-    let mut file = File::open(path)?;
     let mut buf = Vec::new();
-    file.read_to_end(&mut buf)?;
+
+    if path.starts_with("https://") || path.starts_with("http://") {
+        ureq::get(path)
+            .header("User-Agent", "R gtfsrealtime")
+            .call()?
+            .body_mut()
+            .as_reader()
+            .read_to_end(&mut buf)?;
+    } else {
+        // treat as local file
+        File::open(path)?
+            .read_to_end(&mut buf)?;
+    }
 
     let first_three = &buf[..3];
 
