@@ -3,4 +3,4 @@
 ### All vignettes
 
 - [Vehicle
-  positions](http://projects.indicatrix.org/gtfsrealtime-r/articles/positions.md):
+  positions](https://projects.indicatrix.org/gtfsrealtime-r/articles/positions.md):

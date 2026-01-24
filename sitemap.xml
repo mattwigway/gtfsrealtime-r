@@ -1,14 +1,18 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/404.html</loc></url>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/LICENSE-text.html</loc></url>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/LICENSE.html</loc></url>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/articles/index.html</loc></url>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/articles/positions.html</loc></url>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/authors.html</loc></url>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/index.html</loc></url>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/reference/gtfsrealtime-package.html</loc></url>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/reference/index.html</loc></url>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/reference/read_gtfsrt_positions.html</loc></url>
-<url><loc>http://projects.indicatrix.org/gtfsrealtime-r/reference/read_gtfsrt_positions_internal.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/404.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/LICENSE-text.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/LICENSE.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/articles/index.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/articles/positions.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/authors.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/index.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/gtfsrealtime-package.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/index.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/read_gtfsrt_alerts.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/read_gtfsrt_alerts_internal.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/read_gtfsrt_positions.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/read_gtfsrt_positions_internal.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/read_gtfsrt_trip_updates.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/read_gtfsrt_trip_updates_internal.html</loc></url>
 </urlset>
 

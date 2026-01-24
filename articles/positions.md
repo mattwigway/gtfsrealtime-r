@@ -43,25 +43,25 @@ the tabular format).
 head(positions)
 ```
 
-    ## Simple feature collection with 6 features and 19 fields
+    ## Simple feature collection with 6 features and 20 fields
     ## Geometry type: POINT
     ## Dimension:     XY
     ## Bounding box:  xmin: -73.95419 ymin: 40.6589 xmax: -73.78681 ymax: 40.87092
     ## Geodetic CRS:  WGS 84
-    ##     bearing odometer speed                             trip_id route_id
-    ## 1  55.21397       NA    NA    MV_A6-Weekday-SDon-110100_M5_527       M4
-    ## 2 113.49857       NA    NA   JA_A6-Weekday-SDon-110800_Q17_334      Q17
-    ## 3 152.70042       NA    NA GH_A6-Weekday-SDon-111400_BX238_640     BX28
-    ## 4  19.17901       NA    NA   EN_A6-Weekday-SDon-108800_B15_142      B15
-    ## 5 293.74948       NA    NA   JA_A6-Weekday-SDon-113200_Q17_317      Q17
-    ## 6 248.07346       NA    NA    MV_A6-Weekday-SDon-113200_M4_454       M4
-    ##   direction_id start_time start_date schedule_relationship stop_id
-    ## 1            0       <NA>   20260121                  <NA>  400041
-    ## 2            0       <NA>   20260121                  <NA>  501341
-    ## 3            1       <NA>   20260121                  <NA>  101927
-    ## 4            0       <NA>   20260121                  <NA>  301136
-    ## 5            1       <NA>   20260121                  <NA>  501369
-    ## 6            1       <NA>   20260121                  <NA>  400645
+    ##              id   bearing odometer speed                             trip_id
+    ## 1 MTA NYCT_9771  55.21397       NA    NA    MV_A6-Weekday-SDon-110100_M5_527
+    ## 2 MTA NYCT_8440 113.49857       NA    NA   JA_A6-Weekday-SDon-110800_Q17_334
+    ## 3 MTA NYCT_9770 152.70042       NA    NA GH_A6-Weekday-SDon-111400_BX238_640
+    ## 4 MTA NYCT_7112  19.17901       NA    NA   EN_A6-Weekday-SDon-108800_B15_142
+    ## 5 MTA NYCT_8443 293.74948       NA    NA   JA_A6-Weekday-SDon-113200_Q17_317
+    ## 6 MTA NYCT_9775 248.07346       NA    NA    MV_A6-Weekday-SDon-113200_M4_454
+    ##   route_id direction_id start_time start_date schedule_relationship stop_id
+    ## 1       M4            0       <NA>   20260121                  <NA>  400041
+    ## 2      Q17            0       <NA>   20260121                  <NA>  501341
+    ## 3     BX28            1       <NA>   20260121                  <NA>  101927
+    ## 4      B15            0       <NA>   20260121                  <NA>  301136
+    ## 5      Q17            1       <NA>   20260121                  <NA>  501369
+    ## 6       M4            1       <NA>   20260121                  <NA>  400645
     ##   current_stop_sequence current_status  timestamp congestion_level
     ## 1                    NA           <NA> 1769039909             <NA>
     ## 2                    NA           <NA> 1769039904             <NA>

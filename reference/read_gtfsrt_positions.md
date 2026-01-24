@@ -12,8 +12,8 @@ read_gtfsrt_positions(filename, as_sf = FALSE)
 
 - filename:
 
-  filename to read. can be uncompressed or compressed with gzip or
-  bzip2.
+  filename to read. Can be uncompressed or compressed with gzip or
+  bzip2. Can also be an http:// or https:// URL.
 
 - as_sf:
 
