@@ -1,4 +1,4 @@
-# gtfsrealtime: GTFS-realtime Loading
+# gtfsrealtime: Read GTFS-realtime files in R
 
 Read GTFS-realtime data to data frames.
 
