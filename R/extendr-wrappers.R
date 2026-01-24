@@ -10,16 +10,10 @@
 #' @useDynLib gtfsrealtime, .registration = TRUE
 NULL
 
-#' Read GTFS-RT vehicle positions
 read_gtfsrt_positions_internal <- function(file) .Call(wrap__read_gtfsrt_positions_internal, file)
 
-#' Read GTFS-RT trip updates (result is expanded to one row per stop update, group by
 read_gtfsrt_trip_updates_internal <- function(file) .Call(wrap__read_gtfsrt_trip_updates_internal, file)
 
-#' Read a GTFS-rt service alerts feed.
-#' GTFS-rt alerts support translations. If there is more than one translation
-#' in an alert, there will be one row for that alert in each language. Alerts
-#' in all languages will share a feed_index.
 read_gtfsrt_alerts_internal <- function(file) .Call(wrap__read_gtfsrt_alerts_internal, file)
 
 

@@ -4,7 +4,7 @@
 \name{gtfsrealtime-package}
 \alias{gtfsrealtime}
 \alias{gtfsrealtime-package}
-\title{gtfsrealtime: GTFS-realtime Loading}
+\title{gtfsrealtime: Read GTFS-realtime files in R}
 \description{
 Read GTFS-realtime data to data frames.
 }
