@@ -7,13 +7,13 @@
 read_gtfsrt_positions = function (filename, as_sf=FALSE) {
     result = read_gtfsrt_positions_internal(filename)
 
-    result$schedule_relationship = factor(
+    result$schedule_relationship = no_coerce_factor(
         result$schedule_relationship,
         levels = c(0, 1, 2, 3),
         labels = c("SCHEDULED", "SKIPPED", "NO_DATA", "UNSCHEDULED")
     )
 
-    result$current_status = factor(
+    result$current_status = no_coerce_factor(
         result$current_status,
         levels = c(0, 1, 2),
         labels = c(
@@ -23,7 +23,7 @@ read_gtfsrt_positions = function (filename, as_sf=FALSE) {
         )
     )
 
-    result$congestion_level = factor(
+    result$congestion_level = no_coerce_factor(
         result$congestion_level,
         levels = c(0, 1, 2, 3, 4),
         labels = c(
@@ -35,7 +35,7 @@ read_gtfsrt_positions = function (filename, as_sf=FALSE) {
         )
     )
 
-    result$occupancy_status = factor(
+    result$occupancy_status = no_coerce_factor(
         result$occupancy_status,
         levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8),
         labels = c(

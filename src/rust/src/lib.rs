@@ -3,9 +3,16 @@ pub mod transit_realtime {
 }
 
 mod vehicle_position;
+mod trip_update;
 mod read;
 
-// Macro to generate exports.
-// This ensures exported functions are registered with R.
-// See corresponding C code in `entrypoint.c`.
+use extendr_api::prelude::*;
 
+pub use vehicle_position::read_gtfsrt_positions_internal;
+pub use trip_update::read_gtfsrt_trip_updates_internal;
+
+extendr_module! {
+    mod gtfsrealtime;
+    use vehicle_position;
+    use trip_update;
+}

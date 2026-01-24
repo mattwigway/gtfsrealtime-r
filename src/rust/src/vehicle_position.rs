@@ -83,6 +83,6 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
 }
 
 extendr_module! {
-    mod gtfsrealtime;
+    mod vehicle_position;
     fn read_gtfsrt_positions_internal;
 }
