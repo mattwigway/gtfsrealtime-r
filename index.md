@@ -1,5 +1,9 @@
 ## {gtfsrealtime}
 
+![maintenance-status](https://img.shields.io/badge/maintenance-experimental-blue.svg)
+
+maintenance-status
+
 Fast library to read GTFS-realtime files into R data frames.
 
 ## Installation
@@ -19,7 +23,10 @@ build the Rust code by running `rextendr::document()`.
 
 ## Usage
 
-Currently, this library only supports reading vehicle position feeds.
 See [this
 vignette](https://projects.indicatrix.org/gtfsrealtime-r/articles/positions.html)
-for a walkthrough.
+for a walkthrough of working with vehicle position feeds. Working with
+alerts and trip updates is similar; see the documentation for the
+relevant functions in the Reference tab.
+
+GTFS-realtime is a hierarchical format.

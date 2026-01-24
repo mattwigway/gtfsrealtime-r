@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>GTFS-realtime Loading • gtfsrealtime</title>
+<title>Read GTFS-realtime files in R • gtfsrealtime</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="GTFS-realtime Loading">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Read GTFS-realtime files in R">
 <meta name="description" content="Read GTFS-realtime data to data frames.">
 <meta property="og:description" content="Read GTFS-realtime data to data frames.">
 </head>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">gtfsrealtime</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,6 +53,9 @@
   <main id="main" class="col-md-9"><div class="section level2">
 <h2 id="gtfsrealtime">{gtfsrealtime}<a class="anchor" aria-label="anchor" href="#gtfsrealtime"></a>
 </h2>
+<div class="float">
+<img src="https://img.shields.io/badge/maintenance-experimental-blue.svg" alt="maintenance-status"><div class="figcaption">maintenance-status</div>
+</div>
 <p>Fast library to read GTFS-realtime files into R data frames.</p>
 </div>
 <div class="section level2">
@@ -66,14 +69,15 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>Currently, this library only supports reading vehicle position feeds. See <a href="https://projects.indicatrix.org/gtfsrealtime-r/articles/positions.html">this vignette</a> for a walkthrough.</p>
+<p>See <a href="https://projects.indicatrix.org/gtfsrealtime-r/articles/positions.html">this vignette</a> for a walkthrough of working with vehicle position feeds. Working with alerts and trip updates is similar; see the documentation for the relevant functions in the Reference tab.</p>
+<p>GTFS-realtime is a hierarchical format.</p>
 </div>
 
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a></small></li>
 </ul>
 </div>
 
