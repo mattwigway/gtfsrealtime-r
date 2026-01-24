@@ -76,10 +76,10 @@ fn message_for_language(lang: &Option<String>, translated_string: &Option<Transl
     }
 }
 
-/// Read a GTFS-rt service alerts feed.
-/// GTFS-rt alerts support translations. If there is more than one translation
-/// in an alert, there will be one row for that alert in each language. Alerts
-/// in all languages will share a feed_index.
+// Read a GTFS-rt service alerts feed.
+// GTFS-rt alerts support translations. If there is more than one translation
+// in an alert, there will be one row for that alert in each language. Alerts
+// in all languages will share a feed_index.
 #[extendr]
 pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
     let msg = read_feed(file)?;

@@ -3,6 +3,8 @@ use crate::read::read_feed;
 
 #[derive(IntoDataFrameRow, Debug, PartialEq)]
 pub struct RVehiclePosition {
+    id: String,
+
     // position
     latitude: Option<f32>,
     longitude: Option<f32>,
@@ -37,7 +39,7 @@ pub struct RVehiclePosition {
     vehicle_license_plate: Option<String>
 }
 
-/// Read GTFS-RT vehicle positions
+// Read GTFS-RT vehicle positions
 #[extendr]
 pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehiclePosition>> {
     let msg = read_feed(file)?;
@@ -48,6 +50,7 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
             let trip = veh.trip.as_ref();
 
             RVehiclePosition {
+                id: entity.id.clone(),
                 latitude: veh.position.as_ref().map_or(None, |pos| Some(pos.latitude)),
                 longitude: veh.position.as_ref().map_or(None, |pos| Some(pos.longitude)),
                 bearing: veh.position.as_ref().map_or(None, |pos| pos.bearing),

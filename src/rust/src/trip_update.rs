@@ -5,7 +5,7 @@ use crate::read::read_feed;
 // GTFS-realtime uses a hierarchical trip update -> stop time update 
 #[derive(IntoDataFrameRow, PartialEq, Debug)]
 pub struct RStopTimeUpdate {
-    feed_index: i32,
+    id: String,
 
     trip_id: Option<String>,
     route_id: Option<String>,
@@ -39,15 +39,14 @@ pub struct RStopTimeUpdate {
 }
 
 
-/// Read GTFS-RT trip updates (result is expanded to one row per stop update, group by
+// Read GTFS-RT trip updates (result is expanded to one row per stop update, group by
 #[extendr]
 pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStopTimeUpdate>> {
     let msg = read_feed(file)?;
 
     let content: Vec<RStopTimeUpdate> = msg.entity.iter()
         .filter(|entity| entity.trip_update.is_some())
-        .enumerate()
-        .map(|(index, entity)| {
+        .map(|entity| {
             // todo handle empty stop time updates
             let upd = entity.trip_update.as_ref().unwrap();
 
@@ -67,7 +66,7 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
                     let dep = stupd.departure.as_ref();
 
                     RStopTimeUpdate {
-                        feed_index: index as i32, 
+                        id: entity.id.clone(),
                         trip_id: upd.trip.trip_id.clone(),
                         route_id: upd.trip.route_id.clone(),
                         direction_id: upd.trip.direction_id,
@@ -98,7 +97,7 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
                 // no stop time updates (maybe e.g. canceled trip): add with stop time update fields NA
                 vec![
                     RStopTimeUpdate {
-                        feed_index: index as i32, 
+                        id: entity.id.clone(), 
                         trip_id: upd.trip.trip_id.clone(),
                         route_id: upd.trip.route_id.clone(),
                         direction_id: upd.trip.direction_id,
