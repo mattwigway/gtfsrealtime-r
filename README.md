@@ -1,5 +1,7 @@
 ## {gtfsrealtime}
 
+![maintenance-status](https://img.shields.io/badge/maintenance-experimental-blue.svg)
+
 Fast library to read GTFS-realtime files into R data frames.
 
 ## Installation
