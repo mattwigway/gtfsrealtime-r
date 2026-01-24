@@ -7,37 +7,8 @@
 read_gtfsrt_trip_updates = function (filename) {
     result = read_gtfsrt_trip_updates_internal(filename)
 
-    result$trip_schedule_relationship = no_coerce_factor(
-        result$trip_schedule_relationship,
-        # note intentionally no 4
-        levels = c(0, 1, 2, 3, 5, 6, 7, 8),
-        labels = c(
-            "SCHEDULED", # 0;
-            "ADDED", # 1 [deprecated", # true];
-            "UNSCHEDULED", # 2;
-            "CANCELED", # 3;
-            "REPLACEMENT", # 5;
-            "DUPLICATED", # 6;
-            "DELETED", # 7;
-            "NEW" # 8;
-        )
-    )
-
-    result$stop_schedule_relationship = no_coerce_factor(
-        result$stop_schedule_relationship,
-        # note intentionally no 4
-        levels = c(0, 1, 2, 3, 5, 6, 7, 8),
-        labels = c(
-            "SCHEDULED", # 0;
-            "ADDED", # 1 [deprecated", # true];
-            "UNSCHEDULED", # 2;
-            "CANCELED", # 3;
-            "REPLACEMENT", # 5;
-            "DUPLICATED", # 6;
-            "DELETED", # 7;
-            "NEW" # 8;
-        )
-    )
+    result$trip_schedule_relationship = enum_schedule_relationship(result$trip_schedule_relationship)
+    result$stop_schedule_relationship = enum_schedule_relationship(result$stop_schedule_relationship)
 
     result$wheelchair_accessible = no_coerce_factor(
         result$wheelchair_accessible,

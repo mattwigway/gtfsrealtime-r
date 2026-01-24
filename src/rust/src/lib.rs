@@ -2,9 +2,10 @@ pub mod transit_realtime {
     include!(concat!(env!("OUT_DIR"), "/transit_realtime.rs"));
 }
 
+mod read;
 mod vehicle_position;
 mod trip_update;
-mod read;
+mod alert;
 
 use extendr_api::prelude::*;
 
@@ -15,4 +16,5 @@ extendr_module! {
     mod gtfsrealtime;
     use vehicle_position;
     use trip_update;
+    use alert;
 }
