@@ -1,4 +1,4 @@
 # License
 
     YEAR: 2026
-    COPYRIGHT HOLDER: gtfsrealtime authors
+    COPYRIGHT HOLDER: Matthew Bhagat-Conway
