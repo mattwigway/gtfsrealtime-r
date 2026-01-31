@@ -56,4 +56,4 @@ jobs:
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
           # We get a warning about downloading crates. Prior to CRAN submission we will vendor crates,
           # but I don't want to do that earlier to avoid bloating the repository.
-          error_on: '"error"'
+          error-on: '"error"'
