@@ -13,6 +13,12 @@
 read_gtfsrt_alerts = function (filename) {
     result = read_gtfsrt_alerts_internal(filename)
 
+    if (!is.null(result$err)) {
+        cli_abort(result$err)
+    } else {
+        result = result$ok
+    }
+
     result$trip_schedule_relationship =
         enum_schedule_relationship(result$trip_schedule_relationship)
     result$cause = enum_cause(result$cause)

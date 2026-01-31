@@ -10,12 +10,20 @@
 read_gtfsrt_positions = function (filename, timezone, as_sf=FALSE) {
     if (!(timezone %in% OlsonNames())) {
         cli_abort(c(
-            glue("Invalid time zone {timezone}"),
-            "i" = "Specify a timezone in Olson format, e.g. America/New_York or Etc/UTC"
+            "Invalid time zone",
+            "i" = "Specify a timezone in Olson format, e.g. \"America/New_York\" or \"Etc/UTC\"",
+            "x" = glue("You specified \"{timezone}\""
+            )
         ))
     }
 
     result = read_gtfsrt_positions_internal(filename)
+
+    if (!is.null(result$err)) {
+        cli_abort(result$err)
+    } else {
+        result = result$ok
+    }
 
     result$timestamp = as.POSIXct(result$timestamp, tz = timezone)
 
