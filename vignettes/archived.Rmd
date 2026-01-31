@@ -134,13 +134,6 @@ Note that, at least in the New York data, there are sometimes multiple reports w
 positions = positions[, .SD[1], by = c("timestamp", "vehicle_id")]
 ```
 
-The timestamp column is a [Unix timestamp](https://en.wikipedia.org/wiki/Unix_time), measuring seconds since January 1, 1970 at 00:00:00 UTC. We convert it here to a datetime object, and adjust the timezone, since Unix time is always recorded in UTC.
-
-
-``` r
-positions[, timestamp := with_tz(as_datetime(timestamp), "America/New_York")]
-```
-
 The data are spatial, so we can convert to an `sf` object for remaining spatial analyses. The data in GTFS realtime is always WGS 84 latitude/longitude, so we specify that the CRS is 4326 when creating the dataset, then immediately project to 32118, State Plane New York Long Island.
 
 
@@ -184,8 +177,8 @@ ggplot(pos_8am) +
 ```
 
 <div class="figure">
-<img src="figures/unnamed-chunk-9-1.png" alt="Plot showing several thousand dots representing buses, in the general shape of New York City, on a white background."  />
-<p class="caption">plot of chunk unnamed-chunk-9</p>
+<img src="figures/unnamed-chunk-8-1.png" alt="Plot showing several thousand dots representing buses, in the general shape of New York City, on a white background."  />
+<p class="caption">plot of chunk unnamed-chunk-8</p>
 </div>
 
 ## Animating positions
@@ -288,8 +281,8 @@ ggplot(trajectories) +
 ```
 
 <div class="figure">
-<img src="figures/unnamed-chunk-15-1.png" alt="Trajectories of all trips showing the bus network of NYC as a bunch of lines, one for the path taken by each vehicle, on a white background."  />
-<p class="caption">plot of chunk unnamed-chunk-15</p>
+<img src="figures/unnamed-chunk-14-1.png" alt="Trajectories of all trips showing the bus network of NYC as a bunch of lines, one for the path taken by each vehicle, on a white background."  />
+<p class="caption">plot of chunk unnamed-chunk-14</p>
 </div>
 
 Or extract a single trajectory:
@@ -302,8 +295,8 @@ ggplot(trajectories[2, ]) +
 ```
 
 <div class="figure">
-<img src="figures/unnamed-chunk-16-1.png" alt="A single vehicle's trajectory, a line from southeast to northwest."  />
-<p class="caption">plot of chunk unnamed-chunk-16</p>
+<img src="figures/unnamed-chunk-15-1.png" alt="A single vehicle's trajectory, a line from southeast to northwest."  />
+<p class="caption">plot of chunk unnamed-chunk-15</p>
 </div>
 
 Or extract a single trajectory and combine it with times:
@@ -327,6 +320,6 @@ ggplot() +
 ```
 
 <div class="figure">
-<img src="figures/unnamed-chunk-17-1.png" alt="The same trajectory, but now with times along it; it starts at 5:47 and ends at 6:18"  />
-<p class="caption">plot of chunk unnamed-chunk-17</p>
+<img src="figures/unnamed-chunk-16-1.png" alt="The same trajectory, but now with times along it; it starts at 5:47 and ends at 6:18"  />
+<p class="caption">plot of chunk unnamed-chunk-16</p>
 </div>

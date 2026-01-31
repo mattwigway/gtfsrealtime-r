@@ -100,12 +100,6 @@ Note that, at least in the New York data, there are sometimes multiple reports w
 positions = positions[, .SD[1], by = c("timestamp", "vehicle_id")]
 ```
 
-The timestamp column is a [Unix timestamp](https://en.wikipedia.org/wiki/Unix_time), measuring seconds since January 1, 1970 at 00:00:00 UTC. We convert it here to a datetime object, and adjust the timezone, since Unix time is always recorded in UTC.
-
-```{r}
-positions[, timestamp := with_tz(as_datetime(timestamp), "America/New_York")]
-```
-
 The data are spatial, so we can convert to an `sf` object for remaining spatial analyses. The data in GTFS realtime is always WGS 84 latitude/longitude, so we specify that the CRS is 4326 when creating the dataset, then immediately project to 32118, State Plane New York Long Island.
 
 ```{r}
