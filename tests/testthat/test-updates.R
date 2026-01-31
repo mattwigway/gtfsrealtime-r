@@ -9,6 +9,6 @@ test_that("can read updates", {
 test_that("updates give useful errors", {
   expect_error(
     read_gtfsrt_trip_updates("foo.pb"),
-    regexp = "No such file or directory"
+    regexp = "No such file or directory|The system cannot find the file specified"
   )
 })

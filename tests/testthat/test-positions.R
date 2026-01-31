@@ -41,6 +41,6 @@ test_that("timezones work", {
 test_that("error handling works", {
   expect_error(
     read_gtfsrt_positions("foo.pb", "America/New_York"),
-    regexp = "No such file or directory"
+    regexp = "No such file or directory|The system cannot find the file specified"
   )
 })
