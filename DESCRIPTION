@@ -13,6 +13,8 @@ SystemRequirements: Cargo (Rust's package manager), rustc >= 1.65.0, xz
 Depends: 
     R (>= 4.2)
 Imports: 
+    cli,
+    glue,
     sf
 Suggests: 
     knitr,
@@ -23,6 +25,8 @@ Suggests:
     gifski,
     lubridate,
     dplyr,
-    tidyr
+    tidyr,
+    testthat (>= 3.3.0)
 VignetteBuilder: knitr
 URL: http://projects.indicatrix.org/gtfsrealtime-r/
+Config/testthat/edition: 3

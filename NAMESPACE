@@ -3,5 +3,7 @@
 export(read_gtfsrt_alerts)
 export(read_gtfsrt_positions)
 export(read_gtfsrt_trip_updates)
+importFrom(cli,cli_abort)
+importFrom(glue,glue)
 importFrom(sf,st_as_sf)
 useDynLib(gtfsrealtime, .registration = TRUE)

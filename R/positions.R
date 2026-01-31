@@ -2,10 +2,22 @@
 #' 
 #' @param filename filename to read. Can be uncompressed or compressed with
 #'      gzip or bzip2. Can also be an http:// or https:// URL.
+#' @param timezone timezone of feed, in Olson format. Times in GTFS-realtime are
+#'  stored as Unix time in UTC; this option will convert to local times. If you
+#'  want to read times in UTC, specify "Etc/UTC"
 #' @param as_sf return an sf (spatial) object rather than a data frame.
 #' @export
-read_gtfsrt_positions = function (filename, as_sf=FALSE) {
+read_gtfsrt_positions = function (filename, timezone, as_sf=FALSE) {
+    if (!(timezone %in% OlsonNames())) {
+        cli_abort(c(
+            glue("Invalid time zone {timezone}"),
+            "i" = "Specify a timezone in Olson format, e.g. America/New_York or Etc/UTC"
+        ))
+    }
+
     result = read_gtfsrt_positions_internal(filename)
+
+    result$timestamp = as.POSIXct(result$timestamp, tz = timezone)
 
     result$schedule_relationship = no_coerce_factor(
         result$schedule_relationship,
