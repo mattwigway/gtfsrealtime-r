@@ -1,2 +1,5 @@
 *.html
 *.R
+
+# so big it's hosted externally
+nyc_bus_anim.gif

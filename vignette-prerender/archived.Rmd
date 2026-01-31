@@ -8,9 +8,7 @@ vignette: >
 ---
 
 <!--
-This file is called .Rmd.orig because it takes forever to run. So instead of having
-GH actions render it every time, we pre-render it to archived.Rmd with all R code and
-figures created, and re-render it occasionally (precompile.R will do this).
+This file is in vignette-prerender 
 -->
 
 ```{r opts, include=FALSE}
@@ -68,12 +66,16 @@ library(gifski)
 
 Next, we read in multiple GTFS-realtime files, and stack them all together. There are 1,440 GTFS-realtime files, from 3:00 AM local time on January 28, 2026 to 2:59 AM local time on January 29. We use the `Sys.glob` function to match multiple files - in this case, every vehicle position file in `nyc-bus-demo`. The `*` means "anything", so this will match any file that starts with `nyc-bus-demo/vehicle-positions-` and ends with `.pb.bz2`. (`.pb.bz2` means a Protocol Buffers file, the underlying format of GTFS-realtime, compressed using `bzip2`. 'gtfsrealtime' can load files compressed with `gzip` or `bzip2` directly). We use the `map` function from 'purrr' to apply a function to each file name, and the `rbindlist` function to stack all of the records into a single `data.table`.
 
+GTFS-realtime does not include time zone information; all times are specified in UTC. We specify a time zone so that times are automatically converted to local time. Time zones are specified in standardized TZ database format (generally `Continent/City`; for a list, [see here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If you do not want to convert times, you can specify a time zone of `Etc/UTC`.
+
+`\(f) read_gtfsrt_positions(f, "America/New_York")` creates an _anonymous function_ - that is, a function without a name - that takes as input the filename (which it calls `f`) and then runs the `read_gtfsrt_positions` function with the filename as the first argument, and US eastern time (`America/New_York`) as the second.
+
 ## Read data
 
 ```{r}
 positions = map(
     Sys.glob("nyc-bus-demo/vehicle-positions-*.pb.bz2"),
-    read_gtfsrt_positions
+    \(f) read_gtfsrt_positions(f, "America/New_York")
   ) |>
   rbindlist()
 

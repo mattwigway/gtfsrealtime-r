@@ -20,11 +20,12 @@ library(ggplot2)
 
 ## Load a GTFS-realtime vehicle positions feed
 
-This feed comes from the New York City bus network. This file is included with {gtfsrealtime} and is bzipped to save space. {gtfsrealtime} can automatically detect and read uncompressed files as well as those compressed with gzip and bzip2. `as_sf` tells {gtfsrealtime} to load the positions to an {sf} object rather than a plain data frame.
+This feed comes from the New York City bus network. This file is included with {gtfsrealtime} and is bzipped to save space. {gtfsrealtime} can automatically detect and read uncompressed files as well as those compressed with gzip and bzip2. `as_sf` tells {gtfsrealtime} to load the positions to an {sf} object rather than a plain data frame. GTFS-realtime does not include time zone information; all times are specified in UTC. We specify a time zone so that times are automatically converted to local time. Time zones are specified in standardized TZ database format (generally `Continent/City`; for a list, [see here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If you do not want to convert times, you can specify a time zone of `Etc/UTC`.
 
 ```{r}
 positions = read_gtfsrt_positions(
   system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime"),
+  "America/New_York",
   as_sf = TRUE
 )
 ```
