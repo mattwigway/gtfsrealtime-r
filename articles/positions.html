@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gtfsrealtime</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,10 +83,17 @@ included with {gtfsrealtime} and is bzipped to save space.
 {gtfsrealtime} can automatically detect and read uncompressed files as
 well as those compressed with gzip and bzip2. <code>as_sf</code> tells
 {gtfsrealtime} to load the positions to an {sf} object rather than a
-plain data frame.</p>
+plain data frame. GTFS-realtime does not include time zone information;
+all times are specified in UTC. We specify a time zone so that times are
+automatically converted to local time. Time zones are specified in
+standardized TZ database format (generally <code>Continent/City</code>;
+for a list, <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" class="external-link">see
+here</a>). If you do not want to convert times, you can specify a time
+zone of <code>Etc/UTC</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">positions</span> <span class="op">=</span> <span class="fu"><a href="../reference/read_gtfsrt_positions.html">read_gtfsrt_positions</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"nyc-vehicle-positions.pb.bz2"</span>, package <span class="op">=</span> <span class="st">"gtfsrealtime"</span><span class="op">)</span>,</span>
+<span>  <span class="st">"America/New_York"</span>,</span>
 <span>  as_sf <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -119,13 +126,13 @@ not map neatly to the tabular format).</p>
 <span><span class="co">## 4      B15            0       &lt;NA&gt;   20260121                  &lt;NA&gt;  301136</span></span>
 <span><span class="co">## 5      Q17            1       &lt;NA&gt;   20260121                  &lt;NA&gt;  501369</span></span>
 <span><span class="co">## 6       M4            1       &lt;NA&gt;   20260121                  &lt;NA&gt;  400645</span></span>
-<span><span class="co">##   current_stop_sequence current_status  timestamp congestion_level</span></span>
-<span><span class="co">## 1                    NA           &lt;NA&gt; 1769039909             &lt;NA&gt;</span></span>
-<span><span class="co">## 2                    NA           &lt;NA&gt; 1769039904             &lt;NA&gt;</span></span>
-<span><span class="co">## 3                    NA           &lt;NA&gt; 1769039912             &lt;NA&gt;</span></span>
-<span><span class="co">## 4                    NA           &lt;NA&gt; 1769039885             &lt;NA&gt;</span></span>
-<span><span class="co">## 5                    NA           &lt;NA&gt; 1769039912             &lt;NA&gt;</span></span>
-<span><span class="co">## 6                    NA           &lt;NA&gt; 1769039886             &lt;NA&gt;</span></span>
+<span><span class="co">##   current_stop_sequence current_status           timestamp congestion_level</span></span>
+<span><span class="co">## 1                    NA           &lt;NA&gt; 2026-01-21 18:58:29             &lt;NA&gt;</span></span>
+<span><span class="co">## 2                    NA           &lt;NA&gt; 2026-01-21 18:58:24             &lt;NA&gt;</span></span>
+<span><span class="co">## 3                    NA           &lt;NA&gt; 2026-01-21 18:58:32             &lt;NA&gt;</span></span>
+<span><span class="co">## 4                    NA           &lt;NA&gt; 2026-01-21 18:58:05             &lt;NA&gt;</span></span>
+<span><span class="co">## 5                    NA           &lt;NA&gt; 2026-01-21 18:58:32             &lt;NA&gt;</span></span>
+<span><span class="co">## 6                    NA           &lt;NA&gt; 2026-01-21 18:58:06             &lt;NA&gt;</span></span>
 <span><span class="co">##       occupancy_status occupancy_percentage    vehicle_id vehicle_label</span></span>
 <span><span class="co">## 1   STANDING_ROOM_ONLY                   NA MTA NYCT_9771          &lt;NA&gt;</span></span>
 <span><span class="co">## 2                 &lt;NA&gt;                   NA MTA NYCT_8440          &lt;NA&gt;</span></span>

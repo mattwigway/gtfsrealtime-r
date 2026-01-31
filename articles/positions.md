@@ -20,11 +20,19 @@ included with {gtfsrealtime} and is bzipped to save space.
 {gtfsrealtime} can automatically detect and read uncompressed files as
 well as those compressed with gzip and bzip2. `as_sf` tells
 {gtfsrealtime} to load the positions to an {sf} object rather than a
-plain data frame.
+plain data frame. GTFS-realtime does not include time zone information;
+all times are specified in UTC. We specify a time zone so that times are
+automatically converted to local time. Time zones are specified in
+standardized TZ database format (generally `Continent/City`; for a list,
+[see
+here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If
+you do not want to convert times, you can specify a time zone of
+`Etc/UTC`.
 
 ``` r
 positions = read_gtfsrt_positions(
   system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime"),
+  "America/New_York",
   as_sf = TRUE
 )
 ```
@@ -62,13 +70,13 @@ head(positions)
     ## 4      B15            0       <NA>   20260121                  <NA>  301136
     ## 5      Q17            1       <NA>   20260121                  <NA>  501369
     ## 6       M4            1       <NA>   20260121                  <NA>  400645
-    ##   current_stop_sequence current_status  timestamp congestion_level
-    ## 1                    NA           <NA> 1769039909             <NA>
-    ## 2                    NA           <NA> 1769039904             <NA>
-    ## 3                    NA           <NA> 1769039912             <NA>
-    ## 4                    NA           <NA> 1769039885             <NA>
-    ## 5                    NA           <NA> 1769039912             <NA>
-    ## 6                    NA           <NA> 1769039886             <NA>
+    ##   current_stop_sequence current_status           timestamp congestion_level
+    ## 1                    NA           <NA> 2026-01-21 18:58:29             <NA>
+    ## 2                    NA           <NA> 2026-01-21 18:58:24             <NA>
+    ## 3                    NA           <NA> 2026-01-21 18:58:32             <NA>
+    ## 4                    NA           <NA> 2026-01-21 18:58:05             <NA>
+    ## 5                    NA           <NA> 2026-01-21 18:58:32             <NA>
+    ## 6                    NA           <NA> 2026-01-21 18:58:06             <NA>
     ##       occupancy_status occupancy_percentage    vehicle_id vehicle_label
     ## 1   STANDING_ROOM_ONLY                   NA MTA NYCT_9771          <NA>
     ## 2                 <NA>                   NA MTA NYCT_8440          <NA>

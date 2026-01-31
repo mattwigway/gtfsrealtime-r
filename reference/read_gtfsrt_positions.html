@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gtfsrealtime</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_gtfsrt_positions</span><span class="op">(</span><span class="va">filename</span>, as_sf <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_gtfsrt_positions</span><span class="op">(</span><span class="va">filename</span>, <span class="va">timezone</span>, as_sf <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -52,6 +52,12 @@
 <dl><dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>filename to read. Can be uncompressed or compressed with
 gzip or bzip2. Can also be an http:// or https:// URL.</p></dd>
+
+
+<dt id="arg-timezone">timezone<a class="anchor" aria-label="anchor" href="#arg-timezone"></a></dt>
+<dd><p>timezone of feed, in Olson format. Times in GTFS-realtime are
+stored as Unix time in UTC; this option will convert to local times. If you
+want to read times in UTC, specify "Etc/UTC"</p></dd>
 
 
 <dt id="arg-as-sf">as_sf<a class="anchor" aria-label="anchor" href="#arg-as-sf"></a></dt>

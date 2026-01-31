@@ -1,5 +1,7 @@
 ## {gtfsrealtime}
 
+[![R-CMD-check](https://github.com/mattwigway/gtfsrt-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mattwigway/gtfsrt-r/actions/workflows/R-CMD-check.yaml)
+
 ![maintenance-status:
 experimental](https://img.shields.io/badge/maintenance-experimental-blue.svg)
 

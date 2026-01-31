@@ -79,12 +79,26 @@ compressed using `bzip2`. ‘gtfsrealtime’ can load files compressed with
 apply a function to each file name, and the `rbindlist` function to
 stack all of the records into a single `data.table`.
 
+GTFS-realtime does not include time zone information; all times are
+specified in UTC. We specify a time zone so that times are automatically
+converted to local time. Time zones are specified in standardized TZ
+database format (generally `Continent/City`; for a list, [see
+here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If
+you do not want to convert times, you can specify a time zone of
+`Etc/UTC`.
+
+`\(f) read_gtfsrt_positions(f, "America/New_York")` creates an
+*anonymous function* - that is, a function without a name - that takes
+as input the filename (which it calls `f`) and then runs the
+`read_gtfsrt_positions` function with the filename as the first
+argument, and US eastern time (`America/New_York`) as the second.
+
 ## Read data
 
 ``` r
 positions = map(
     Sys.glob("nyc-bus-demo/vehicle-positions-*.pb.bz2"),
-    read_gtfsrt_positions
+    \(f) read_gtfsrt_positions(f, "America/New_York")
   ) |>
   rbindlist()
 
@@ -99,22 +113,22 @@ head(positions)
     ## 4: MTA NYCT_7160 40.71404 -73.95068 359.4692       NA    NA         FP_M6-Weekday-017500_L90_5      L90            0
     ## 5: MTA NYCT_5314 40.81609 -73.91773 341.5651       NA    NA WF_A6-Weekday-SDon-015000_BX19_301     BX19            0
     ## 6: MTA NYCT_5338 40.86142 -73.89084 329.7436       NA    NA  KB_A6-Weekday-SDon-015500_BX9_601      BX9            1
-    ##    start_time start_date schedule_relationship stop_id current_stop_sequence current_status  timestamp congestion_level
-    ##        <char>     <char>                <fctr>  <char>                 <num>         <fctr>      <num>           <fctr>
-    ## 1:       <NA>   20260128                  <NA>  904253                    NA           <NA> 1769587226             <NA>
-    ## 2:       <NA>   20260128                  <NA>  503967                    NA           <NA> 1769587224             <NA>
-    ## 3:       <NA>   20260128                  <NA>  400330                    NA           <NA> 1769587206             <NA>
-    ## 4:       <NA>   20260128                  <NA>  302319                    NA           <NA> 1769587202             <NA>
-    ## 5:       <NA>   20260128                  <NA>  103748                    NA           <NA> 1769587224             <NA>
-    ## 6:       <NA>   20260128                  <NA>  104102                    NA           <NA> 1769587202             <NA>
-    ##        occupancy_status occupancy_percentage    vehicle_id vehicle_label vehicle_license_plate
-    ##                  <fctr>                <num>        <char>        <char>                <char>
-    ## 1: MANY_SEATS_AVAILABLE                   NA MTA NYCT_7116          <NA>                  <NA>
-    ## 2:                 <NA>                   NA MTA NYCT_8446          <NA>                  <NA>
-    ## 3:                 <NA>                   NA MTA NYCT_9760          <NA>                  <NA>
-    ## 4:                 <NA>                   NA MTA NYCT_7160          <NA>                  <NA>
-    ## 5:                 <NA>                   NA MTA NYCT_5314          <NA>                  <NA>
-    ## 6:                 <NA>                   NA MTA NYCT_5338          <NA>                  <NA>
+    ##    start_time start_date schedule_relationship stop_id current_stop_sequence current_status           timestamp
+    ##        <char>     <char>                <fctr>  <char>                 <num>         <fctr>              <POSc>
+    ## 1:       <NA>   20260128                  <NA>  904253                    NA           <NA> 2026-01-28 03:00:26
+    ## 2:       <NA>   20260128                  <NA>  503967                    NA           <NA> 2026-01-28 03:00:24
+    ## 3:       <NA>   20260128                  <NA>  400330                    NA           <NA> 2026-01-28 03:00:06
+    ## 4:       <NA>   20260128                  <NA>  302319                    NA           <NA> 2026-01-28 03:00:02
+    ## 5:       <NA>   20260128                  <NA>  103748                    NA           <NA> 2026-01-28 03:00:24
+    ## 6:       <NA>   20260128                  <NA>  104102                    NA           <NA> 2026-01-28 03:00:02
+    ##    congestion_level     occupancy_status occupancy_percentage    vehicle_id vehicle_label vehicle_license_plate
+    ##              <fctr>               <fctr>                <num>        <char>        <char>                <char>
+    ## 1:             <NA> MANY_SEATS_AVAILABLE                   NA MTA NYCT_7116          <NA>                  <NA>
+    ## 2:             <NA>                 <NA>                   NA MTA NYCT_8446          <NA>                  <NA>
+    ## 3:             <NA>                 <NA>                   NA MTA NYCT_9760          <NA>                  <NA>
+    ## 4:             <NA>                 <NA>                   NA MTA NYCT_7160          <NA>                  <NA>
+    ## 5:             <NA>                 <NA>                   NA MTA NYCT_5314          <NA>                  <NA>
+    ## 6:             <NA>                 <NA>                   NA MTA NYCT_5338          <NA>                  <NA>
 
 We have read 2.8 million vehicle observations:
 
@@ -244,7 +258,7 @@ for (time in times) {
   # save the frame, using the Unix timestamp in the filename
   ggsave(
     file.path(framedir, paste0("time", as.numeric(time), ".png")),
-    width=6, height=6, dpi=150, bg="white", plot = p)
+    width=4, height=4, dpi=100, bg="white", plot = p)
 }
 ```
 
@@ -256,17 +270,13 @@ gifski(
   "figures/nyc_bus_anim.gif",
   # twenty minutes per second
   delay = 1 / 20,
-  # match resolution of input files (6 in by 6 in at 150 dpi)
-  width = 900,
-  height = 900
+  # match resolution of input files (4 in by 4 in at 100 dpi)
+  width = 400,
+  height = 400
 )
 ```
 
-    ## [1] "figures/nyc_bus_anim.gif"
-
-``` r
-knitr::include_graphics("figures/nyc_bus_anim.gif")
-```
+    ## Error in gifski(list.files(framedir, full.names = TRUE), "figures/nyc_bus_anim.gif", : Target directory does not exist:figures
 
 ![Animation of a day of buses in NYC; each bus is a black dot, and its
 position is shown every
