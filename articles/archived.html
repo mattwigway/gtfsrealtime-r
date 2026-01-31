@@ -212,18 +212,12 @@ locations. This is some type of data error, so I just pick the first
 reported position for a given time.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">positions</span> <span class="op">=</span> <span class="va">positions</span><span class="op">[</span>, <span class="va">.SD</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"timestamp"</span>, <span class="st">"vehicle_id"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>The timestamp column is a <a href="https://en.wikipedia.org/wiki/Unix_time" class="external-link">Unix timestamp</a>,
-measuring seconds since January 1, 1970 at 00:00:00 UTC. We convert it
-here to a datetime object, and adjust the timezone, since Unix time is
-always recorded in UTC.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">positions</span><span class="op">[</span>, <span class="va">timestamp</span> <span class="op">:=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/with_tz.html" class="external-link">with_tz</a></span><span class="op">(</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">as_datetime</a></span><span class="op">(</span><span class="va">timestamp</span><span class="op">)</span>, <span class="st">"America/New_York"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>The data are spatial, so we can convert to an <code>sf</code> object
 for remaining spatial analyses. The data in GTFS realtime is always WGS
 84 latitude/longitude, so we specify that the CRS is 4326 when creating
 the dataset, then immediately project to 32118, State Plane New York
 Long Island.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">positions</span> <span class="op">=</span> <span class="va">positions</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span>coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"longitude"</span>, <span class="st">"latitude"</span><span class="op">)</span>, crs<span class="op">=</span><span class="fl">4326</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fl">32118</span><span class="op">)</span></span></code></pre></div>
@@ -235,7 +229,7 @@ Long Island.</p>
 grab all position reports within (say) the last five minutes, and get
 the most recent one for each vehicle. We can write a function to do
 this:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snapshot_positions</span> <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">positions</span>, <span class="va">time</span>, <span class="va">tolerance_mins</span><span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># sf uses tidyverse syntax rather than data.table</span></span>
 <span>  <span class="va">positions</span> <span class="op">|&gt;</span></span>
@@ -245,18 +239,18 @@ this:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p>And we can use that function to get all vehicle positions at 8 AM on
 the day our data were collected:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># note! important to specify correct time zone</span></span>
 <span><span class="va">pos_8am</span> <span class="op">=</span> <span class="fu">snapshot_positions</span><span class="op">(</span><span class="va">positions</span>, <span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd_hms.html" class="external-link">ymd_hms</a></span><span class="op">(</span><span class="st">"2026-01-28 8:00:00"</span>, tz <span class="op">=</span> <span class="st">"America/New_York"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We could plot those positions:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pos_8am</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># theme_void removes all plot elements</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figures/unnamed-chunk-9-1.png" alt="Plot showing several thousand dots representing buses, in the general shape of New York City, on a white background."><p class="caption">
-plot of chunk unnamed-chunk-9
+<img src="figures/unnamed-chunk-8-1.png" alt="Plot showing several thousand dots representing buses, in the general shape of New York City, on a white background."><p class="caption">
+plot of chunk unnamed-chunk-8
 </p>
 </div>
 </div>
@@ -267,13 +261,13 @@ plot of chunk unnamed-chunk-9
 “frame” (plot of bus locations) for each minute, and then use <a href="https://cran.r-project.org/web/packages/gifski/index.html" class="external-link">gifski</a>
 to convert to an animated GIF. First, we will create a temporary
 directory to hold those frames:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">framedir</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">framedir</span><span class="op">)</span></span></code></pre></div>
 <p>Next, we will render the plots to image files in that directory, one
 at a time. We have data from 3am NYC time 2026-01-28 to 3am 2026-01-29,
 so we will have 1,440 frames one minute apart.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># as.list is necessary to preserve column type:</span></span>
 <span><span class="co"># https://stackoverflow.com/questions/77838146</span></span>
 <span><span class="va">times</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd_hms.html" class="external-link">ymd_hms</a></span><span class="op">(</span><span class="st">"2026-01-28 03:00:00"</span>, tz<span class="op">=</span><span class="st">"America/New_York"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/period.html" class="external-link">minutes</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1440</span><span class="op">)</span><span class="op">)</span></span>
@@ -298,7 +292,7 @@ so we will have 1,440 frames one minute apart.</p>
 <span>    width<span class="op">=</span><span class="fl">4</span>, height<span class="op">=</span><span class="fl">4</span>, dpi<span class="op">=</span><span class="fl">100</span>, bg<span class="op">=</span><span class="st">"white"</span>, plot <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Lastly, we render all the frames we created to an animated GIF:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-rust.r-universe.dev/gifski/reference/gifski.html" class="external-link">gifski</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">framedir</span>, full.names<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  <span class="st">"figures/nyc_bus_anim.gif"</span>,</span>
@@ -317,7 +311,7 @@ plot of chunk unnamed-chunk-12
 </div>
 <p>And finally, clean up after ourselves by removing the temporary
 directory.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">framedir</span>, recursive<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -329,7 +323,7 @@ could also group by trip ID to get single runs), and then summarizing
 and converting the combined points into a linestring (line feature).</p>
 <p>This is quite slow, which seems to be related to the use of
 <code>st_cast</code>; this issue needs further investigation.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trajectories</span> <span class="op">=</span> <span class="va">positions</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">vehicle_id</span>, <span class="va">trip_id</span>, <span class="va">timestamp</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">vehicle_id</span>, <span class="va">trip_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -338,27 +332,27 @@ and converting the combined points into a linestring (line feature).</p>
 <pre><code><span><span class="co">## `summarise()` has grouped output by 'vehicle_id'. You can override using the `.groups` argument.</span></span></code></pre>
 <p>We can then plot all of those trajectories over the course of the
 day:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">trajectories</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figures/unnamed-chunk-15-1.png" alt="Trajectories of all trips showing the bus network of NYC as a bunch of lines, one for the path taken by each vehicle, on a white background."><p class="caption">
-plot of chunk unnamed-chunk-15
+<img src="figures/unnamed-chunk-14-1.png" alt="Trajectories of all trips showing the bus network of NYC as a bunch of lines, one for the path taken by each vehicle, on a white background."><p class="caption">
+plot of chunk unnamed-chunk-14
 </p>
 </div>
 <p>Or extract a single trajectory:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">trajectories</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figures/unnamed-chunk-16-1.png" alt="A single vehicle's trajectory, a line from southeast to northwest."><p class="caption">
-plot of chunk unnamed-chunk-16
+<img src="figures/unnamed-chunk-15-1.png" alt="A single vehicle's trajectory, a line from southeast to northwest."><p class="caption">
+plot of chunk unnamed-chunk-15
 </p>
 </div>
 <p>Or extract a single trajectory and combine it with times:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trajectory</span> <span class="op">=</span> <span class="va">trajectories</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span></span>
 <span><span class="va">points</span> <span class="op">=</span> <span class="va">positions</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">vehicle_id</span> <span class="op">==</span> <span class="va">trajectory</span><span class="op">$</span><span class="va">vehicle_id</span> <span class="op">&amp;</span> <span class="va">trip_id</span> <span class="op">==</span> <span class="va">trajectory</span><span class="op">$</span><span class="va">trip_id</span><span class="op">)</span></span>
@@ -374,8 +368,8 @@ plot of chunk unnamed-chunk-16
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figures/unnamed-chunk-17-1.png" alt="The same trajectory, but now with times along it; it starts at 5:47 and ends at 6:18"><p class="caption">
-plot of chunk unnamed-chunk-17
+<img src="figures/unnamed-chunk-16-1.png" alt="The same trajectory, but now with times along it; it starts at 5:47 and ends at 6:18"><p class="caption">
+plot of chunk unnamed-chunk-16
 </p>
 </div>
 </div>

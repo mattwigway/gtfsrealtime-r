@@ -158,16 +158,6 @@ position for a given time.
 positions = positions[, .SD[1], by = c("timestamp", "vehicle_id")]
 ```
 
-The timestamp column is a [Unix
-timestamp](https://en.wikipedia.org/wiki/Unix_time), measuring seconds
-since January 1, 1970 at 00:00:00 UTC. We convert it here to a datetime
-object, and adjust the timezone, since Unix time is always recorded in
-UTC.
-
-``` r
-positions[, timestamp := with_tz(as_datetime(timestamp), "America/New_York")]
-```
-
 The data are spatial, so we can convert to an `sf` object for remaining
 spatial analyses. The data in GTFS realtime is always WGS 84
 latitude/longitude, so we specify that the CRS is 4326 when creating the
@@ -215,9 +205,9 @@ ggplot(pos_8am) +
 
 ![Plot showing several thousand dots representing buses, in the general
 shape of New York City, on a white
-background.](figures/unnamed-chunk-9-1.png)
+background.](figures/unnamed-chunk-8-1.png)
 
-plot of chunk unnamed-chunk-9
+plot of chunk unnamed-chunk-8
 
 ## Animating positions
 
@@ -321,9 +311,9 @@ ggplot(trajectories) +
 
 ![Trajectories of all trips showing the bus network of NYC as a bunch of
 lines, one for the path taken by each vehicle, on a white
-background.](figures/unnamed-chunk-15-1.png)
+background.](figures/unnamed-chunk-14-1.png)
 
-plot of chunk unnamed-chunk-15
+plot of chunk unnamed-chunk-14
 
 Or extract a single trajectory:
 
@@ -334,9 +324,9 @@ ggplot(trajectories[2, ]) +
 ```
 
 ![A single vehicle's trajectory, a line from southeast to
-northwest.](figures/unnamed-chunk-16-1.png)
+northwest.](figures/unnamed-chunk-15-1.png)
 
-plot of chunk unnamed-chunk-16
+plot of chunk unnamed-chunk-15
 
 Or extract a single trajectory and combine it with times:
 
@@ -358,6 +348,6 @@ ggplot() +
 ```
 
 ![The same trajectory, but now with times along it; it starts at 5:47
-and ends at 6:18](figures/unnamed-chunk-17-1.png)
+and ends at 6:18](figures/unnamed-chunk-16-1.png)
 
-plot of chunk unnamed-chunk-17
+plot of chunk unnamed-chunk-16
