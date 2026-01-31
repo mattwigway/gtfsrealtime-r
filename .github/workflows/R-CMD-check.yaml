@@ -45,6 +45,8 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - uses: arduino/setup-protoc@v3
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
