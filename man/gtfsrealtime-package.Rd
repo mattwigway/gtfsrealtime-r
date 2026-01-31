@@ -4,9 +4,9 @@
 \name{gtfsrealtime-package}
 \alias{gtfsrealtime}
 \alias{gtfsrealtime-package}
-\title{gtfsrealtime: Read GTFS-realtime files in R}
+\title{gtfsrealtime: Read GTFS-realtime files into data frames, fast}
 \description{
-Read GTFS-realtime data to data frames.
+GTFS-realtime is a format transit agencies use to provide current vehicle positions, predicted arrival times, and service alerts. This package provides efficient functions to read this format into data frames. It can be used to retrieve current data or to process archived data.
 }
 \seealso{
 Useful links:
@@ -16,7 +16,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Matthew Bhagat-Conway \email{mwbc@unc.edu}
+\strong{Maintainer}: Matthew Bhagat-Conway \email{mwbc@unc.edu} [copyright holder]
 
 }
 \keyword{internal}
