@@ -46,6 +46,9 @@ jobs:
           needs: check
 
       - uses: arduino/setup-protoc@v3
+        # avoid rate limit errors, https://github.com/arduino/setup-protoc/issues/6
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: r-lib/actions/check-r-package@v2
         with:
