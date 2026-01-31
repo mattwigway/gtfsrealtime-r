@@ -16,3 +16,7 @@
 ^vignette-prerender$
 ^nyc-bus-demo$
 ^vignettes/archived.Rmd$
+^vignettes/nyc-bus-demo$
+^vignettes/figures/nyc_bus_anim.gif$
+^vignettes/.*.R$
+^vignettes/.*.html$
