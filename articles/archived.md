@@ -12,9 +12,13 @@ day, and do some basic analysis with it.
 ## The data
 
 ![Animation of a day of buses in NYC; each bus is a black dot, and its
-position is shown every minute.](figures/nyc_bus_anim.gif) In this
-vignette, we will work with one day of archived GTFS-realtime position
-data from the [MTA New York City Transit Bus realtime
+position is shown every
+minute.](https://files.indicatrix.org/gtfsrealtime-r/nyc_bus_anim.gif)
+
+plot of chunk unnamed-chunk-12
+
+In this vignette, we will work with one day of archived GTFS-realtime
+position data from the [MTA New York City Transit Bus realtime
 feed](https://bustime.mta.info/wiki/Developers/Index). These positions
 over the course of the day are shown above; at the end of this vignette
 we will see how to make this animation.
@@ -265,7 +269,8 @@ knitr::include_graphics("figures/nyc_bus_anim.gif")
 ```
 
 ![Animation of a day of buses in NYC; each bus is a black dot, and its
-position is shown every minute.](figures/nyc_bus_anim.gif)
+position is shown every
+minute.](https://files.indicatrix.org/gtfsrealtime-r/nyc_bus_anim.gif)
 
 plot of chunk unnamed-chunk-12
 
