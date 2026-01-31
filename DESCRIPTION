@@ -1,6 +1,6 @@
 Package: gtfsrealtime
 Title: Read GTFS-realtime files into data frames, fast
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person("Matthew", "Bhagat-Conway", , "mwbc@unc.edu", role = c("aut", "cre", "cph"))
 Description: GTFS-realtime is a format transit agencies use to provide current vehicle positions, predicted
