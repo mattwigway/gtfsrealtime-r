@@ -1,9 +1,11 @@
 Package: gtfsrealtime
-Title: Read GTFS-realtime files in R
+Title: Read GTFS-realtime files into data frames, fast
 Version: 0.0.1
 Authors@R: 
-    person("Matthew", "Bhagat-Conway", , "mwbc@unc.edu", role = c("aut", "cre"))
-Description: Read GTFS-realtime data to data frames.
+    person("Matthew", "Bhagat-Conway", , "mwbc@unc.edu", role = c("aut", "cre", "cph"))
+Description: GTFS-realtime is a format transit agencies use to provide current vehicle positions, predicted
+    arrival times, and service alerts. This package provides efficient functions to read this format into
+    data frames. It can be used to retrieve current data or to process archived data.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
