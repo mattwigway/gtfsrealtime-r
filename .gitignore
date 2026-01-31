@@ -6,3 +6,8 @@ inst/doc
 docs
 /doc/
 /Meta/
+
+# example data
+nyc-bus-demo
+
+.DS_Store

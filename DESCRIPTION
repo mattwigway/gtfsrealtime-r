@@ -17,6 +17,12 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    ggplot2
+    ggplot2,
+    data.table,
+    purrr,
+    gifski,
+    lubridate,
+    dplyr,
+    tidyr
 VignetteBuilder: knitr
 URL: http://projects.indicatrix.org/gtfsrealtime-r/
