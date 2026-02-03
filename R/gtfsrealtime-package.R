@@ -4,6 +4,7 @@
 ## usethis namespace: start
 #' @importFrom cli cli_abort
 #' @importFrom glue glue
-#' @importFrom sf st_as_sf
+#' @importFrom sf st_crs<-
+#' @importFrom sfheaders sf_point
 ## usethis namespace: end
 NULL

@@ -72,7 +72,15 @@ read_gtfsrt_positions = function (filename, timezone, as_sf=FALSE) {
     )
 
     if (as_sf) {
-        result = st_as_sf(result, coords=c("longitude", "latitude"), crs=4326)
+        # sfheaders sf_point much faster than sf::st_as_sf
+        result = sf_point(
+            result,
+            x = "longitude",
+            y = "latitude",
+            keep = TRUE
+        )
+
+        st_crs(result) = 4326
     }
 
     return(result)
