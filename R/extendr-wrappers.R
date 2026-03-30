@@ -12,6 +12,14 @@ NULL
 
 read_gtfsrt_positions_internal <- function(file) .Call(wrap__read_gtfsrt_positions_internal, file)
 
+enum_TripDescriptor_ScheduleRelationship <- function() .Call(wrap__enum_TripDescriptor_ScheduleRelationship)
+
+enum_VehiclePosition_CurrentStatus <- function() .Call(wrap__enum_VehiclePosition_CurrentStatus)
+
+enum_VehiclePosition_CongestionLevel <- function() .Call(wrap__enum_VehiclePosition_CongestionLevel)
+
+enum_VehiclePosition_OccupancyStatus <- function() .Call(wrap__enum_VehiclePosition_OccupancyStatus)
+
 read_gtfsrt_trip_updates_internal <- function(file) .Call(wrap__read_gtfsrt_trip_updates_internal, file)
 
 read_gtfsrt_alerts_internal <- function(file) .Call(wrap__read_gtfsrt_alerts_internal, file)

@@ -6,6 +6,7 @@ mod read;
 mod vehicle_position;
 mod trip_update;
 mod alert;
+mod enums;
 
 use extendr_api::prelude::*;
 

@@ -1,5 +1,7 @@
 use extendr_api::prelude::*;
 use crate::read::read_feed;
+use crate::transit_realtime::*;
+use crate::enums::enum_to_list;
 
 #[derive(IntoDataFrameRow, Debug, PartialEq)]
 pub struct RVehiclePosition {
@@ -85,7 +87,32 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
     return content.into_dataframe();
 }
 
+#[extendr]
+pub fn enum_TripDescriptor_ScheduleRelationship () -> Result<List> {
+    enum_to_list::<trip_descriptor::ScheduleRelationship>()
+}
+
+#[extendr]
+pub fn enum_VehiclePosition_CurrentStatus () -> Result<List> {
+    enum_to_list::<vehicle_position::VehicleStopStatus>()
+}
+
+#[extendr]
+pub fn enum_VehiclePosition_CongestionLevel () -> Result<List> {
+    enum_to_list::<vehicle_position::CongestionLevel>()
+}
+
+#[extendr]
+pub fn enum_VehiclePosition_OccupancyStatus () -> Result<List> {
+    enum_to_list::<vehicle_position::OccupancyStatus>()
+}
+
+
 extendr_module! {
     mod vehicle_position;
     fn read_gtfsrt_positions_internal;
+    fn enum_TripDescriptor_ScheduleRelationship;
+    fn enum_VehiclePosition_CurrentStatus;
+    fn enum_VehiclePosition_CongestionLevel;
+    fn enum_VehiclePosition_OccupancyStatus;
 }
