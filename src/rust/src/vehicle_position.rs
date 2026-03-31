@@ -38,7 +38,8 @@ pub struct RVehiclePosition {
     // vehicle
     vehicle_id: Option<String>,
     vehicle_label: Option<String>,
-    vehicle_license_plate: Option<String>
+    vehicle_license_plate: Option<String>,
+    wheelchair_accessible: Option<i32>
 }
 
 // Read GTFS-RT vehicle positions
@@ -79,7 +80,8 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
 
                 vehicle_id: veh.vehicle.as_ref().map_or(None, |veh| veh.id.clone()),
                 vehicle_label: veh.vehicle.as_ref().map_or(None, |veh| veh.label.clone()),
-                vehicle_license_plate: veh.vehicle.as_ref().map_or(None, |veh| veh.license_plate.clone())
+                vehicle_license_plate: veh.vehicle.as_ref().map_or(None, |veh| veh.license_plate.clone()),
+                wheelchair_accessible: veh.vehicle.as_ref().map_or(None, |veh| veh.wheelchair_accessible)
             }
         })
         .collect();

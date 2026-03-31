@@ -32,6 +32,11 @@ read_gtfsrt_positions = function (filename, timezone, as_sf=FALSE) {
         enum_TripDescriptor_ScheduleRelationship()
     )
 
+    result$wheelchair_accessible = enum_to_factor(
+        result$wheelchair_accessible,
+        enum_VehicleDescriptor_WheelchairAccessible()
+    )
+
     result$current_status = enum_to_factor(
         result$current_status,
         enum_VehiclePosition_VehicleStopStatus()

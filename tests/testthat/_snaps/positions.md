@@ -31,11 +31,11 @@
       4 2026-01-21 18:58:05             <NA>  FewSeatsAvailable                   NA
       5 2026-01-21 18:58:32             <NA>               <NA>                   NA
       6 2026-01-21 18:58:06             <NA> ManySeatsAvailable                   NA
-           vehicle_id vehicle_label vehicle_license_plate
-      1 MTA NYCT_9771          <NA>                  <NA>
-      2 MTA NYCT_8440          <NA>                  <NA>
-      3 MTA NYCT_9770          <NA>                  <NA>
-      4 MTA NYCT_7112          <NA>                  <NA>
-      5 MTA NYCT_8443          <NA>                  <NA>
-      6 MTA NYCT_9775          <NA>                  <NA>
+           vehicle_id vehicle_label vehicle_license_plate wheelchair_accessible
+      1 MTA NYCT_9771          <NA>                  <NA>                  <NA>
+      2 MTA NYCT_8440          <NA>                  <NA>                  <NA>
+      3 MTA NYCT_9770          <NA>                  <NA>                  <NA>
+      4 MTA NYCT_7112          <NA>                  <NA>                  <NA>
+      5 MTA NYCT_8443          <NA>                  <NA>                  <NA>
+      6 MTA NYCT_9775          <NA>                  <NA>                  <NA>
 
