@@ -2,11 +2,13 @@
 
 use bytes::BytesMut;
 use extendr_api::extendr_module;
+use heck::{AsUpperCamelCase, ToUpperCamelCase};
 use prost::Message;
+use strum::VariantArray;
 use std::{fs, string::ToString};
 use extendr_api::prelude::*;
 
-use crate::transit_realtime::{self, Alert, FeedEntity, FeedHeader, Position, TripDescriptor, TripUpdate, VehicleDescriptor, VehiclePosition, feed_header::Incrementality, trip_descriptor::{self, ModifiedTripSelector, ScheduleRelationship}, vehicle_descriptor, vehicle_position::{OccupancyStatus, VehicleStopStatus}};
+use crate::transit_realtime::{self, Alert, FeedEntity, FeedHeader, Position, TripDescriptor, TripUpdate, VehicleDescriptor, VehiclePosition, feed_header::Incrementality, trip_descriptor::{self, ModifiedTripSelector, ScheduleRelationship}, vehicle_descriptor, vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus}};
 
 fn write_msg(filename: &str, positions: Vec<VehiclePosition>, alerts: Vec<Alert>, trip_updates: Vec<TripUpdate>) -> Result<()> {
     let mut pos_id = 0;
@@ -122,7 +124,108 @@ pub fn test_data_invalid_enum_positions(filename: &str) -> Result<()> {
         ])
 }
 
+// test data to ensure enum roundtripping is correct
+// each of these functions creates a file that has every enum value,
+// and returns a list with the expected order.
+
+fn get_or_none<T: Copy + VariantArray>(i: usize) -> Option<T> {
+    if i >= T::VARIANTS.len() {
+        None
+    } else {
+        Some(T::VARIANTS[i])
+    }
+}
+
+#[extendr]
+pub fn test_data_enum_roundtrip_positions(filename: &str) -> Result<List> {
+    let n = [
+        VehicleStopStatus::VARIANTS.len(),
+        OccupancyStatus::VARIANTS.len(),
+        CongestionLevel::VARIANTS.len(),
+        ScheduleRelationship::VARIANTS.len()
+    ].into_iter().max().unwrap() + 1;
+
+    let values: Vec<VehiclePosition> = (0..n).into_iter().map(|i| {
+        let mut p = VehiclePosition {
+            trip: Some(TripDescriptor {
+                trip_id: Some("42".to_owned()),
+                route_id: Some("42".to_owned()),
+                direction_id: Some(0),
+                start_time: Some("06:00:00".to_owned()),
+                start_date: Some("20250101".to_owned()),
+                schedule_relationship: None,
+                modified_trip: None
+            }),
+            vehicle: None,
+            position: Some(Position { latitude: 37.363, longitude: -122.123, bearing: None, odometer: None, speed: None }),
+            current_stop_sequence: Some(3),
+            stop_id: Some("42".to_owned()),
+            current_status: None,
+            timestamp: Some(1774967570),
+            congestion_level: None,
+            occupancy_status: None,
+            occupancy_percentage: None,
+            multi_carriage_details: vec![]
+        };
+
+        // do it this way rather than specifying above so types are enforced by the rust type system.
+        match get_or_none::<ScheduleRelationship>(i) {
+            Some(r) => p.trip.as_mut().unwrap().set_schedule_relationship(r),
+            None => {}
+        };
+
+        match get_or_none::<VehicleStopStatus>(i) {
+            Some(r) => p.set_current_status(r),
+            None => {}
+        };
+
+        match get_or_none::<CongestionLevel>(i) {
+            Some(r) => p.set_congestion_level(r),
+            None => {}
+        };
+
+        match get_or_none::<OccupancyStatus>(i) {
+            Some(r) => p.set_occupancy_status(r),
+            None => {}
+        };
+
+        p
+    }).collect();
+
+    // get the correct values as strings to pass to R separately for validation
+    let l = list!(
+        schedule_relationship = values.iter().map(|p| 
+            match p.trip.as_ref().unwrap().schedule_relationship {
+                Some(_) => Some(p.trip.as_ref().unwrap().schedule_relationship().as_str_name().to_upper_camel_case()),
+                None => None
+            }).collect::<Vec<Option<String>>>(),
+
+        current_status = values.iter().map(|p| 
+            match p.current_status {
+                Some(_) => Some(p.current_status().as_str_name().to_upper_camel_case()),
+                None => None
+        }).collect::<Vec<Option<String>>>(),
+
+        congestion_level = values.iter().map(|p| 
+            match p.congestion_level {
+                Some(_) => Some(p.congestion_level().as_str_name().to_upper_camel_case()),
+                None => None
+        }).collect::<Vec<Option<String>>>(),
+
+        occupancy_status = values.iter().map(|p| 
+            match p.occupancy_status {
+                Some(_) => Some(p.occupancy_status().as_str_name().to_upper_camel_case()),
+                None => None
+        }).collect::<Vec<Option<String>>>()
+    );
+
+    write_positions(filename, values)?;
+
+    Ok(l)
+}
+
 extendr_module! {
     mod test_data;
     fn test_data_invalid_enum_positions;
+    fn test_data_enum_roundtrip_positions;
 }

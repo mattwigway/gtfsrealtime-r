@@ -112,7 +112,7 @@ extendr_module! {
     mod vehicle_position;
     fn read_gtfsrt_positions_internal;
     fn enum_TripDescriptor_ScheduleRelationship;
-    fn enum_VehiclePosition_CurrentStatus;
+    fn enum_VehiclePosition_VehicleStopStatus;
     fn enum_VehiclePosition_CongestionLevel;
     fn enum_VehiclePosition_OccupancyStatus;
 }
