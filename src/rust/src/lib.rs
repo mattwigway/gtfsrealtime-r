@@ -7,6 +7,7 @@ mod vehicle_position;
 mod trip_update;
 mod alert;
 mod enums;
+mod test_data;
 
 use extendr_api::prelude::*;
 
@@ -18,4 +19,5 @@ extendr_module! {
     use vehicle_position;
     use trip_update;
     use alert;
+    use test_data;
 }

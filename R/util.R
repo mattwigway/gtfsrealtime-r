@@ -11,11 +11,12 @@ enum_to_factor = function (values, enum) {
 
     if (!all(is.na(values) | values %in% levels)) {
         unknown_vals = unique(values[!(values %in% levels)])
-        cli_alert_warning(c(
-            "Unknown values of {.val enum$typ}: {.val unknown_vals}",
-            ">" = "known values: {.val enum$levels} ({.val enum$labels})",
-            "i" = "These likely represent newer or local GTFS-rt extensions, and will be presented as numbers.",
-            "v" = "If these values are standard or widely-used, report an issue at {.url https://github.com/mattwigway/gtfsrealtime-r/issues"
+        typ = sub("^gtfsrealtime::transit_realtime::", "", enum$typ)
+        cli_warn(c(
+            "Unknown values of {.val {typ}}: {.val {unknown_vals}}",
+            ">" = "known values: {.val {enum$levels}} ({.val {enum$labels}})",
+            "i" = "These likely represent newer or local GTFS-rt extensions, and will be presented as stringified numbers.",
+            "v" = "If these values are standard or widely-used, report an issue at {.url https://github.com/mattwigway/gtfsrealtime-r/issues}"
         ))
 
         # add them, without names
