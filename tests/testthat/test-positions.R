@@ -58,4 +58,6 @@ test_that("enums are correctly specified", {
   expect_equal(as.character(actual$current_status), expected$current_status)
   expect_equal(as.character(actual$congestion_level), expected$congestion_level)
   expect_equal(as.character(actual$occupancy_status), expected$occupancy_status)
+  # make sure there are no more enums we missed
+  expect_equal(sum(sapply(actual, class) == "factor"), 5)
 })
