@@ -18,12 +18,18 @@ read_gtfsrt_trip_updates = function (filename) {
 
     result$trip_schedule_relationship = enum_to_factor(
         result$trip_schedule_relationship,
-        enum_TripUpdate_StopTimeUpdate_ScheduleRelationship()
+        enum_TripDescriptor_ScheduleRelationship()
     )
     result$stop_schedule_relationship = enum_to_factor(
         result$stop_schedule_relationship,
         enum_TripUpdate_StopTimeUpdate_ScheduleRelationship()
     )
+
+    result$departure_occupancy_status = enum_to_factor(
+        result$departure_occupancy_status,
+        enum_VehiclePosition_OccupancyStatus()
+    )
+
     result$wheelchair_accessible = enum_to_factor(
         result$wheelchair_accessible,
         enum_VehicleDescriptor_WheelchairAccessible()

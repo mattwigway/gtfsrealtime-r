@@ -2,13 +2,12 @@
 
 use bytes::BytesMut;
 use extendr_api::extendr_module;
-use heck::{AsUpperCamelCase, ToUpperCamelCase};
 use prost::Message;
 use strum::VariantArray;
 use std::{fs, string::ToString};
 use extendr_api::prelude::*;
 
-use crate::transit_realtime::{self, Alert, FeedEntity, FeedHeader, Position, TripDescriptor, TripUpdate, VehicleDescriptor, VehiclePosition, feed_header::Incrementality, trip_descriptor::{self, ModifiedTripSelector, ScheduleRelationship}, trip_update::TripProperties, vehicle_descriptor::{self, WheelchairAccessible}, vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus}};
+use crate::transit_realtime::{self, Alert, FeedEntity, FeedHeader, Position, TripDescriptor, TripUpdate, VehicleDescriptor, VehiclePosition, feed_header::Incrementality, trip_descriptor, trip_update::{self, StopTimeEvent, StopTimeUpdate, TripProperties, stop_time_update::{self, StopTimeProperties}}, vehicle_descriptor::{self, WheelchairAccessible}, vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus}};
 
 fn write_msg(filename: &str, positions: Vec<VehiclePosition>, alerts: Vec<Alert>, trip_updates: Vec<TripUpdate>) -> Result<()> {
     let mut pos_id = 0;
@@ -73,6 +72,10 @@ fn write_msg(filename: &str, positions: Vec<VehiclePosition>, alerts: Vec<Alert>
 
 fn write_positions(filename: &str, positions: Vec<VehiclePosition>) -> Result<()> {
     write_msg(filename, positions, vec![], vec![])
+}
+
+fn write_updates(filename: &str, updates: Vec<TripUpdate>) -> Result<()> {
+    write_msg(filename, vec![], vec![], updates)
 }
 
 // A vehicle positions feed with invalid enum values
@@ -142,7 +145,7 @@ pub fn test_data_enum_roundtrip_positions(filename: &str) -> Result<List> {
         VehicleStopStatus::VARIANTS.len(),
         OccupancyStatus::VARIANTS.len(),
         CongestionLevel::VARIANTS.len(),
-        ScheduleRelationship::VARIANTS.len(),
+        trip_descriptor::ScheduleRelationship::VARIANTS.len(),
         WheelchairAccessible::VARIANTS.len()
     ].into_iter().max().unwrap() + 1;
 
@@ -175,7 +178,7 @@ pub fn test_data_enum_roundtrip_positions(filename: &str) -> Result<List> {
         };
 
         // do it this way rather than specifying above so types are enforced by the rust type system.
-        match get_or_none::<ScheduleRelationship>(i) {
+        match get_or_none::<trip_descriptor::ScheduleRelationship>(i) {
             Some(r) => p.trip.as_mut().unwrap().set_schedule_relationship(r),
             None => {}
         };
@@ -242,8 +245,107 @@ pub fn test_data_enum_roundtrip_positions(filename: &str) -> Result<List> {
     Ok(l)
 }
 
+#[extendr]
+pub fn test_data_enum_roundtrip_updates (filename: &str) -> Result<List> {
+    let n = [
+        trip_descriptor::ScheduleRelationship::VARIANTS.len(),
+        stop_time_update::ScheduleRelationship::VARIANTS.len(),
+        OccupancyStatus::VARIANTS.len(),
+        WheelchairAccessible::VARIANTS.len()
+    ].into_iter().max().unwrap() + 1;
+
+    let values: Vec<TripUpdate> = (0..n).into_iter().map(|i| {
+        let mut update = TripUpdate {
+            timestamp: Some(1774967578),
+            trip: TripDescriptor {
+                trip_id: Some("42".to_owned()),
+                route_id: Some("42".to_owned()),
+                direction_id: Some(0),
+                start_time: Some("06:00:00".to_owned()),
+                start_date: Some("20250101".to_owned()),
+                schedule_relationship: None,
+                modified_trip: None
+            },
+            vehicle: Some(VehicleDescriptor {
+                id: Some("42".to_owned()),
+                label: Some("42".to_owned()),
+                license_plate: Some("42".to_owned()),
+                wheelchair_accessible: None
+            }),
+            stop_time_update: vec![
+                // Just one stop time update so this doesnt get expanded to multiple rows
+                StopTimeUpdate {
+                    stop_id: Some("fortytwo".to_owned()),
+                    stop_sequence: Some(0),
+                    arrival: None,
+                    departure: None,
+                    departure_occupancy_status: None,
+                    schedule_relationship: None,
+                    stop_time_properties: None
+                }
+            ],
+            delay: None,
+            trip_properties: None //currently unused
+        };
+
+        match get_or_none::<trip_descriptor::ScheduleRelationship>(i) {
+            Some(r) => update.trip.set_schedule_relationship(r),
+            None => ()
+        };
+
+        match get_or_none::<WheelchairAccessible>(i) {
+            Some(r) => update.vehicle.as_mut().unwrap().set_wheelchair_accessible(r),
+            None => ()
+        };
+
+        match get_or_none::<OccupancyStatus>(i) {
+            Some(r) => update.stop_time_update[0].set_departure_occupancy_status(r),
+            None => ()
+        };
+
+        match get_or_none::<stop_time_update::ScheduleRelationship>(i) {
+            Some(r) => update.stop_time_update[0].set_schedule_relationship(r),
+            None => ()
+        };
+
+        update
+    }).collect();
+
+    // get the correct values as strings to pass to R separately for validation
+    let l = list!(
+        trip_schedule_relationship = values.iter().map(|u| 
+            match u.trip.schedule_relationship {
+                Some(_) => Some(u.trip.schedule_relationship().into()),
+                None => None
+            }).collect::<Vec<Option<&str>>>(),
+
+        wheelchair_accessible = values.iter().map(|p| 
+            match p.vehicle.as_ref().unwrap().wheelchair_accessible {
+                Some(_) => Some(p.vehicle.as_ref().unwrap().wheelchair_accessible().into()),
+                None => None
+            }).collect::<Vec<Option<&str>>>(),
+
+        departure_occupancy_status = values.iter().map(|p| 
+            match p.stop_time_update[0].departure_occupancy_status {
+                Some(_) => Some(p.stop_time_update[0].departure_occupancy_status().into()),
+                None => None
+        }).collect::<Vec<Option<&str>>>(),
+
+        stop_schedule_relationship = values.iter().map(|p| 
+            match p.stop_time_update[0].schedule_relationship {
+                Some(_) => Some(p.stop_time_update[0].schedule_relationship().into()),
+                None => None
+        }).collect::<Vec<Option<&str>>>()
+    );
+
+    write_updates(filename, values)?;
+
+    Ok(l)
+}
+
 extendr_module! {
     mod test_data;
     fn test_data_invalid_enum_positions;
     fn test_data_enum_roundtrip_positions;
+    fn test_data_enum_roundtrip_updates;
 }

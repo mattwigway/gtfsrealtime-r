@@ -39,12 +39,12 @@
       5                     NA                  NA              NA     1769638901
       6                     NA                  NA              NA     1769639070
         departure_scheduled_time departure_uncertainty departure_occupancy_status
-      1                       NA                    NA                         NA
-      2                       NA                    NA                         NA
-      3                       NA                    NA                         NA
-      4                       NA                    NA                         NA
-      5                       NA                    NA                         NA
-      6                       NA                    NA                         NA
+      1                       NA                    NA                       <NA>
+      2                       NA                    NA                       <NA>
+      3                       NA                    NA                       <NA>
+      4                       NA                    NA                       <NA>
+      5                       NA                    NA                       <NA>
+      6                       NA                    NA                       <NA>
         stop_schedule_relationship
       1                       <NA>
       2                       <NA>

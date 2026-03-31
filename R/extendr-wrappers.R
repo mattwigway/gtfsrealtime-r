@@ -38,5 +38,7 @@ test_data_invalid_enum_positions <- function(filename) .Call(wrap__test_data_inv
 
 test_data_enum_roundtrip_positions <- function(filename) .Call(wrap__test_data_enum_roundtrip_positions, filename)
 
+test_data_enum_roundtrip_updates <- function(filename) .Call(wrap__test_data_enum_roundtrip_updates, filename)
+
 
 # nolint end
