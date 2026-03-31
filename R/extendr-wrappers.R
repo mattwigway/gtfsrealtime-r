@@ -22,7 +22,17 @@ enum_VehiclePosition_OccupancyStatus <- function() .Call(wrap__enum_VehiclePosit
 
 read_gtfsrt_trip_updates_internal <- function(file) .Call(wrap__read_gtfsrt_trip_updates_internal, file)
 
+enum_TripUpdate_StopTimeUpdate_ScheduleRelationship <- function() .Call(wrap__enum_TripUpdate_StopTimeUpdate_ScheduleRelationship)
+
+enum_VehicleDescriptor_WheelchairAccessible <- function() .Call(wrap__enum_VehicleDescriptor_WheelchairAccessible)
+
 read_gtfsrt_alerts_internal <- function(file) .Call(wrap__read_gtfsrt_alerts_internal, file)
+
+enum_Alert_Cause <- function() .Call(wrap__enum_Alert_Cause)
+
+enum_Alert_Effect <- function() .Call(wrap__enum_Alert_Effect)
+
+enum_Alert_SeverityLevel <- function() .Call(wrap__enum_Alert_SeverityLevel)
 
 
 # nolint end

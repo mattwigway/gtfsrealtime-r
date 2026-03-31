@@ -1,6 +1,9 @@
 use extendr_api::prelude::*;
 
 use crate::read::read_feed;
+use crate::enums::enum_to_list;
+use crate::transit_realtime::vehicle_descriptor::WheelchairAccessible;
+use crate::transit_realtime::*;
 
 // GTFS-realtime uses a hierarchical trip update -> stop time update 
 #[derive(IntoDataFrameRow, PartialEq, Debug)]
@@ -130,7 +133,19 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
     return content.into_dataframe();
 }
 
+#[extendr]
+fn enum_TripUpdate_StopTimeUpdate_ScheduleRelationship () -> Result<List> {
+    enum_to_list::<trip_update::stop_time_update::ScheduleRelationship>()
+}
+
+#[extendr]
+fn enum_VehicleDescriptor_WheelchairAccessible () -> Result<List> {
+    enum_to_list::<WheelchairAccessible>()
+}
+
 extendr_module! {
     mod trip_update;
     fn read_gtfsrt_trip_updates_internal;
+    fn enum_TripUpdate_StopTimeUpdate_ScheduleRelationship;
+    fn enum_VehicleDescriptor_WheelchairAccessible;
 }

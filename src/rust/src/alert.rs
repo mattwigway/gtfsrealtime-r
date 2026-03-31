@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use extendr_api::prelude::*;
 
-use crate::{read::read_feed, transit_realtime::{EntitySelector, TimeRange, TranslatedString}};
+use crate::{enums::enum_to_list, read::read_feed, transit_realtime::{self, EntitySelector, TimeRange, TranslatedString}};
 
 #[derive(IntoDataFrameRow, Debug, PartialEq)]
 pub struct RAlert {
@@ -22,6 +22,7 @@ pub struct RAlert {
     trip_modification_id: Option<String>,
     stop_id: Option<String>,
     cause: Option<i32>,
+    effect: Option<i32>,
     language: Option<String>,
     cause_detail: Option<String>,
     effect_detail: Option<String>,
@@ -143,6 +144,7 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
                                     trip_modification_id: trip.as_ref().map_or(None, |t| t.modified_trip.clone()?.modifications_id.clone()),
                                     stop_id: informed_entity.map_or(None, |e| e.stop_id.clone()),
                                     cause: alert.cause,
+                                    effect: alert.effect,
                                     language: lang.clone(),
                                     cause_detail: message_for_language(&lang, &alert.cause_detail),
                                     effect_detail: message_for_language(&lang, &alert.effect_detail),
@@ -169,7 +171,25 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
     return content.into_dataframe();
 }
 
+#[extendr]
+pub fn enum_Alert_Cause () -> Result<List> {
+    enum_to_list::<transit_realtime::alert::Cause>()
+}
+
+#[extendr]
+pub fn enum_Alert_Effect () -> Result<List> {
+    enum_to_list::<transit_realtime::alert::Effect>()
+}
+
+#[extendr]
+pub fn enum_Alert_SeverityLevel () -> Result<List> {
+    enum_to_list::<transit_realtime::alert::SeverityLevel>()
+}
+
 extendr_module! {
     mod alert;
     fn read_gtfsrt_alerts_internal;
+    fn enum_Alert_Cause;
+    fn enum_Alert_Effect;
+    fn enum_Alert_SeverityLevel;
 }
