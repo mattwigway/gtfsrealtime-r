@@ -24,13 +24,20 @@
       4            <NA>            <NA>                       <NA>
       5            <NA>            <NA>                       <NA>
       6            <NA>            <NA>                       <NA>
-        trip_modification_id stop_id cause language cause_detail effect_detail  url
-      1                 <NA>    <NA>  <NA>       EN         <NA>          <NA> <NA>
-      2                 <NA>    <NA>  <NA>       EN         <NA>          <NA> <NA>
-      3                 <NA>    <NA>  <NA>       EN         <NA>          <NA> <NA>
-      4                 <NA>    <NA>  <NA>       EN         <NA>          <NA> <NA>
-      5                 <NA>    <NA>  <NA>       EN         <NA>          <NA> <NA>
-      6                 <NA>    <NA>  <NA>       EN         <NA>          <NA> <NA>
+        trip_modification_id stop_id cause effect language cause_detail effect_detail
+      1                 <NA>    <NA>  <NA>   <NA>       EN         <NA>          <NA>
+      2                 <NA>    <NA>  <NA>   <NA>       EN         <NA>          <NA>
+      3                 <NA>    <NA>  <NA>   <NA>       EN         <NA>          <NA>
+      4                 <NA>    <NA>  <NA>   <NA>       EN         <NA>          <NA>
+      5                 <NA>    <NA>  <NA>   <NA>       EN         <NA>          <NA>
+      6                 <NA>    <NA>  <NA>   <NA>       EN         <NA>          <NA>
+         url
+      1 <NA>
+      2 <NA>
+      3 <NA>
+      4 <NA>
+      5 <NA>
+      6 <NA>
                                                                                                                                  header_text
       1                                                           X28  and X38  stops on Surf Ave at W 21st St are closed in both directions
       2                                                           X28  and X38  stops on Surf Ave at W 21st St are closed in both directions

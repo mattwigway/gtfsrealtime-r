@@ -24,18 +24,18 @@
       4   20260121                  <NA>  301136                    NA           <NA>
       5   20260121                  <NA>  501369                    NA           <NA>
       6   20260121                  <NA>  400645                    NA           <NA>
-                  timestamp congestion_level     occupancy_status
-      1 2026-01-21 18:58:29             <NA>   STANDING_ROOM_ONLY
-      2 2026-01-21 18:58:24             <NA>                 <NA>
-      3 2026-01-21 18:58:32             <NA> MANY_SEATS_AVAILABLE
-      4 2026-01-21 18:58:05             <NA>  FEW_SEATS_AVAILABLE
-      5 2026-01-21 18:58:32             <NA>                 <NA>
-      6 2026-01-21 18:58:06             <NA> MANY_SEATS_AVAILABLE
-        occupancy_percentage    vehicle_id vehicle_label vehicle_license_plate
-      1                   NA MTA NYCT_9771          <NA>                  <NA>
-      2                   NA MTA NYCT_8440          <NA>                  <NA>
-      3                   NA MTA NYCT_9770          <NA>                  <NA>
-      4                   NA MTA NYCT_7112          <NA>                  <NA>
-      5                   NA MTA NYCT_8443          <NA>                  <NA>
-      6                   NA MTA NYCT_9775          <NA>                  <NA>
+                  timestamp congestion_level   occupancy_status occupancy_percentage
+      1 2026-01-21 18:58:29             <NA>   StandingRoomOnly                   NA
+      2 2026-01-21 18:58:24             <NA>               <NA>                   NA
+      3 2026-01-21 18:58:32             <NA> ManySeatsAvailable                   NA
+      4 2026-01-21 18:58:05             <NA>  FewSeatsAvailable                   NA
+      5 2026-01-21 18:58:32             <NA>               <NA>                   NA
+      6 2026-01-21 18:58:06             <NA> ManySeatsAvailable                   NA
+           vehicle_id vehicle_label vehicle_license_plate
+      1 MTA NYCT_9771          <NA>                  <NA>
+      2 MTA NYCT_8440          <NA>                  <NA>
+      3 MTA NYCT_9770          <NA>                  <NA>
+      4 MTA NYCT_7112          <NA>                  <NA>
+      5 MTA NYCT_8443          <NA>                  <NA>
+      6 MTA NYCT_9775          <NA>                  <NA>
 
