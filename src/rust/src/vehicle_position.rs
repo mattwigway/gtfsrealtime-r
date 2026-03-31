@@ -1,6 +1,6 @@
 use extendr_api::prelude::*;
 use crate::read::read_feed;
-use crate::transit_realtime::*;
+use crate::transit_realtime::{self, trip_descriptor};
 use crate::enums::enum_to_list;
 
 #[derive(IntoDataFrameRow, Debug, PartialEq)]
@@ -93,18 +93,18 @@ pub fn enum_TripDescriptor_ScheduleRelationship () -> Result<List> {
 }
 
 #[extendr]
-pub fn enum_VehiclePosition_CurrentStatus () -> Result<List> {
-    enum_to_list::<vehicle_position::VehicleStopStatus>()
+pub fn enum_VehiclePosition_VehicleStopStatus () -> Result<List> {
+    enum_to_list::<transit_realtime::vehicle_position::VehicleStopStatus>()
 }
 
 #[extendr]
 pub fn enum_VehiclePosition_CongestionLevel () -> Result<List> {
-    enum_to_list::<vehicle_position::CongestionLevel>()
+    enum_to_list::<transit_realtime::vehicle_position::CongestionLevel>()
 }
 
 #[extendr]
 pub fn enum_VehiclePosition_OccupancyStatus () -> Result<List> {
-    enum_to_list::<vehicle_position::OccupancyStatus>()
+    enum_to_list::<transit_realtime::vehicle_position::OccupancyStatus>()
 }
 
 

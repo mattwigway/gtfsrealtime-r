@@ -34,7 +34,7 @@ read_gtfsrt_positions = function (filename, timezone, as_sf=FALSE) {
 
     result$current_status = enum_to_factor(
         result$current_status,
-        enum_VehiclePosition_CurrentStatus()
+        enum_VehiclePosition_VehicleStopStatus()
     )
 
     result$congestion_level = enum_to_factor(
