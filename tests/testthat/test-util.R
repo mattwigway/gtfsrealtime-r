@@ -9,4 +9,6 @@ test_that("Invalid enum values work", {
   )
 
   expect_true(all(data$schedule_relationship == c("256", "Scheduled")))
+
+  unlink(tmp)
 })
