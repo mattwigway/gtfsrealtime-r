@@ -61,3 +61,55 @@ test_that("enums are correctly specified", {
   # make sure there are no more enums we missed
   expect_equal(sum(sapply(actual, class) == "factor"), 5)
 })
+
+test_that("Louisville debug JSON matches read_gtfsrt_positions", {
+  raw_expected = jsonlite::parse_json(gzfile(system.file("testdata/louisville-positions.json.gz", package = "gtfsrealtime")))
+
+  # something missing from the JSON will be NULL, but then the column will be missing in the output
+  null_to_na = function (x) {
+    if (is.null(x)) {
+      NA
+    } else {
+      x
+    }
+  }
+
+  expected = purrr::map(raw_expected$Entities, function (entity) {
+    p = entity$Vehicle
+    tibble::tibble_row(
+      id = null_to_na(entity$Id),
+      latitude = null_to_na(p$Position$Latitude),
+      longitude = null_to_na(p$Position$Longitude),
+      bearing = null_to_na(p$Position$Bearing),
+      odometer = null_to_na(p$Position$Odometer),
+      speed = null_to_na(p$Position$Speed),
+      trip_id = null_to_na(p$Trip$TripId),
+      route_id = null_to_na(p$Trip$RouteId),
+      direction_id = null_to_na(p$Trip$DirectionId),
+      start_time = null_to_na(p$Trip$StartTime),
+      start_date = null_to_na(p$Trip$StartDate),
+      # this one is snake case for some reason
+      schedule_relationship = null_to_na(p$Trip$schedule_relationship),
+      stop_id = null_to_na(p$StopId),
+      current_stop_sequence = null_to_na(p$CurrentStopSequence),
+      current_status = null_to_na(p$CurrentStatus),
+      timestamp = null_to_na(as.POSIXct(p$Timestamp, tz = "America/New_York")),
+      congestion_level = null_to_na(p$congestion_level),
+      occupancy_status = null_to_na(p$occupancy_status),
+      occupancy_percentage = null_to_na(p$OccupancyPercentage),
+      vehicle_id = null_to_na(p$Vehicle$Id),
+      vehicle_label = null_to_na(p$Vehicle$Label),
+      vehicle_license_plate = null_to_na(p$Vehicle$LicensePlate),
+      wheelchair_accessible = null_to_na(p$Vehicle$WheelchairAccessible)
+    )
+  }) |> purrr::list_rbind()
+
+  # don't label values, numeric labels used in JSON. Correct enum mapping tested above.
+  actual = read_gtfsrt_positions(system.file("testdata/louisville-positions.pb.bz2", package = "gtfsrealtime"), "America/New_York", label_values = FALSE) |>
+    # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
+    dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col)))|>
+    tibble::as_tibble()
+
+  expect_true(nrow(actual) > 0)
+  expect_equal(actual, expected, tolerance = 1e-6)
+})
