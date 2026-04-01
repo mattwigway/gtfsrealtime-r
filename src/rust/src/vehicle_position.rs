@@ -90,21 +90,25 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
 }
 
 #[extendr]
+#[allow(non_snake_case)]
 pub fn enum_TripDescriptor_ScheduleRelationship () -> Result<List> {
     enum_to_list::<trip_descriptor::ScheduleRelationship>()
 }
 
 #[extendr]
+#[allow(non_snake_case)]
 pub fn enum_VehiclePosition_VehicleStopStatus () -> Result<List> {
     enum_to_list::<transit_realtime::vehicle_position::VehicleStopStatus>()
 }
 
 #[extendr]
+#[allow(non_snake_case)]
 pub fn enum_VehiclePosition_CongestionLevel () -> Result<List> {
     enum_to_list::<transit_realtime::vehicle_position::CongestionLevel>()
 }
 
 #[extendr]
+#[allow(non_snake_case)]
 pub fn enum_VehiclePosition_OccupancyStatus () -> Result<List> {
     enum_to_list::<transit_realtime::vehicle_position::OccupancyStatus>()
 }

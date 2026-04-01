@@ -172,16 +172,19 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
 }
 
 #[extendr]
+#[allow(non_snake_case)]
 pub fn enum_Alert_Cause () -> Result<List> {
     enum_to_list::<transit_realtime::alert::Cause>()
 }
 
 #[extendr]
+#[allow(non_snake_case)]
 pub fn enum_Alert_Effect () -> Result<List> {
     enum_to_list::<transit_realtime::alert::Effect>()
 }
 
 #[extendr]
+#[allow(non_snake_case)]
 pub fn enum_Alert_SeverityLevel () -> Result<List> {
     enum_to_list::<transit_realtime::alert::SeverityLevel>()
 }

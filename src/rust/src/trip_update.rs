@@ -134,11 +134,13 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
 }
 
 #[extendr]
+#[allow(non_snake_case)]
 fn enum_TripUpdate_StopTimeUpdate_ScheduleRelationship () -> Result<List> {
     enum_to_list::<trip_update::stop_time_update::ScheduleRelationship>()
 }
 
 #[extendr]
+#[allow(non_snake_case)]
 fn enum_VehicleDescriptor_WheelchairAccessible () -> Result<List> {
     enum_to_list::<WheelchairAccessible>()
 }
