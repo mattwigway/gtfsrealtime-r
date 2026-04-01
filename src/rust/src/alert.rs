@@ -2,7 +2,11 @@ use std::collections::HashSet;
 
 use extendr_api::prelude::*;
 
-use crate::{enums::enum_to_list, read::read_feed, transit_realtime::{self, EntitySelector, TimeRange, TranslatedString}};
+use crate::{
+    enums::enum_to_list,
+    read::read_feed,
+    transit_realtime::{self, EntitySelector, TimeRange, TranslatedString},
+};
 
 #[derive(IntoDataFrameRow, Debug, PartialEq)]
 pub struct RAlert {
@@ -31,15 +35,16 @@ pub struct RAlert {
     description_text: Option<String>,
     tts_header_text: Option<String>,
     tts_description_text: Option<String>,
-    severity_level: Option<i32>
-
-    // TODO
-    // image_url: Option<String>,
-    // image_type: Option<String>,
-    // image_alternative_text: Option<String>
+    severity_level: Option<i32>, // TODO
+                                 // image_url: Option<String>,
+                                 // image_type: Option<String>,
+                                 // image_alternative_text: Option<String>
 }
 
-fn accumulate_languages(set: &mut HashSet<Option<String>>, translated_string: &Option<TranslatedString>) {
+fn accumulate_languages(
+    set: &mut HashSet<Option<String>>,
+    translated_string: &Option<TranslatedString>,
+) {
     match translated_string {
         None => (),
         Some(str) => {
@@ -53,16 +58,17 @@ fn accumulate_languages(set: &mut HashSet<Option<String>>, translated_string: &O
 fn compare_opts(o1: &Option<String>, o2: &Option<String>) -> bool {
     match o1 {
         None => o2.is_none(),
-        Some(x) => {
-            match o2 {
-                None => false,
-                Some(y) => x == y
-            }
-        }
+        Some(x) => match o2 {
+            None => false,
+            Some(y) => x == y,
+        },
     }
 }
 
-fn message_for_language(lang: &Option<String>, translated_string: &Option<TranslatedString>) -> Option<String> {
+fn message_for_language(
+    lang: &Option<String>,
+    translated_string: &Option<TranslatedString>,
+) -> Option<String> {
     match translated_string {
         None => None,
         Some(str) => {
@@ -82,7 +88,9 @@ fn message_for_language(lang: &Option<String>, translated_string: &Option<Transl
 pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
     let msg = read_feed(file)?;
 
-    let content = msg.entity.iter()
+    let content = msg
+        .entity
+        .iter()
         .filter(|e| e.alert.is_some())
         .map(|entity| {
             let alert = entity.alert.as_ref().unwrap();
@@ -113,57 +121,97 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
 
             // also duplicate alert for each informed entity. there should always be 1+ per spec,
             // but allow for the possibility there is not.
-            let informed_entities: Vec<Option<&EntitySelector>> = if alert.informed_entity.is_empty() {
-                vec![None]
-            } else {
-                alert.informed_entity.iter().map(Some).collect()
-            };
+            let informed_entities: Vec<Option<&EntitySelector>> =
+                if alert.informed_entity.is_empty() {
+                    vec![None]
+                } else {
+                    alert.informed_entity.iter().map(Some).collect()
+                };
 
-            ranges.iter().map(|range| {
-                    informed_entities.iter().map(|informed_entity| {
-                        languages
-                            .iter()
-                            .map(|lang| {
-                                let trip = informed_entity.map_or(None, |e| e.trip.clone());
+            ranges
+                .iter()
+                .map(|range| {
+                    informed_entities
+                        .iter()
+                        .map(|informed_entity| {
+                            languages
+                                .iter()
+                                .map(|lang| {
+                                    let trip = informed_entity.map_or(None, |e| e.trip.clone());
 
-                                RAlert {
-                                    id: entity.id.clone(),
-                                    start: range.map_or(None, |r| r.start),
-                                    end: range.map_or(None, |r| r.end),
-                                    agency_id: informed_entity.map_or(None, |e| e.agency_id.clone()),
-                                    route_id: informed_entity.map_or(None, |e| e.route_id.clone()),
-                                    route_type: informed_entity.map_or(None, |e| e.route_type),
-                                    direction_id: informed_entity.map_or(None, |e| e.direction_id),
-                                    // trip? works here because it is inside a function that returns an option (the closure in map_or)
-                                    trip_trip_id: trip.as_ref().map_or(None, |t| t.trip_id.clone()),
-                                    trip_route_id: trip.as_ref().map_or(None, |t| t.route_id.clone()),
-                                    trip_direction_id: trip.as_ref().map_or(None, |t| t.direction_id.clone()),
-                                    trip_start_time: trip.as_ref().map_or(None, |t| t.start_time.clone()),
-                                    trip_start_date: trip.as_ref().map_or(None, |t| t.start_date.clone()),
-                                    trip_schedule_relationship: trip.as_ref().map_or(None, |t| t.schedule_relationship.clone()),
-                                    trip_modification_id: trip.as_ref().map_or(None, |t| t.modified_trip.clone()?.modifications_id.clone()),
-                                    stop_id: informed_entity.map_or(None, |e| e.stop_id.clone()),
-                                    cause: alert.cause,
-                                    effect: alert.effect,
-                                    language: lang.clone(),
-                                    cause_detail: message_for_language(&lang, &alert.cause_detail),
-                                    effect_detail: message_for_language(&lang, &alert.effect_detail),
-                                    url: message_for_language(&lang, &alert.url),
-                                    header_text: message_for_language(&lang, &alert.header_text),
-                                    description_text: message_for_language(&lang, &alert.description_text),
-                                    tts_header_text: message_for_language(&lang, &alert.tts_header_text),
-                                    tts_description_text: message_for_language(&lang, &alert.tts_description_text),
-                                    severity_level: alert.severity_level
-                                }
-                            })
-                            .collect::<Vec<RAlert>>()
+                                    RAlert {
+                                        id: entity.id.clone(),
+                                        start: range.map_or(None, |r| r.start),
+                                        end: range.map_or(None, |r| r.end),
+                                        agency_id: informed_entity
+                                            .map_or(None, |e| e.agency_id.clone()),
+                                        route_id: informed_entity
+                                            .map_or(None, |e| e.route_id.clone()),
+                                        route_type: informed_entity.map_or(None, |e| e.route_type),
+                                        direction_id: informed_entity
+                                            .map_or(None, |e| e.direction_id),
+                                        // trip? works here because it is inside a function that returns an option (the closure in map_or)
+                                        trip_trip_id: trip
+                                            .as_ref()
+                                            .map_or(None, |t| t.trip_id.clone()),
+                                        trip_route_id: trip
+                                            .as_ref()
+                                            .map_or(None, |t| t.route_id.clone()),
+                                        trip_direction_id: trip
+                                            .as_ref()
+                                            .map_or(None, |t| t.direction_id.clone()),
+                                        trip_start_time: trip
+                                            .as_ref()
+                                            .map_or(None, |t| t.start_time.clone()),
+                                        trip_start_date: trip
+                                            .as_ref()
+                                            .map_or(None, |t| t.start_date.clone()),
+                                        trip_schedule_relationship: trip
+                                            .as_ref()
+                                            .map_or(None, |t| t.schedule_relationship.clone()),
+                                        trip_modification_id: trip.as_ref().map_or(None, |t| {
+                                            t.modified_trip.clone()?.modifications_id.clone()
+                                        }),
+                                        stop_id: informed_entity
+                                            .map_or(None, |e| e.stop_id.clone()),
+                                        cause: alert.cause,
+                                        effect: alert.effect,
+                                        language: lang.clone(),
+                                        cause_detail: message_for_language(
+                                            &lang,
+                                            &alert.cause_detail,
+                                        ),
+                                        effect_detail: message_for_language(
+                                            &lang,
+                                            &alert.effect_detail,
+                                        ),
+                                        url: message_for_language(&lang, &alert.url),
+                                        header_text: message_for_language(
+                                            &lang,
+                                            &alert.header_text,
+                                        ),
+                                        description_text: message_for_language(
+                                            &lang,
+                                            &alert.description_text,
+                                        ),
+                                        tts_header_text: message_for_language(
+                                            &lang,
+                                            &alert.tts_header_text,
+                                        ),
+                                        tts_description_text: message_for_language(
+                                            &lang,
+                                            &alert.tts_description_text,
+                                        ),
+                                        severity_level: alert.severity_level,
+                                    }
+                                })
+                                .collect::<Vec<RAlert>>()
                         })
                         .flatten()
                         .collect::<Vec<RAlert>>()
-                    })
-                    .flatten()
-                    .collect::<Vec<RAlert>>()
-
+                })
+                .flatten()
+                .collect::<Vec<RAlert>>()
         })
         .flatten()
         .collect::<Vec<RAlert>>();
@@ -173,19 +221,19 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
 
 #[extendr]
 #[allow(non_snake_case)]
-pub fn enum_Alert_Cause () -> Result<List> {
+pub fn enum_Alert_Cause() -> Result<List> {
     enum_to_list::<transit_realtime::alert::Cause>()
 }
 
 #[extendr]
 #[allow(non_snake_case)]
-pub fn enum_Alert_Effect () -> Result<List> {
+pub fn enum_Alert_Effect() -> Result<List> {
     enum_to_list::<transit_realtime::alert::Effect>()
 }
 
 #[extendr]
 #[allow(non_snake_case)]
-pub fn enum_Alert_SeverityLevel () -> Result<List> {
+pub fn enum_Alert_SeverityLevel() -> Result<List> {
     enum_to_list::<transit_realtime::alert::SeverityLevel>()
 }
 
