@@ -5,6 +5,7 @@ mod enum_roundtrip_positions;
 mod enum_roundtrip_updates;
 mod invalid_enum_positions;
 mod trip_update_unwrapping;
+mod positions_all_values;
 
 use bytes::BytesMut;
 use extendr_api::extendr_module;
@@ -103,4 +104,5 @@ extendr_module! {
     use enum_roundtrip_updates;
     use invalid_enum_positions;
     use trip_update_unwrapping;
+    use positions_all_values;
 }

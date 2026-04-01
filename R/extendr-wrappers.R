@@ -49,5 +49,11 @@ test_data_invalid_enum_positions <- function(filename) .Call(wrap__test_data_inv
 #' @keywords internal
 test_data_update_unwrapping <- function(filename) .Call(wrap__test_data_update_unwrapping, filename)
 
+#' Make sure we can read all values in vehicle positions
+#' For the other types this is tested incidentally by the unwrapping tests, but there's no unwrapping
+#' test for positions since each vehicle position record becomes just one row.
+#' @keywords internal
+test_data_positions_all_values <- function(filename) .Call(wrap__test_data_positions_all_values, filename)
+
 
 # nolint end
