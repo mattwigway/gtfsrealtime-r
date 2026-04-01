@@ -4,11 +4,15 @@
 \alias{read_gtfsrt_alerts}
 \title{Read GTFS-realtime alerts}
 \usage{
-read_gtfsrt_alerts(filename)
+read_gtfsrt_alerts(filename, label_values = TRUE)
 }
 \arguments{
 \item{filename}{filename to read. Can be uncompressed or compressed with
 gzip or bzip2. Can also be an http:// or https:// URL.}
+
+\item{label_values}{should enum types in GTFS-realtime (i.e. categorical variables)
+be converted to factors with their English labels. If false, they
+will be left as numeric codes. Default true.}
 }
 \description{
 This function reads GTFS realtime alerts. Alerts are hierarchical:

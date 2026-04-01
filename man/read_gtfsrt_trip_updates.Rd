@@ -4,11 +4,15 @@
 \alias{read_gtfsrt_trip_updates}
 \title{Read GTFS-realtime trip updates}
 \usage{
-read_gtfsrt_trip_updates(filename)
+read_gtfsrt_trip_updates(filename, label_values = TRUE)
 }
 \arguments{
 \item{filename}{filename to read. Can be uncompressed or compressed with
 gzip or bzip2. Can also be an http:// or https:// URL.}
+
+\item{label_values}{should enum types in GTFS-realtime (i.e. categorical variables)
+be converted to factors with their English labels. If false, they
+will be left as numeric codes. Default true.}
 }
 \description{
 Note that each trip update becomes multiple rows, one per stop time update, with

@@ -9,8 +9,11 @@
 #' 
 #' @param filename filename to read. Can be uncompressed or compressed with
 #'      gzip or bzip2. Can also be an http:// or https:// URL.
+#' @param label_values should enum types in GTFS-realtime (i.e. categorical variables)
+#'      be converted to factors with their English labels. If false, they
+#'      will be left as numeric codes. Default true.
 #' @export
-read_gtfsrt_alerts = function (filename) {
+read_gtfsrt_alerts = function (filename, label_values = TRUE) {
     result = read_gtfsrt_alerts_internal(filename)
 
     if (!is.null(result$err)) {
@@ -19,25 +22,27 @@ read_gtfsrt_alerts = function (filename) {
         result = result$ok
     }
 
-    result$trip_schedule_relationship = enum_to_factor(
-        result$trip_schedule_relationship,
-        enum_TripDescriptor_ScheduleRelationship()
-    )
+    if (label_values) {
+        result$trip_schedule_relationship = enum_to_factor(
+            result$trip_schedule_relationship,
+            enum_TripDescriptor_ScheduleRelationship()
+        )
 
-    result$cause = enum_to_factor(
-        result$cause,
-        enum_Alert_Cause()
-    )
+        result$cause = enum_to_factor(
+            result$cause,
+            enum_Alert_Cause()
+        )
 
-    result$effect = enum_to_factor(
-        result$effect,
-        enum_Alert_Effect()
-    )
+        result$effect = enum_to_factor(
+            result$effect,
+            enum_Alert_Effect()
+        )
 
-    result$severity_level = enum_to_factor(
-        result$severity_level,
-        enum_Alert_SeverityLevel()
-    )
+        result$severity_level = enum_to_factor(
+            result$severity_level,
+            enum_Alert_SeverityLevel()
+        )
+    }
 
     return(result)
 }
