@@ -41,7 +41,7 @@ pub struct RStopTimeUpdate {
     stop_schedule_relationship: Option<i32>,
 }
 
-// Read GTFS-RT trip updates (result is expanded to one row per stop update, group by
+// Read GTFS-RT trip updates (result is expanded to one row per stop update)
 #[extendr]
 pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStopTimeUpdate>> {
     let msg = read_feed(file)?;

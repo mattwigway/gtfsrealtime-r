@@ -12,8 +12,8 @@ use crate::transit_realtime::{
         StopTimeUpdate,
     },
     vehicle_descriptor::WheelchairAccessible,
-    vehicle_position::OccupancyStatus, TripDescriptor, TripUpdate,
-    VehicleDescriptor,
+    vehicle_position::OccupancyStatus,
+    TripDescriptor, TripUpdate, VehicleDescriptor,
 };
 
 #[extendr]

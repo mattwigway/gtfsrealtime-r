@@ -5,8 +5,8 @@ use std::string::ToString;
 use crate::test_data::write_positions;
 use crate::transit_realtime::{
     trip_descriptor,
-    vehicle_position::{OccupancyStatus, VehicleStopStatus}, Position, TripDescriptor,
-    VehicleDescriptor, VehiclePosition,
+    vehicle_position::{OccupancyStatus, VehicleStopStatus},
+    Position, TripDescriptor, VehicleDescriptor, VehiclePosition,
 };
 
 // A vehicle positions feed with invalid enum values

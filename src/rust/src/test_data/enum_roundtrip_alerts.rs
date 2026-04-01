@@ -7,8 +7,7 @@ use crate::test_data::enum_roundtrip::get_or_none;
 use crate::test_data::write_alerts;
 use crate::transit_realtime::{
     alert::{Cause, Effect, SeverityLevel},
-    trip_descriptor,
-    Alert, EntitySelector, TimeRange, TripDescriptor,
+    trip_descriptor, Alert, EntitySelector, TimeRange, TripDescriptor,
 };
 
 #[extendr]
