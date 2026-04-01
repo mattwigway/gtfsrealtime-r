@@ -1,6 +1,14 @@
 use extendr_api::prelude::*;
 
-use crate::{test_data::write_positions, transit_realtime::{Position, TripDescriptor, VehicleDescriptor, VehiclePosition, trip_descriptor, vehicle_descriptor::WheelchairAccessible, vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus}}};
+use crate::{
+    test_data::write_positions,
+    transit_realtime::{
+        trip_descriptor,
+        vehicle_descriptor::WheelchairAccessible,
+        vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus},
+        Position, TripDescriptor, VehicleDescriptor, VehiclePosition,
+    },
+};
 
 /// Make sure we can read all values in vehicle positions
 /// For the other types this is tested incidentally by the unwrapping tests, but there's no unwrapping
@@ -17,20 +25,20 @@ pub fn test_data_positions_all_values(filename: &str) -> Result<()> {
                 start_time: Some("07:00:00".to_owned()),
                 start_date: Some("20260401".to_owned()),
                 schedule_relationship: Some(trip_descriptor::ScheduleRelationship::Added as i32),
-                modified_trip: None // unused
+                modified_trip: None, // unused
             }),
             vehicle: Some(VehicleDescriptor {
                 id: Some("42".to_owned()),
                 label: Some("label".to_owned()),
                 license_plate: Some("LIC-4242".to_owned()),
-                wheelchair_accessible: Some(WheelchairAccessible::WheelchairAccessible as i32)
+                wheelchair_accessible: Some(WheelchairAccessible::WheelchairAccessible as i32),
             }),
             position: Some(Position {
                 latitude: 37.363,
                 longitude: -122.123,
                 bearing: Some(78.0),
                 odometer: Some(8675809.0),
-                speed: Some(45.0)
+                speed: Some(45.0),
             }),
             current_stop_sequence: Some(10),
             stop_id: Some("stop".to_owned()),
@@ -39,7 +47,7 @@ pub fn test_data_positions_all_values(filename: &str) -> Result<()> {
             congestion_level: Some(CongestionLevel::SevereCongestion as i32),
             occupancy_status: Some(OccupancyStatus::CrushedStandingRoomOnly as i32),
             occupancy_percentage: Some(15),
-            multi_carriage_details: vec![]
+            multi_carriage_details: vec![],
         },
         VehiclePosition {
             trip: Some(TripDescriptor {
@@ -49,20 +57,20 @@ pub fn test_data_positions_all_values(filename: &str) -> Result<()> {
                 start_time: None,
                 start_date: None,
                 schedule_relationship: None,
-                modified_trip: None // unused
+                modified_trip: None, // unused
             }),
             vehicle: Some(VehicleDescriptor {
                 id: None,
                 label: None,
                 license_plate: None,
-                wheelchair_accessible: None
+                wheelchair_accessible: None,
             }),
             position: Some(Position {
                 latitude: 37.363,
                 longitude: -122.123,
-                bearing:None,
-                odometer:None,
-                speed:None
+                bearing: None,
+                odometer: None,
+                speed: None,
             }),
             current_stop_sequence: None,
             stop_id: None,
@@ -71,9 +79,8 @@ pub fn test_data_positions_all_values(filename: &str) -> Result<()> {
             congestion_level: None,
             occupancy_status: None,
             occupancy_percentage: None,
-            multi_carriage_details: vec![]
+            multi_carriage_details: vec![],
         },
-
         VehiclePosition {
             trip: None,
             vehicle: None,
@@ -85,8 +92,8 @@ pub fn test_data_positions_all_values(filename: &str) -> Result<()> {
             congestion_level: None,
             occupancy_status: None,
             occupancy_percentage: None,
-            multi_carriage_details: vec![]
-        }
+            multi_carriage_details: vec![],
+        },
     ];
 
     write_positions(filename, positions)?;

@@ -1,8 +1,15 @@
 use extendr_api::prelude::*;
 
-use crate::{test_data::write_updates, transit_realtime::{
-    TripDescriptor, TripUpdate, VehicleDescriptor, trip_descriptor, trip_update::{StopTimeEvent, StopTimeUpdate, TripProperties, stop_time_update}, vehicle_descriptor::WheelchairAccessible, vehicle_position::OccupancyStatus
-}};
+use crate::{
+    test_data::write_updates,
+    transit_realtime::{
+        trip_descriptor,
+        trip_update::{stop_time_update, StopTimeEvent, StopTimeUpdate, TripProperties},
+        vehicle_descriptor::WheelchairAccessible,
+        vehicle_position::OccupancyStatus,
+        TripDescriptor, TripUpdate, VehicleDescriptor,
+    },
+};
 
 /// Dataset that has two trip updates with
 /// id 1: two stop times - should get expanded to two rows,
@@ -89,9 +96,7 @@ pub fn test_data_update_unwrapping(filename: &str) -> Result<()> {
                 direction_id: Some(0),
                 start_date: Some("20260402".to_owned()),
                 start_time: Some("06:00:02".to_owned()),
-                schedule_relationship: Some(
-                    trip_descriptor::ScheduleRelationship::Added as i32,
-                ),
+                schedule_relationship: Some(trip_descriptor::ScheduleRelationship::Added as i32),
                 modified_trip: None, // experimental, unused
             },
             vehicle: Some(VehicleDescriptor {
@@ -116,17 +121,14 @@ pub fn test_data_update_unwrapping(filename: &str) -> Result<()> {
                     scheduled_time: None,
                 }),
                 departure_occupancy_status: Some(OccupancyStatus::ManySeatsAvailable as i32),
-                schedule_relationship: Some(
-                    stop_time_update::ScheduleRelationship::NoData as i32,
-                ),
+                schedule_relationship: Some(stop_time_update::ScheduleRelationship::NoData as i32),
                 stop_time_properties: None, // experimental
             }],
             timestamp: Some(1775059600),
             delay: Some(11),
             trip_properties: None, // experimental
         },
-
-                ///////////////////////////////////////////////////
+        ///////////////////////////////////////////////////
         // id 3: no stop time updates
         TripUpdate {
             trip: TripDescriptor {
