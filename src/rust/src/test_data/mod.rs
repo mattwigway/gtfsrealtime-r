@@ -4,6 +4,7 @@ mod enum_roundtrip_alerts;
 mod enum_roundtrip_positions;
 mod enum_roundtrip_updates;
 mod invalid_enum_positions;
+mod trip_update_unwrapping;
 
 use bytes::BytesMut;
 use extendr_api::extendr_module;
@@ -12,9 +13,7 @@ use prost::Message;
 use std::{fs, string::ToString};
 
 use crate::transit_realtime::{
-    self,
-    feed_header::Incrementality,
-    Alert, FeedEntity, FeedHeader, TripUpdate, VehiclePosition,
+    self, feed_header::Incrementality, Alert, FeedEntity, FeedHeader, TripUpdate, VehiclePosition,
 };
 
 fn write_msg(
@@ -103,4 +102,5 @@ extendr_module! {
     use enum_roundtrip_alerts;
     use enum_roundtrip_updates;
     use invalid_enum_positions;
+    use trip_update_unwrapping;
 }

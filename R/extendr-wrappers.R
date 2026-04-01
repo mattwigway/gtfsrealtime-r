@@ -42,5 +42,12 @@ test_data_enum_roundtrip_updates <- function(filename) .Call(wrap__test_data_enu
 
 test_data_invalid_enum_positions <- function(filename) .Call(wrap__test_data_invalid_enum_positions, filename)
 
+#' Dataset that has two trip updates with
+#' id 1: two stop times - should get expanded to two rows,
+#' id 2: one stop time - should remain one row,
+#' id 3: no stop times which should exist as a single row.
+#' @keywords internal
+test_data_update_unwrapping <- function(filename) .Call(wrap__test_data_update_unwrapping, filename)
+
 
 # nolint end
