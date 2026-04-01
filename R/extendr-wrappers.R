@@ -40,5 +40,7 @@ test_data_enum_roundtrip_positions <- function(filename) .Call(wrap__test_data_e
 
 test_data_enum_roundtrip_updates <- function(filename) .Call(wrap__test_data_enum_roundtrip_updates, filename)
 
+test_data_enum_roundtrip_alerts <- function(filename) .Call(wrap__test_data_enum_roundtrip_alerts, filename)
+
 
 # nolint end

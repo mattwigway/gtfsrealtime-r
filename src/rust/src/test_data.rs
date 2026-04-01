@@ -7,14 +7,14 @@ use strum::VariantArray;
 use std::{fs, string::ToString};
 use extendr_api::prelude::*;
 
-use crate::transit_realtime::{self, Alert, FeedEntity, FeedHeader, Position, TripDescriptor, TripUpdate, VehicleDescriptor, VehiclePosition, feed_header::Incrementality, trip_descriptor, trip_update::{self, StopTimeEvent, StopTimeUpdate, TripProperties, stop_time_update::{self, StopTimeProperties}}, vehicle_descriptor::{self, WheelchairAccessible}, vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus}};
+use crate::transit_realtime::{self, Alert, EntitySelector, FeedEntity, FeedHeader, Position, TimeRange, TripDescriptor, TripUpdate, VehicleDescriptor, VehiclePosition, alert::{Cause, Effect, SeverityLevel}, feed_header::Incrementality, trip_descriptor, trip_update::{self, StopTimeEvent, StopTimeUpdate, TripProperties, stop_time_update::{self, StopTimeProperties}}, vehicle_descriptor::{self, WheelchairAccessible}, vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus}};
 
 fn write_msg(filename: &str, positions: Vec<VehiclePosition>, alerts: Vec<Alert>, trip_updates: Vec<TripUpdate>) -> Result<()> {
     let mut pos_id = 0;
     let mut alert_id = 0;
     let mut upd_id = 0;
 
-    let mut msg= transit_realtime::FeedMessage {
+    let  msg= transit_realtime::FeedMessage {
         header: FeedHeader {
             gtfs_realtime_version: "2.0".to_owned(),
             incrementality: Some(Incrementality::FullDataset as i32),
@@ -76,6 +76,10 @@ fn write_positions(filename: &str, positions: Vec<VehiclePosition>) -> Result<()
 
 fn write_updates(filename: &str, updates: Vec<TripUpdate>) -> Result<()> {
     write_msg(filename, vec![], vec![], updates)
+}
+
+fn write_alerts(filename: &str, alerts: Vec<Alert>) -> Result<()> {
+    write_msg(filename, vec![], alerts, vec![])
 }
 
 // A vehicle positions feed with invalid enum values
@@ -343,12 +347,110 @@ pub fn test_data_enum_roundtrip_updates (filename: &str) -> Result<List> {
     Ok(l)
 }
 
-// #[extendr]
-// fn test_data_enum_roundtrip_alerts
+#[extendr]
+pub fn test_data_enum_roundtrip_alerts(filename: &str) -> Result<List> {
+    let n = [
+        Cause::VARIANTS.len(),
+        Effect::VARIANTS.len(),
+        SeverityLevel::VARIANTS.len(),
+        trip_descriptor::ScheduleRelationship::VARIANTS.len()
+    ].iter().max().unwrap() + 1;
+
+    let values: Vec<Alert> = (0..n).into_iter().map(|i| {
+        let mut alert = Alert {
+            active_period: vec![
+                TimeRange {
+                    start: Some(1774957578),
+                    end: Some(1774967578)
+                }
+            ],
+            informed_entity: vec![
+                EntitySelector {
+                    agency_id: None,
+                    route_id: None,
+                    route_type: None,
+                    trip: Some(TripDescriptor {
+                        trip_id: None,
+                        route_id: None,
+                        direction_id: None,
+                        start_time: None,
+                        start_date: None,
+                        schedule_relationship: None,
+                        modified_trip: None 
+                }),
+                    stop_id: None,
+                    direction_id: None
+                }
+            ],
+            cause: None,
+            effect: None,
+            url: None,
+            header_text: None,
+            description_text: None,
+            tts_header_text: None,
+            tts_description_text: None,
+            severity_level: None,
+            image: None,
+            image_alternative_text: None,
+            cause_detail: None,
+            effect_detail: None
+        };
+
+        match get_or_none::<trip_descriptor::ScheduleRelationship>(i) {
+            Some(c) => alert.informed_entity[0].trip.as_mut().unwrap().set_schedule_relationship(c),
+            None => ()
+        };
+
+        match get_or_none::<Cause>(i) {
+            Some(c) => alert.set_cause(c),
+            None => ()
+        };
+
+        match get_or_none::<Effect>(i) {
+            Some(c) => alert.set_effect(c),
+            None => ()
+        };
+
+        match get_or_none::<SeverityLevel>(i) {
+            Some(c) => alert.set_severity_level(c),
+            None => ()
+        };
+
+        alert
+    }).collect();
+
+    let l = list!(
+        trip_schedule_relationship = values.iter().map(|a| 
+            match a.informed_entity[0].trip.as_ref().unwrap().schedule_relationship {
+                Some(_) => Some(a.informed_entity[0].trip.as_ref().unwrap().schedule_relationship().as_str_name()),
+                None => None
+            }).collect::<Vec<Option<&str>>>(),
+        cause = values.iter().map(|a| 
+            match a.cause {
+                Some(_) => Some(a.cause().as_str_name()),
+                None => None
+            }).collect::<Vec<Option<&str>>>(),
+        effect = values.iter().map(|a| 
+            match a.effect {
+                Some(_) => Some(a.effect().as_str_name()),
+                None => None
+            }).collect::<Vec<Option<&str>>>(),
+        severity_level = values.iter().map(|a| 
+            match a.severity_level {
+                Some(_) => Some(a.severity_level().as_str_name()),
+                None => None
+            }).collect::<Vec<Option<&str>>>()
+    );
+
+    write_alerts(filename, values);
+
+    Ok(l)
+}
 
 extendr_module! {
     mod test_data;
     fn test_data_invalid_enum_positions;
     fn test_data_enum_roundtrip_positions;
     fn test_data_enum_roundtrip_updates;
+    fn test_data_enum_roundtrip_alerts;
 }
