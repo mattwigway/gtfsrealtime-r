@@ -16,18 +16,23 @@ read_gtfsrt_trip_updates = function (filename) {
         result = result$ok
     }
 
-    result$trip_schedule_relationship = enum_schedule_relationship(result$trip_schedule_relationship)
-    result$stop_schedule_relationship = enum_schedule_relationship(result$stop_schedule_relationship)
+    result$trip_schedule_relationship = enum_to_factor(
+        result$trip_schedule_relationship,
+        enum_TripDescriptor_ScheduleRelationship()
+    )
+    result$stop_schedule_relationship = enum_to_factor(
+        result$stop_schedule_relationship,
+        enum_TripUpdate_StopTimeUpdate_ScheduleRelationship()
+    )
 
-    result$wheelchair_accessible = no_coerce_factor(
+    result$departure_occupancy_status = enum_to_factor(
+        result$departure_occupancy_status,
+        enum_VehiclePosition_OccupancyStatus()
+    )
+
+    result$wheelchair_accessible = enum_to_factor(
         result$wheelchair_accessible,
-        levels = c(0, 1, 2, 3),
-        labels = c(
-            "NO_VALUE", # 0;
-            "UNKNOWN", # 1;
-            "WHEELCHAIR_ACCESSIBLE", # 2;
-            "WHEELCHAIR_INACCESSIBLE" # 3;
-        )
+        enum_VehicleDescriptor_WheelchairAccessible()
     )
 
     return(result)

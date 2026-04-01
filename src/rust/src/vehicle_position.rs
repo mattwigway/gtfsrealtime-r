@@ -1,5 +1,7 @@
-use extendr_api::prelude::*;
+use crate::enums::enum_to_list;
 use crate::read::read_feed;
+use crate::transit_realtime::{self, trip_descriptor};
+use extendr_api::prelude::*;
 
 #[derive(IntoDataFrameRow, Debug, PartialEq)]
 pub struct RVehiclePosition {
@@ -36,14 +38,17 @@ pub struct RVehiclePosition {
     // vehicle
     vehicle_id: Option<String>,
     vehicle_label: Option<String>,
-    vehicle_license_plate: Option<String>
+    vehicle_license_plate: Option<String>,
+    wheelchair_accessible: Option<i32>,
 }
 
 // Read GTFS-RT vehicle positions
 #[extendr]
 pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehiclePosition>> {
     let msg = read_feed(file)?;
-    let content: Vec<RVehiclePosition> = msg.entity.iter()
+    let content: Vec<RVehiclePosition> = msg
+        .entity
+        .iter()
         .filter(|entity| entity.vehicle.is_some())
         .map(|entity| {
             let veh = entity.vehicle.as_ref().unwrap();
@@ -52,7 +57,10 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
             RVehiclePosition {
                 id: entity.id.clone(),
                 latitude: veh.position.as_ref().map_or(None, |pos| Some(pos.latitude)),
-                longitude: veh.position.as_ref().map_or(None, |pos| Some(pos.longitude)),
+                longitude: veh
+                    .position
+                    .as_ref()
+                    .map_or(None, |pos| Some(pos.longitude)),
                 bearing: veh.position.as_ref().map_or(None, |pos| pos.bearing),
                 odometer: veh.position.as_ref().map_or(None, |pos| pos.odometer),
                 speed: veh.position.as_ref().map_or(None, |pos| pos.speed),
@@ -77,7 +85,14 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
 
                 vehicle_id: veh.vehicle.as_ref().map_or(None, |veh| veh.id.clone()),
                 vehicle_label: veh.vehicle.as_ref().map_or(None, |veh| veh.label.clone()),
-                vehicle_license_plate: veh.vehicle.as_ref().map_or(None, |veh| veh.license_plate.clone())
+                vehicle_license_plate: veh
+                    .vehicle
+                    .as_ref()
+                    .map_or(None, |veh| veh.license_plate.clone()),
+                wheelchair_accessible: veh
+                    .vehicle
+                    .as_ref()
+                    .map_or(None, |veh| veh.wheelchair_accessible),
             }
         })
         .collect();
@@ -85,7 +100,35 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
     return content.into_dataframe();
 }
 
+#[extendr]
+#[allow(non_snake_case)]
+pub fn enum_TripDescriptor_ScheduleRelationship() -> Result<List> {
+    enum_to_list::<trip_descriptor::ScheduleRelationship>()
+}
+
+#[extendr]
+#[allow(non_snake_case)]
+pub fn enum_VehiclePosition_VehicleStopStatus() -> Result<List> {
+    enum_to_list::<transit_realtime::vehicle_position::VehicleStopStatus>()
+}
+
+#[extendr]
+#[allow(non_snake_case)]
+pub fn enum_VehiclePosition_CongestionLevel() -> Result<List> {
+    enum_to_list::<transit_realtime::vehicle_position::CongestionLevel>()
+}
+
+#[extendr]
+#[allow(non_snake_case)]
+pub fn enum_VehiclePosition_OccupancyStatus() -> Result<List> {
+    enum_to_list::<transit_realtime::vehicle_position::OccupancyStatus>()
+}
+
 extendr_module! {
     mod vehicle_position;
     fn read_gtfsrt_positions_internal;
+    fn enum_TripDescriptor_ScheduleRelationship;
+    fn enum_VehiclePosition_VehicleStopStatus;
+    fn enum_VehiclePosition_CongestionLevel;
+    fn enum_VehiclePosition_OccupancyStatus;
 }

@@ -44,3 +44,20 @@ test_that("error handling works", {
     regexp = "No such file or directory|The system cannot find the file specified"
   )
 })
+
+# This has Rust write out a feed that has every value of every enum, and then
+# also return their expected order to make sure they match.
+test_that("enums are correctly specified", {
+  feed = tempfile()
+  expected = test_data_enum_roundtrip_positions(feed)$ok
+  actual = read_gtfsrt_positions(feed, "Etc/UTC")
+  unlink(feed)
+
+  expect_equal(as.character(actual$schedule_relationship), expected$schedule_relationship)
+  expect_equal(as.character(actual$wheelchair_accessible), expected$wheelchair_accessible)
+  expect_equal(as.character(actual$current_status), expected$current_status)
+  expect_equal(as.character(actual$congestion_level), expected$congestion_level)
+  expect_equal(as.character(actual$occupancy_status), expected$occupancy_status)
+  # make sure there are no more enums we missed
+  expect_equal(sum(sapply(actual, class) == "factor"), 5)
+})

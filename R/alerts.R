@@ -19,10 +19,25 @@ read_gtfsrt_alerts = function (filename) {
         result = result$ok
     }
 
-    result$trip_schedule_relationship =
-        enum_schedule_relationship(result$trip_schedule_relationship)
-    result$cause = enum_cause(result$cause)
-    result$severity_level = enum_severity_level(result$severity_level)
+    result$trip_schedule_relationship = enum_to_factor(
+        result$trip_schedule_relationship,
+        enum_TripDescriptor_ScheduleRelationship()
+    )
+
+    result$cause = enum_to_factor(
+        result$cause,
+        enum_Alert_Cause()
+    )
+
+    result$effect = enum_to_factor(
+        result$effect,
+        enum_Alert_Effect()
+    )
+
+    result$severity_level = enum_to_factor(
+        result$severity_level,
+        enum_Alert_SeverityLevel()
+    )
 
     return(result)
 }

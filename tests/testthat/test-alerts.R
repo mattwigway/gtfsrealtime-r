@@ -13,3 +13,19 @@ test_that("alerts give useful errors", {
   )
 })
 
+
+# This has Rust write out a feed that has every value of every enum, and then
+# also return their expected order to make sure they match.
+test_that("enums are correctly specified", {
+  feed = tempfile()
+  expected = test_data_enum_roundtrip_alerts(feed)$ok
+  actual = read_gtfsrt_alerts(feed)
+  unlink(feed)
+
+  expect_equal(as.character(actual$trip_schedule_relationship), expected$trip_schedule_relationship)
+  expect_equal(as.character(actual$cause), expected$cause)
+  expect_equal(as.character(actual$effect), expected$effect)
+  expect_equal(as.character(actual$severity_level), expected$severity_level)
+  # make sure there are no more enums we missed
+  expect_equal(sum(sapply(actual, class) == "factor"), 4)
+})

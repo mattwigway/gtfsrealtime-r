@@ -38,4 +38,11 @@
       4                   NA MTA NYCT_7112          <NA>                  <NA>
       5                   NA MTA NYCT_8443          <NA>                  <NA>
       6                   NA MTA NYCT_9775          <NA>                  <NA>
+        wheelchair_accessible
+      1                  <NA>
+      2                  <NA>
+      3                  <NA>
+      4                  <NA>
+      5                  <NA>
+      6                  <NA>
 

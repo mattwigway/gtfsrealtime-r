@@ -27,48 +27,29 @@ read_gtfsrt_positions = function (filename, timezone, as_sf=FALSE) {
 
     result$timestamp = as.POSIXct(result$timestamp, tz = timezone)
 
-    result$schedule_relationship = no_coerce_factor(
+    result$schedule_relationship = enum_to_factor(
         result$schedule_relationship,
-        levels = c(0, 1, 2, 3),
-        labels = c("SCHEDULED", "SKIPPED", "NO_DATA", "UNSCHEDULED")
+        enum_TripDescriptor_ScheduleRelationship()
     )
 
-    result$current_status = no_coerce_factor(
+    result$wheelchair_accessible = enum_to_factor(
+        result$wheelchair_accessible,
+        enum_VehicleDescriptor_WheelchairAccessible()
+    )
+
+    result$current_status = enum_to_factor(
         result$current_status,
-        levels = c(0, 1, 2),
-        labels = c(
-            "INCOMING_AT",
-            "STOPPED_AT",
-            "IN_TRANSIT_TO"
-        )
+        enum_VehiclePosition_VehicleStopStatus()
     )
 
-    result$congestion_level = no_coerce_factor(
+    result$congestion_level = enum_to_factor(
         result$congestion_level,
-        levels = c(0, 1, 2, 3, 4),
-        labels = c(
-            "UNKNOWN_CONGESTION_LEVEL",
-            "RUNNING_SMOOTHLY",
-            "STOP_AND_GO",
-            "CONGESTION",
-            "SEVERE_CONGESTION"
-        )
+        enum_VehiclePosition_CongestionLevel()
     )
 
-    result$occupancy_status = no_coerce_factor(
+    result$occupancy_status = enum_to_factor(
         result$occupancy_status,
-        levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8),
-        labels = c(
-            "EMPTY",
-            "MANY_SEATS_AVAILABLE",
-            "FEW_SEATS_AVAILABLE",
-            "STANDING_ROOM_ONLY",
-            "CRUSHED_STANDING_ROOM_ONLY",
-            "FULL",
-            "NOT_ACCEPTING_PASSENGERS",
-            "NO_DATA_AVAILABLE",
-            "NOT_BOARDABLE"
-        )
+        enum_VehiclePosition_OccupancyStatus()
     )
 
     if (as_sf) {

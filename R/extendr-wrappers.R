@@ -12,9 +12,35 @@ NULL
 
 read_gtfsrt_positions_internal <- function(file) .Call(wrap__read_gtfsrt_positions_internal, file)
 
+enum_TripDescriptor_ScheduleRelationship <- function() .Call(wrap__enum_TripDescriptor_ScheduleRelationship)
+
+enum_VehiclePosition_VehicleStopStatus <- function() .Call(wrap__enum_VehiclePosition_VehicleStopStatus)
+
+enum_VehiclePosition_CongestionLevel <- function() .Call(wrap__enum_VehiclePosition_CongestionLevel)
+
+enum_VehiclePosition_OccupancyStatus <- function() .Call(wrap__enum_VehiclePosition_OccupancyStatus)
+
 read_gtfsrt_trip_updates_internal <- function(file) .Call(wrap__read_gtfsrt_trip_updates_internal, file)
 
+enum_TripUpdate_StopTimeUpdate_ScheduleRelationship <- function() .Call(wrap__enum_TripUpdate_StopTimeUpdate_ScheduleRelationship)
+
+enum_VehicleDescriptor_WheelchairAccessible <- function() .Call(wrap__enum_VehicleDescriptor_WheelchairAccessible)
+
 read_gtfsrt_alerts_internal <- function(file) .Call(wrap__read_gtfsrt_alerts_internal, file)
+
+enum_Alert_Cause <- function() .Call(wrap__enum_Alert_Cause)
+
+enum_Alert_Effect <- function() .Call(wrap__enum_Alert_Effect)
+
+enum_Alert_SeverityLevel <- function() .Call(wrap__enum_Alert_SeverityLevel)
+
+test_data_invalid_enum_positions <- function(filename) .Call(wrap__test_data_invalid_enum_positions, filename)
+
+test_data_enum_roundtrip_positions <- function(filename) .Call(wrap__test_data_enum_roundtrip_positions, filename)
+
+test_data_enum_roundtrip_updates <- function(filename) .Call(wrap__test_data_enum_roundtrip_updates, filename)
+
+test_data_enum_roundtrip_alerts <- function(filename) .Call(wrap__test_data_enum_roundtrip_alerts, filename)
 
 
 # nolint end

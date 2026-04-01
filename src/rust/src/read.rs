@@ -22,8 +22,7 @@ pub fn read_feed(path: String) -> Result<FeedMessage, Box<dyn std::error::Error>
             .read_to_end(&mut buf)?;
     } else {
         // treat as local file
-        File::open(path)?
-            .read_to_end(&mut buf)?;
+        File::open(path)?.read_to_end(&mut buf)?;
     }
 
     let first_three = &buf[..3];
