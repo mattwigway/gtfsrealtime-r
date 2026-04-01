@@ -51,7 +51,7 @@ the tabular format).
 head(positions)
 ```
 
-    ## Simple feature collection with 6 features and 20 fields
+    ## Simple feature collection with 6 features and 21 fields
     ## Geometry type: POINT
     ## Dimension:     XY
     ## Bounding box:  xmin: -73.95419 ymin: 40.6589 xmax: -73.78681 ymax: 40.87092
@@ -84,13 +84,13 @@ head(positions)
     ## 4  FEW_SEATS_AVAILABLE                   NA MTA NYCT_7112          <NA>
     ## 5                 <NA>                   NA MTA NYCT_8443          <NA>
     ## 6 MANY_SEATS_AVAILABLE                   NA MTA NYCT_9775          <NA>
-    ##   vehicle_license_plate                   geometry
-    ## 1                  <NA>  POINT (-73.95419 40.7872)
-    ## 2                  <NA> POINT (-73.78681 40.74109)
-    ## 3                  <NA> POINT (-73.84709 40.87092)
-    ## 4                  <NA>  POINT (-73.89967 40.6589)
-    ## 5                  <NA> POINT (-73.82975 40.75879)
-    ## 6                  <NA> POINT (-73.93855 40.85025)
+    ##   vehicle_license_plate wheelchair_accessible                   geometry
+    ## 1                  <NA>                  <NA>  POINT (-73.95419 40.7872)
+    ## 2                  <NA>                  <NA> POINT (-73.78681 40.74109)
+    ## 3                  <NA>                  <NA> POINT (-73.84709 40.87092)
+    ## 4                  <NA>                  <NA>  POINT (-73.89967 40.6589)
+    ## 5                  <NA>                  <NA> POINT (-73.82975 40.75879)
+    ## 6                  <NA>                  <NA> POINT (-73.93855 40.85025)
 
 ## Map the feed
 
