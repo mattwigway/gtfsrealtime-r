@@ -210,32 +210,32 @@ pub fn test_data_enum_roundtrip_positions(filename: &str) -> Result<List> {
     let l = list!(
         schedule_relationship = values.iter().map(|p| 
             match p.trip.as_ref().unwrap().schedule_relationship {
-                Some(_) => Some(p.trip.as_ref().unwrap().schedule_relationship().into()),
+                Some(_) => Some(p.trip.as_ref().unwrap().schedule_relationship().as_str_name()),
                 None => None
             }).collect::<Vec<Option<&str>>>(),
 
 
         wheelchair_accessible = values.iter().map(|p| 
             match p.vehicle.as_ref().unwrap().wheelchair_accessible {
-                Some(_) => Some(p.vehicle.as_ref().unwrap().wheelchair_accessible().into()),
+                Some(_) => Some(p.vehicle.as_ref().unwrap().wheelchair_accessible().as_str_name()),
                 None => None
             }).collect::<Vec<Option<&str>>>(),
 
         current_status = values.iter().map(|p| 
             match p.current_status {
-                Some(_) => Some(p.current_status().into()),
+                Some(_) => Some(p.current_status().as_str_name()),
                 None => None
         }).collect::<Vec<Option<&str>>>(),
 
         congestion_level = values.iter().map(|p| 
             match p.congestion_level {
-                Some(_) => Some(p.congestion_level().into()),
+                Some(_) => Some(p.congestion_level().as_str_name()),
                 None => None
         }).collect::<Vec<Option<&str>>>(),
 
         occupancy_status = values.iter().map(|p| 
             match p.occupancy_status {
-                Some(_) => Some(p.occupancy_status().into()),
+                Some(_) => Some(p.occupancy_status().as_str_name()),
                 None => None
         }).collect::<Vec<Option<&str>>>()
     );
@@ -315,25 +315,25 @@ pub fn test_data_enum_roundtrip_updates (filename: &str) -> Result<List> {
     let l = list!(
         trip_schedule_relationship = values.iter().map(|u| 
             match u.trip.schedule_relationship {
-                Some(_) => Some(u.trip.schedule_relationship().into()),
+                Some(_) => Some(u.trip.schedule_relationship().as_str_name()),
                 None => None
             }).collect::<Vec<Option<&str>>>(),
 
         wheelchair_accessible = values.iter().map(|p| 
             match p.vehicle.as_ref().unwrap().wheelchair_accessible {
-                Some(_) => Some(p.vehicle.as_ref().unwrap().wheelchair_accessible().into()),
+                Some(_) => Some(p.vehicle.as_ref().unwrap().wheelchair_accessible().as_str_name()),
                 None => None
             }).collect::<Vec<Option<&str>>>(),
 
         departure_occupancy_status = values.iter().map(|p| 
             match p.stop_time_update[0].departure_occupancy_status {
-                Some(_) => Some(p.stop_time_update[0].departure_occupancy_status().into()),
+                Some(_) => Some(p.stop_time_update[0].departure_occupancy_status().as_str_name()),
                 None => None
         }).collect::<Vec<Option<&str>>>(),
 
         stop_schedule_relationship = values.iter().map(|p| 
             match p.stop_time_update[0].schedule_relationship {
-                Some(_) => Some(p.stop_time_update[0].schedule_relationship().into()),
+                Some(_) => Some(p.stop_time_update[0].schedule_relationship().as_str_name()),
                 None => None
         }).collect::<Vec<Option<&str>>>()
     );
@@ -342,6 +342,9 @@ pub fn test_data_enum_roundtrip_updates (filename: &str) -> Result<List> {
 
     Ok(l)
 }
+
+// #[extendr]
+// fn test_data_enum_roundtrip_alerts
 
 extendr_module! {
     mod test_data;

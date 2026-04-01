@@ -21,6 +21,7 @@ strum = "0.28.0"
 strum_macros = "0.28.0"
 syn = "2.0.117"
 ureq = "3.1.4"
+gtfsrt-macros = { path = "../gtfsrt-macros" }
 
 [profile.release]
 lto = true

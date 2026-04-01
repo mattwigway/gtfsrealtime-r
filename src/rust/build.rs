@@ -2,7 +2,7 @@ use std::io::Result;
 
 use prost_build::Config;
 fn main() -> Result<()> {
-    let deriv = "#[derive(strum_macros::VariantArray, strum_macros::IntoStaticStr)]";
+    let deriv = "#[derive(strum_macros::VariantArray, strum_macros::IntoStaticStr, gtfsrt_macros::AsStrName)]";
     Config::new()
         // I can't figure out a way to tell prost to just apply this to all enums without also applying to structs
         .type_attribute(".transit_realtime.TripUpdate.StopTimeUpdate.ScheduleRelationship", &deriv)

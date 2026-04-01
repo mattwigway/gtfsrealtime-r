@@ -8,7 +8,7 @@ test_that("Invalid enum values work", {
     regex = "Unknown values of.*trip_descriptor::ScheduleRelationship.*256"
   )
 
-  expect_true(all(data$schedule_relationship == c("256", "Scheduled")))
+  expect_true(all(data$schedule_relationship == c("256", "SCHEDULED")))
 
   unlink(tmp)
 })
