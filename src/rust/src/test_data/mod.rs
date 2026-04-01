@@ -10,21 +10,11 @@ use extendr_api::extendr_module;
 use extendr_api::prelude::*;
 use prost::Message;
 use std::{fs, string::ToString};
-use strum::VariantArray;
 
 use crate::transit_realtime::{
     self,
-    alert::{Cause, Effect, SeverityLevel},
     feed_header::Incrementality,
-    trip_descriptor,
-    trip_update::{
-        stop_time_update::{self},
-        StopTimeUpdate,
-    },
-    vehicle_descriptor::WheelchairAccessible,
-    vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus},
-    Alert, EntitySelector, FeedEntity, FeedHeader, Position, TimeRange, TripDescriptor, TripUpdate,
-    VehicleDescriptor, VehiclePosition,
+    Alert, FeedEntity, FeedHeader, TripUpdate, VehiclePosition,
 };
 
 fn write_msg(
