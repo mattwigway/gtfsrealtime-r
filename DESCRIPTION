@@ -28,7 +28,8 @@ Suggests:
     lubridate,
     dplyr,
     tidyr,
-    testthat (>= 3.3.0)
+    testthat (>= 3.3.0),
+    jsonlite
 VignetteBuilder: knitr
 URL: http://projects.indicatrix.org/gtfsrealtime-r/
 Config/testthat/edition: 3
