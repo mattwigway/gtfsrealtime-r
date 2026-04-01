@@ -7,7 +7,7 @@ use strum::VariantArray;
 use std::{fs, string::ToString};
 use extendr_api::prelude::*;
 
-use crate::transit_realtime::{self, Alert, EntitySelector, FeedEntity, FeedHeader, Position, TimeRange, TripDescriptor, TripUpdate, VehicleDescriptor, VehiclePosition, alert::{Cause, Effect, SeverityLevel}, feed_header::Incrementality, trip_descriptor, trip_update::{self, StopTimeEvent, StopTimeUpdate, TripProperties, stop_time_update::{self, StopTimeProperties}}, vehicle_descriptor::{self, WheelchairAccessible}, vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus}};
+use crate::transit_realtime::{self, Alert, EntitySelector, FeedEntity, FeedHeader, Position, TimeRange, TripDescriptor, TripUpdate, VehicleDescriptor, VehiclePosition, alert::{Cause, Effect, SeverityLevel}, feed_header::Incrementality, trip_descriptor, trip_update::{StopTimeUpdate, stop_time_update::{self}}, vehicle_descriptor::WheelchairAccessible, vehicle_position::{CongestionLevel, OccupancyStatus, VehicleStopStatus}};
 
 fn write_msg(filename: &str, positions: Vec<VehiclePosition>, alerts: Vec<Alert>, trip_updates: Vec<TripUpdate>) -> Result<()> {
     let mut pos_id = 0;
@@ -442,7 +442,7 @@ pub fn test_data_enum_roundtrip_alerts(filename: &str) -> Result<List> {
             }).collect::<Vec<Option<&str>>>()
     );
 
-    write_alerts(filename, values);
+    write_alerts(filename, values)?;
 
     Ok(l)
 }
