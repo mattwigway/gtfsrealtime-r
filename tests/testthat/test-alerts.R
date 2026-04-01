@@ -29,3 +29,13 @@ test_that("enums are correctly specified", {
   # make sure there are no more enums we missed
   expect_equal(sum(sapply(actual, class) == "factor"), 4)
 })
+
+test_that("unwrapping works", {
+  feed = tempfile()
+  test_data_alert_unwrapping(feed)$ok
+  actual = read_gtfsrt_alerts(feed)
+  unlink(feed)
+
+  # four alerts get expanded to 8 + 8 + 4 + 1 = 21
+  expect_equal(nrow(actual), 21)
+})

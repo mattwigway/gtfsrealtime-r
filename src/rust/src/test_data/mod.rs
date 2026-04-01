@@ -1,11 +1,12 @@
 // code to create various GTFS-realtime datasets for use in tests
+mod alert_unwrapping;
 mod enum_roundtrip;
 mod enum_roundtrip_alerts;
 mod enum_roundtrip_positions;
 mod enum_roundtrip_updates;
 mod invalid_enum_positions;
-mod trip_update_unwrapping;
 mod positions_all_values;
+mod trip_update_unwrapping;
 
 use bytes::BytesMut;
 use extendr_api::extendr_module;
@@ -105,4 +106,5 @@ extendr_module! {
     use invalid_enum_positions;
     use trip_update_unwrapping;
     use positions_all_values;
+    use alert_unwrapping;
 }
