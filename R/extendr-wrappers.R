@@ -34,13 +34,13 @@ enum_Alert_Effect <- function() .Call(wrap__enum_Alert_Effect)
 
 enum_Alert_SeverityLevel <- function() .Call(wrap__enum_Alert_SeverityLevel)
 
-test_data_invalid_enum_positions <- function(filename) .Call(wrap__test_data_invalid_enum_positions, filename)
-
 test_data_enum_roundtrip_positions <- function(filename) .Call(wrap__test_data_enum_roundtrip_positions, filename)
+
+test_data_enum_roundtrip_alerts <- function(filename) .Call(wrap__test_data_enum_roundtrip_alerts, filename)
 
 test_data_enum_roundtrip_updates <- function(filename) .Call(wrap__test_data_enum_roundtrip_updates, filename)
 
-test_data_enum_roundtrip_alerts <- function(filename) .Call(wrap__test_data_enum_roundtrip_alerts, filename)
+test_data_invalid_enum_positions <- function(filename) .Call(wrap__test_data_invalid_enum_positions, filename)
 
 
 # nolint end
