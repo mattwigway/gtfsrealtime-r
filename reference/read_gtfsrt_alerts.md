@@ -10,7 +10,7 @@ identified through a common id.
 ## Usage
 
 ``` r
-read_gtfsrt_alerts(filename, label_values = TRUE)
+read_gtfsrt_alerts(filename, timezone, label_values = TRUE)
 ```
 
 ## Arguments
@@ -19,6 +19,12 @@ read_gtfsrt_alerts(filename, label_values = TRUE)
 
   filename to read. Can be uncompressed or compressed with gzip or
   bzip2. Can also be an http:// or https:// URL.
+
+- timezone:
+
+  timezone of feed, in Olson format. Times in GTFS-realtime are stored
+  as Unix time in UTC; this option will convert to local times. If you
+  want to read times in UTC, specify "Etc/UTC"
 
 - label_values:
 

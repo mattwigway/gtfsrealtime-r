@@ -48,7 +48,7 @@ to identify which rows came from the same trip update.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_gtfsrt_trip_updates</span><span class="op">(</span><span class="va">filename</span>, label_values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_gtfsrt_trip_updates</span><span class="op">(</span><span class="va">filename</span>, <span class="va">timezone</span>, label_values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,6 +58,12 @@ to identify which rows came from the same trip update.</p>
 <dl><dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>filename to read. Can be uncompressed or compressed with
 gzip or bzip2. Can also be an http:// or https:// URL.</p></dd>
+
+
+<dt id="arg-timezone">timezone<a class="anchor" aria-label="anchor" href="#arg-timezone"></a></dt>
+<dd><p>timezone of feed, in Olson format. Times in GTFS-realtime are
+stored as Unix time in UTC; this option will convert to local times. If you
+want to read times in UTC, specify "Etc/UTC"</p></dd>
 
 
 <dt id="arg-label-values">label_values<a class="anchor" aria-label="anchor" href="#arg-label-values"></a></dt>
