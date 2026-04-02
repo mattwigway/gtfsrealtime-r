@@ -9,11 +9,16 @@
 #'
 #' @param filename filename to read. Can be uncompressed or compressed with
 #'      gzip or bzip2. Can also be an http:// or https:// URL.
+#' @param timezone timezone of feed, in Olson format. Times in GTFS-realtime are
+#'  stored as Unix time in UTC; this option will convert to local times. If you
+#'  want to read times in UTC, specify "Etc/UTC"
 #' @param label_values should enum types in GTFS-realtime (i.e. categorical variables)
 #'      be converted to factors with their English labels. If false, they
 #'      will be left as numeric codes. Default true.
 #' @export
-read_gtfsrt_alerts = function(filename, label_values = TRUE) {
+read_gtfsrt_alerts = function(filename, timezone, label_values = TRUE) {
+  check_timezone(timezone)
+
   result = read_gtfsrt_alerts_internal(filename)
 
   if (!is.null(result$err)) {
@@ -21,6 +26,9 @@ read_gtfsrt_alerts = function(filename, label_values = TRUE) {
   } else {
     result = result$ok
   }
+
+  result$start = as.POSIXct(result$start, tz = timezone)
+  result$end = as.POSIXct(result$end, tz = timezone)
 
   if (label_values) {
     result$trip_schedule_relationship = enum_to_factor(
