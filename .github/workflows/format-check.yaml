@@ -21,4 +21,5 @@ jobs:
         run: air format . --check
 
       - name: Check Rust formatting (Cargo)
-        run: cargo fmt src/rust --check
+        run: cargo fmt --check
+        working-directory: ./src/rust
