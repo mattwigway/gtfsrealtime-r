@@ -17,7 +17,8 @@ use crate::{
 /// entities informed, and language - so it should become 2*2*2 = 8 rows.
 /// The second one is identical but is missing some (but not all) Spanish translations
 /// The third one does not have Spanish translations, so it should become 2*2 = 4 rows
-/// The third one has no time ranges, entities, or languages so should just be one row
+/// The fourth one has no time ranges, entities, or languages so should just be one row
+/// the fifth one is all NA
 #[extendr]
 pub fn test_data_alert_unwrapping(filename: &str) -> Result<()> {
     let alerts = vec![
@@ -161,7 +162,6 @@ pub fn test_data_alert_unwrapping(filename: &str) -> Result<()> {
             image: None,
             image_alternative_text: None,
         },
-
         ///////////////////////// id 2
         Alert {
             active_period: vec![
@@ -263,21 +263,17 @@ pub fn test_data_alert_unwrapping(filename: &str) -> Result<()> {
                 ],
             }),
             tts_description_text: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "Problem: The bus is not working because it broke".to_owned(),
-                        language: Some("en".to_owned()),
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "Problem: The bus is not working because it broke".to_owned(),
+                    language: Some("en".to_owned()),
+                }],
             }),
             severity_level: Some(SeverityLevel::Severe as i32),
             cause_detail: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "it broke".to_owned(),
-                        language: Some("en".to_owned()),
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "it broke".to_owned(),
+                    language: Some("en".to_owned()),
+                }],
             }),
             effect_detail: Some(TranslatedString {
                 translation: vec![
@@ -295,7 +291,6 @@ pub fn test_data_alert_unwrapping(filename: &str) -> Result<()> {
             image: None,
             image_alternative_text: None,
         },
-
         ///////////////////////// id 3
         Alert {
             active_period: vec![
@@ -345,67 +340,52 @@ pub fn test_data_alert_unwrapping(filename: &str) -> Result<()> {
             cause: None,
             effect: None,
             url: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "https://example.com/test".to_owned(),
-                        language: None,
-                    }
-                ],
+                translation: vec![Translation {
+                    text: "https://example.com/test".to_owned(),
+                    language: None,
+                }],
             }),
             header_text: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "The bus is not working".to_owned(),
-                        language: None
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "The bus is not working".to_owned(),
+                    language: None,
+                }],
             }),
             description_text: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "The bus is not working because it broke".to_owned(),
-                        language: None
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "The bus is not working because it broke".to_owned(),
+                    language: None,
+                }],
             }),
             tts_header_text: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "Problem: The bus is not working".to_owned(),
-                        language: None,
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "Problem: The bus is not working".to_owned(),
+                    language: None,
+                }],
             }),
             tts_description_text: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "Problem: The bus is not working because it broke".to_owned(),
-                        language: None,
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "Problem: The bus is not working because it broke".to_owned(),
+                    language: None,
+                }],
             }),
             severity_level: None,
             cause_detail: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "it broke".to_owned(),
-                        language: None,
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "it broke".to_owned(),
+                    language: None,
+                }],
             }),
             effect_detail: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "No bus now".to_owned(),
-                        language: None,
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "No bus now".to_owned(),
+                    language: None,
+                }],
             }),
             // unused
             image: None,
             image_alternative_text: None,
         },
-
         ////////////////////////// id 4
         Alert {
             active_period: vec![],
@@ -413,62 +393,66 @@ pub fn test_data_alert_unwrapping(filename: &str) -> Result<()> {
             cause: None,
             effect: None,
             url: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "https://example.com/test".to_owned(),
-                        language: None,
-                    }
-                ],
+                translation: vec![Translation {
+                    text: "https://example.com/test".to_owned(),
+                    language: None,
+                }],
             }),
             header_text: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "The bus is not working".to_owned(),
-                        language: None
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "The bus is not working".to_owned(),
+                    language: None,
+                }],
             }),
             description_text: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "The bus is not working because it broke".to_owned(),
-                        language: None
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "The bus is not working because it broke".to_owned(),
+                    language: None,
+                }],
             }),
             tts_header_text: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "Problem: The bus is not working".to_owned(),
-                        language: None,
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "Problem: The bus is not working".to_owned(),
+                    language: None,
+                }],
             }),
             tts_description_text: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "Problem: The bus is not working because it broke".to_owned(),
-                        language: None,
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "Problem: The bus is not working because it broke".to_owned(),
+                    language: None,
+                }],
             }),
             severity_level: None,
             cause_detail: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "it broke".to_owned(),
-                        language: None,
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "it broke".to_owned(),
+                    language: None,
+                }],
             }),
             effect_detail: Some(TranslatedString {
-                translation: vec![
-                    Translation {
-                        text: "No bus now".to_owned(),
-                        language: None,
-                    },
-                ],
+                translation: vec![Translation {
+                    text: "No bus now".to_owned(),
+                    language: None,
+                }],
             }),
+            // unused
+            image: None,
+            image_alternative_text: None,
+        },
+        ////////////////////////// id 5: everything is NA
+        Alert {
+            active_period: vec![],
+            informed_entity: vec![],
+            cause: None,
+            effect: None,
+            url: None,
+            header_text: None,
+            description_text: None,
+            tts_header_text: None,
+            tts_description_text: None,
+            severity_level: None,
+            cause_detail: None,
+            effect_detail: None,
             // unused
             image: None,
             image_alternative_text: None,

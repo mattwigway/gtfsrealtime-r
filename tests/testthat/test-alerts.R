@@ -39,8 +39,8 @@ test_that("unwrapping works", {
     dplyr::arrange(id, start, end, agency_id, route_id, trip_trip_id, language)
   unlink(feed)
 
-  # four alerts get expanded to 8 + 8 + 4 + 1 = 21
-  expect_equal(nrow(actual), 21)
+  # four alerts get expanded to 8 + 8 + 4 + 1 + 1 = 22
+  expect_equal(nrow(actual), 22)
 
   # There are too many fields to hard code them all here, so I read it once
   # and validated it manually. Read that validated version.

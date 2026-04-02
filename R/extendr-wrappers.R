@@ -63,7 +63,8 @@ test_data_positions_all_values <- function(filename) .Call(wrap__test_data_posit
 #' entities informed, and language - so it should become 2*2*2 = 8 rows.
 #' The second one is identical but is missing some (but not all) Spanish translations
 #' The third one does not have Spanish translations, so it should become 2*2 = 4 rows
-#' The third one has no time ranges, entities, or languages so should just be one row
+#' The fourth one has no time ranges, entities, or languages so should just be one row
+#' the fifth one is all NA
 test_data_alert_unwrapping <- function(filename) .Call(wrap__test_data_alert_unwrapping, filename)
 
 
