@@ -44,9 +44,13 @@ test_that("unwrapping works", {
 
   # There are too many fields to hard code them all here, so I read it once
   # and validated it manually. Read that validated version.
-  expected = read.csv(system.file("testdata/alerts_decoded.csv", package="gtfsrealtime")) |>
+  expected = read.csv(system.file("testdata/alerts_decoded.csv", package = "gtfsrealtime")) |>
     dplyr::arrange(id, start, end, agency_id, route_id, trip_trip_id, language) |>
-    dplyr::mutate(id = as.character(id), trip_start_date = as.character(trip_start_date), trip_modification_id = as.character(trip_modification_id))
+    dplyr::mutate(
+      id = as.character(id),
+      trip_start_date = as.character(trip_start_date),
+      trip_modification_id = as.character(trip_modification_id)
+    )
 
   expect_equal(actual, expected)
 })

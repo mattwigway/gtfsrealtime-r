@@ -34,7 +34,7 @@ test_that("timezones work", {
   # but the times should in fact be equivalent, just in different time zones
   expect_all_equal(
     utc_time$timestamp - local_time$timestamp,
-    as.difftime(0, units="secs")
+    as.difftime(0, units = "secs")
   )
 })
 
@@ -63,10 +63,13 @@ test_that("enums are correctly specified", {
 })
 
 test_that("Louisville debug JSON matches read_gtfsrt_positions", {
-  raw_expected = jsonlite::parse_json(gzfile(system.file("testdata/louisville-positions.json.gz", package = "gtfsrealtime")))
+  raw_expected = jsonlite::parse_json(gzfile(system.file(
+    "testdata/louisville-positions.json.gz",
+    package = "gtfsrealtime"
+  )))
 
   # something missing from the JSON will be NULL, but then the column will be missing in the output
-  null_to_na = function (x) {
+  null_to_na = function(x) {
     if (is.null(x)) {
       NA
     } else {
@@ -74,7 +77,7 @@ test_that("Louisville debug JSON matches read_gtfsrt_positions", {
     }
   }
 
-  expected = purrr::map(raw_expected$Entities, function (entity) {
+  expected = purrr::map(raw_expected$Entities, function(entity) {
     p = entity$Vehicle
     tibble::tibble_row(
       id = null_to_na(entity$Id),
@@ -102,12 +105,17 @@ test_that("Louisville debug JSON matches read_gtfsrt_positions", {
       vehicle_license_plate = null_to_na(p$Vehicle$LicensePlate),
       wheelchair_accessible = null_to_na(p$Vehicle$WheelchairAccessible)
     )
-  }) |> purrr::list_rbind()
+  }) |>
+    purrr::list_rbind()
 
   # don't label values, numeric labels used in JSON. Correct enum mapping tested above.
-  actual = read_gtfsrt_positions(system.file("testdata/louisville-positions.pb.bz2", package = "gtfsrealtime"), "America/New_York", label_values = FALSE) |>
+  actual = read_gtfsrt_positions(
+    system.file("testdata/louisville-positions.pb.bz2", package = "gtfsrealtime"),
+    "America/New_York",
+    label_values = FALSE
+  ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
-    dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col)))|>
+    dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col))) |>
     tibble::as_tibble()
 
   expect_true(nrow(actual) > 0)
@@ -137,7 +145,7 @@ test_that("all columns read correctly", {
       stop_id = "stop",
       current_stop_sequence = 10,
       current_status = "STOPPED_AT",
-      timestamp = lubridate::ymd_hms("2026-04-01 16:48:04", tz="America/New_York"),
+      timestamp = lubridate::ymd_hms("2026-04-01 16:48:04", tz = "America/New_York"),
       congestion_level = "SEVERE_CONGESTION",
       occupancy_status = "CRUSHED_STANDING_ROOM_ONLY",
       occupancy_percentage = 15,
@@ -209,5 +217,5 @@ test_that("all columns read correctly", {
     dplyr::mutate(dplyr::across(dplyr::where(is.factor), as.character))
   unlink(file)
 
-  expect_equal(actual, expected, tolerance=1e-4)  
+  expect_equal(actual, expected, tolerance = 1e-4)
 })
