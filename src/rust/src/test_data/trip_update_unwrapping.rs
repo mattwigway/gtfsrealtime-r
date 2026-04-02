@@ -148,6 +148,76 @@ pub fn test_data_update_unwrapping(filename: &str) -> Result<()> {
             delay: Some(2),
             trip_properties: None, // experimental
         },
+
+
+        ///////////////////////////////////////////////////
+        // id 4: one stop time update, NA at lowest level
+        TripUpdate {
+            trip: TripDescriptor {
+                trip_id: None,
+                route_id: None,
+                direction_id: None,
+                start_date: None,
+                start_time: None,
+                schedule_relationship: None,
+                modified_trip: None, // experimental, unused
+            },
+            vehicle: Some(VehicleDescriptor {
+                id: None,
+                label: None,
+                license_plate: None,
+                wheelchair_accessible: None,
+            }),
+            stop_time_update: vec![StopTimeUpdate {
+                stop_sequence: None,
+                stop_id: None,
+                arrival: Some(StopTimeEvent {
+                    delay: None,
+                    time: None,
+                    uncertainty: None,
+                    scheduled_time: None,
+                }),
+                departure: Some(StopTimeEvent {
+                    delay: None,
+                    time: None,
+                    uncertainty: None,
+                    scheduled_time: None,
+                }),
+                departure_occupancy_status: None,
+                schedule_relationship: None,
+                stop_time_properties: None, // experimental
+            }],
+            timestamp: None,
+            delay: None,
+            trip_properties: None, // experimental
+        },
+
+        ///////////////////////////////////////////////////
+        // id 5: one stop time update, NA at top level
+        TripUpdate {
+            trip: TripDescriptor {
+                trip_id: None,
+                route_id: None,
+                direction_id: None,
+                start_date: None,
+                start_time: None,
+                schedule_relationship: None,
+                modified_trip: None, // experimental, unused
+            },
+            vehicle: None,
+            stop_time_update: vec![StopTimeUpdate {
+                stop_sequence: None,
+                stop_id: None,
+                arrival: None,
+                departure: None,
+                departure_occupancy_status: None,
+                schedule_relationship: None,
+                stop_time_properties: None, // experimental
+            }],
+            timestamp: None,
+            delay: None,
+            trip_properties: None, // experimental
+        },
     ];
 
     write_updates(filename, values)?;
