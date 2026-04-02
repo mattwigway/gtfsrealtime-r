@@ -1,0 +1,24 @@
+# Workflow derived from https://github.com/posit-dev/setup-air/tree/main/examples
+
+on:
+  pull_request:
+
+name: R and Rust format checks
+
+permissions: read-all
+
+jobs:
+  format-check:
+    name: format-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install
+        uses: posit-dev/setup-air@v1
+
+      - name: Check R formatting (Air)
+        run: air format . --check
+
+      - name: Check Rust formatting (Cargo)
+        run: cargo fmt src/rust --check
