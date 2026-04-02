@@ -13,6 +13,46 @@ test_that("updates give useful errors", {
   )
 })
 
+
+test_that("invalid timezone leads to failure", {
+  file = system.file("nyc-trip-updates.pb.bz2", package = "gtfsrealtime")
+
+  # no such timezone
+  expect_error(
+    read_gtfsrt_trip_updates(file, "America/Chapel_Hill"),
+    regexp = "Invalid time zone"
+  )
+})
+
+test_that("timezones work", {
+  file = tempfile()
+  # not using the NYC test data here b/c it does not have any scheduled_times
+  test_data_update_unwrapping(file)
+
+  local_time = read_gtfsrt_trip_updates(file, "Europe/Paris")
+  utc_time = read_gtfsrt_trip_updates(file, "Etc/UTC")
+  unlink(file)
+
+  # If you just subtract the times from each other you get zero, because R
+  # correctly handles the time zone difference and sees that they are the
+  # same time. So extract the hour component and make sure that it is off
+  # by -1 hours (Paris -> UTC)
+  for (col in c("arrival_time", "arrival_scheduled_time", "departure_time", "departure_scheduled_time")) {
+    expect_equal(is.na(utc_time[[col]]), is.na(local_time[[col]]))
+
+    expect_all_equal(
+      (lubridate::hour(utc_time[[col]]) - lubridate::hour(local_time[[col]]))[!is.na(utc_time[[col]])],
+      -2
+    )
+
+    # but the times should in fact be equivalent, just in different time zones
+    expect_all_equal(
+      (utc_time[[col]] - local_time[[col]])[!is.na(utc_time[[col]])],
+      as.difftime(0, units = "secs")
+    )
+  }
+})
+
 # This has Rust write out a feed that has every value of every enum, and then
 # also return their expected order to make sure they match.
 test_that("enum roundtrip is correct", {
