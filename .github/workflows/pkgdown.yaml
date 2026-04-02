@@ -3,9 +3,6 @@
 on:
   push:
     branches: [main, master]
-  pull_request:
-  release:
-    types: [published]
   workflow_dispatch:
 
 name: pkgdown.yaml
