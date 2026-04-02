@@ -57,7 +57,7 @@ rows from a single alert can be identified through a common id.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_gtfsrt_alerts</span><span class="op">(</span><span class="va">filename</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_gtfsrt_alerts</span><span class="op">(</span><span class="va">filename</span>, label_values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,6 +67,12 @@ rows from a single alert can be identified through a common id.</p>
 <dl><dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>filename to read. Can be uncompressed or compressed with
 gzip or bzip2. Can also be an http:// or https:// URL.</p></dd>
+
+
+<dt id="arg-label-values">label_values<a class="anchor" aria-label="anchor" href="#arg-label-values"></a></dt>
+<dd><p>should enum types in GTFS-realtime (i.e. categorical variables)
+be converted to factors with their English labels. If false, they
+will be left as numeric codes. Default true.</p></dd>
 
 </dl></div>
 

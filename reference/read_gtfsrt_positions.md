@@ -5,7 +5,7 @@ Read GTFS-realtime vehicle positions into a data frame
 ## Usage
 
 ``` r
-read_gtfsrt_positions(filename, timezone, as_sf = FALSE)
+read_gtfsrt_positions(filename, timezone, as_sf = FALSE, label_values = TRUE)
 ```
 
 ## Arguments
@@ -24,3 +24,9 @@ read_gtfsrt_positions(filename, timezone, as_sf = FALSE)
 - as_sf:
 
   return an sf (spatial) object rather than a data frame.
+
+- label_values:
+
+  should enum types in GTFS-realtime (i.e. categorical variables) be
+  converted to factors with their English labels. If false, they will be
+  left as numeric codes. Default true.

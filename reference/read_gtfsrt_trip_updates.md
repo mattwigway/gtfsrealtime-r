@@ -7,7 +7,7 @@ can be used to identify which rows came from the same trip update.
 ## Usage
 
 ``` r
-read_gtfsrt_trip_updates(filename)
+read_gtfsrt_trip_updates(filename, label_values = TRUE)
 ```
 
 ## Arguments
@@ -16,3 +16,9 @@ read_gtfsrt_trip_updates(filename)
 
   filename to read. Can be uncompressed or compressed with gzip or
   bzip2. Can also be an http:// or https:// URL.
+
+- label_values:
+
+  should enum types in GTFS-realtime (i.e. categorical variables) be
+  converted to factors with their English labels. If false, they will be
+  left as numeric codes. Default true.
