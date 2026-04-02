@@ -4,7 +4,7 @@ use crate::{
     test_data::write_updates,
     transit_realtime::{
         trip_descriptor,
-        trip_update::{stop_time_update, StopTimeEvent, StopTimeUpdate, TripProperties},
+        trip_update::{stop_time_update, StopTimeEvent, StopTimeUpdate},
         vehicle_descriptor::WheelchairAccessible,
         vehicle_position::OccupancyStatus,
         TripDescriptor, TripUpdate, VehicleDescriptor,
