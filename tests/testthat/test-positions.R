@@ -61,3 +61,153 @@ test_that("enums are correctly specified", {
   # make sure there are no more enums we missed
   expect_equal(sum(sapply(actual, class) == "factor"), 5)
 })
+
+test_that("Louisville debug JSON matches read_gtfsrt_positions", {
+  raw_expected = jsonlite::parse_json(gzfile(system.file("testdata/louisville-positions.json.gz", package = "gtfsrealtime")))
+
+  # something missing from the JSON will be NULL, but then the column will be missing in the output
+  null_to_na = function (x) {
+    if (is.null(x)) {
+      NA
+    } else {
+      x
+    }
+  }
+
+  expected = purrr::map(raw_expected$Entities, function (entity) {
+    p = entity$Vehicle
+    tibble::tibble_row(
+      id = null_to_na(entity$Id),
+      latitude = null_to_na(p$Position$Latitude),
+      longitude = null_to_na(p$Position$Longitude),
+      bearing = null_to_na(p$Position$Bearing),
+      odometer = null_to_na(p$Position$Odometer),
+      speed = null_to_na(p$Position$Speed),
+      trip_id = null_to_na(p$Trip$TripId),
+      route_id = null_to_na(p$Trip$RouteId),
+      direction_id = null_to_na(p$Trip$DirectionId),
+      start_time = null_to_na(p$Trip$StartTime),
+      start_date = null_to_na(p$Trip$StartDate),
+      # this one is snake case for some reason
+      schedule_relationship = null_to_na(p$Trip$schedule_relationship),
+      stop_id = null_to_na(p$StopId),
+      current_stop_sequence = null_to_na(p$CurrentStopSequence),
+      current_status = null_to_na(p$CurrentStatus),
+      timestamp = null_to_na(as.POSIXct(p$Timestamp, tz = "America/New_York")),
+      congestion_level = null_to_na(p$congestion_level),
+      occupancy_status = null_to_na(p$occupancy_status),
+      occupancy_percentage = null_to_na(p$OccupancyPercentage),
+      vehicle_id = null_to_na(p$Vehicle$Id),
+      vehicle_label = null_to_na(p$Vehicle$Label),
+      vehicle_license_plate = null_to_na(p$Vehicle$LicensePlate),
+      wheelchair_accessible = null_to_na(p$Vehicle$WheelchairAccessible)
+    )
+  }) |> purrr::list_rbind()
+
+  # don't label values, numeric labels used in JSON. Correct enum mapping tested above.
+  actual = read_gtfsrt_positions(system.file("testdata/louisville-positions.pb.bz2", package = "gtfsrealtime"), "America/New_York", label_values = FALSE) |>
+    # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
+    dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col)))|>
+    tibble::as_tibble()
+
+  expect_true(nrow(actual) > 0)
+  expect_equal(actual, expected, tolerance = 1e-6)
+})
+
+# The other types have unwrapping tests that incidentally test that fields are getting read properly.
+# Since there's no unwrapping in positions, test separately.
+# This tests a three item feed, one where everything is filled out, one where all optional fields
+# are missing but the overall structure is there, and one where all optional structural elements
+# (e.g. Vehicle) are missing
+test_that("all columns read correctly", {
+  expected = rbind(
+    tibble::tibble_row(
+      id = "1",
+      latitude = 37.363,
+      longitude = -122.123,
+      bearing = 78,
+      odometer = 8675809,
+      speed = 45,
+      trip_id = "trip",
+      route_id = "route",
+      direction_id = 1,
+      start_time = "07:00:00",
+      start_date = "20260401",
+      schedule_relationship = "ADDED",
+      stop_id = "stop",
+      current_stop_sequence = 10,
+      current_status = "STOPPED_AT",
+      timestamp = lubridate::ymd_hms("2026-04-01 16:48:04", tz="America/New_York"),
+      congestion_level = "SEVERE_CONGESTION",
+      occupancy_status = "CRUSHED_STANDING_ROOM_ONLY",
+      occupancy_percentage = 15,
+      vehicle_id = "42",
+      vehicle_label = "label",
+      vehicle_license_plate = "LIC-4242",
+      wheelchair_accessible = "WHEELCHAIR_ACCESSIBLE"
+    ),
+
+    # NAs because individual items are missing
+    tibble::tibble_row(
+      id = "2",
+      latitude = 37.363,
+      longitude = -122.123,
+      bearing = NA,
+      odometer = NA,
+      speed = NA,
+      trip_id = NA,
+      route_id = NA,
+      direction_id = NA,
+      start_time = NA,
+      start_date = NA,
+      schedule_relationship = NA,
+      stop_id = NA,
+      current_stop_sequence = NA,
+      current_status = NA,
+      timestamp = NA,
+      congestion_level = NA,
+      occupancy_status = NA,
+      occupancy_percentage = NA,
+      vehicle_id = NA,
+      vehicle_label = NA,
+      vehicle_license_plate = NA,
+      wheelchair_accessible = NA
+    ),
+
+    # NAs because structure is missing
+    tibble::tibble_row(
+      id = "3",
+      latitude = NA,
+      longitude = NA,
+      bearing = NA,
+      odometer = NA,
+      speed = NA,
+      trip_id = NA,
+      route_id = NA,
+      direction_id = NA,
+      start_time = NA,
+      start_date = NA,
+      schedule_relationship = NA,
+      stop_id = NA,
+      current_stop_sequence = NA,
+      current_status = NA,
+      timestamp = NA,
+      congestion_level = NA,
+      occupancy_status = NA,
+      occupancy_percentage = NA,
+      vehicle_id = NA,
+      vehicle_label = NA,
+      vehicle_license_plate = NA,
+      wheelchair_accessible = NA
+    )
+  )
+
+  file = tempfile()
+  test_data_positions_all_values(file)
+  actual = read_gtfsrt_positions(file, "America/New_York") |>
+    tibble::as_tibble() |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.factor), as.character))
+  unlink(file)
+
+  expect_equal(actual, expected, tolerance=1e-4)  
+})

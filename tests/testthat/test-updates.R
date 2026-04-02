@@ -28,3 +28,102 @@ test_that("enum roundtrip is correct", {
    # make sure there are no more enums we missed
   expect_equal(sum(sapply(actual, class) == "factor"), 4)
 })
+
+# update with multiple stop times become multiple rows, those with 1 or none do not
+test_that("updates are unwrapped correctly", {
+  file = tempfile()
+  test_data_update_unwrapping(file)
+  rt = read_gtfsrt_trip_updates(file)
+  unlink(file)
+
+  # id 1 should become two rows, so all update-level things should have been duplicated
+  expect_equal(nrow(rt), 6)
+  expect_equal(rt$id, c("1", "1", "2", "3", "4", "5"))
+  expect_equal(rt$trip_id, c("one", "one", "two", "three", NA, NA))
+  expect_equal(rt$route_id, c("rte1", "rte1", "rte2", "rte3", NA, NA))
+  expect_equal(rt$start_time, c("06:00:00", "06:00:00", "06:00:02", "06:00:03", NA, NA))
+  expect_equal(rt$start_date, c("20260401", "20260401", "20260402", "20260403", NA, NA))
+  expect_equal(as.character(rt$trip_schedule_relationship), c("SCHEDULED", "SCHEDULED", "ADDED", "SCHEDULED", NA, NA))
+  expect_equal(rt$vehicle_id, c("veh1", "veh1", "veh2", NA, NA, NA))
+  expect_equal(rt$vehicle_label, c("lab1", "lab1", "lab2", NA, NA, NA))
+  expect_equal(rt$license_plate, c("PLA-0001", "PLA-0001", "PLA-0002", NA, NA, NA))
+  expect_equal(as.character(rt$wheelchair_accessible), c("WHEELCHAIR_ACCESSIBLE", "WHEELCHAIR_ACCESSIBLE", "NO_VALUE", NA, NA, NA))
+  expect_equal(rt$stop_sequence, c(2, 4, 1, NA, NA, NA))
+  expect_equal(rt$stop_id, c("stop1", "stop2", "stop1_2", NA, NA, NA))
+  expect_equal(rt$arrival_delay, c(5, 10, 12, NA, NA, NA))
+  expect_equal(rt$arrival_time, c(1775059604, 1775059704, 1775058604, NA, NA, NA))
+  expect_equal(rt$arrival_uncertainty, c(35, 37, 30, NA, NA, NA))
+  expect_equal(rt$departure_delay, c(25, 30, 20, NA, NA, NA))
+  expect_equal(rt$departure_time, c(1775059624, 1775059724, 1775058624, NA, NA, NA))
+  expect_equal(rt$departure_uncertainty, c(25, 27, 24, NA, NA, NA))
+})
+
+test_that("updates match debug json", {
+  # A number of agencies, for example Louisville, provide GTFS-realtime in both
+  # protocol buffers and the much less efficient JSON format for debugging. Here
+  # we make sure what we read from the PB matches the JSON.
+  raw_expected = jsonlite::parse_json(gzfile(system.file("testdata/louisville-updates.json.gz", package = "gtfsrealtime")))
+
+  # something missing from the JSON will be NULL, but then the column will be missing in the output
+  null_to_na = function (x) {
+    if (is.null(x)) {
+      NA
+    } else {
+      x
+    }
+  }
+
+  # flatten to a table, one row per trip update
+  expected_trip_updates = purrr::map(raw_expected$Entities, function (entity) {
+    u = entity$TripUpdate
+    tibble::tibble_row(
+      id = null_to_na(entity$Id),
+      trip_id = null_to_na(u$Trip$TripId),
+      route_id = null_to_na(u$Trip$RouteId),
+      direction_id = null_to_na(u$Trip$DirectionId),
+      start_time = null_to_na(u$Trip$StartTime),
+      start_date = null_to_na(u$Trip$StartDate),
+      trip_schedule_relationship = null_to_na(u$Trip$schedule_relationship), # who know why this is different case in JSON...
+      modifications_id = null_to_na(u$Trip$ModificationsId), # TODO why are we even reading this? It's experimental
+      vehicle_id = null_to_na(u$Vehicle$Id),
+      vehicle_label = null_to_na(u$Vehicle$Label),
+      license_plate = null_to_na(u$Vehicle$LicensePlate),
+      wheelchair_accessible = null_to_na(u$Vehicle$WheelchairAccessible)
+    )
+  }) |> purrr::list_rbind()
+
+  # make stop time updates, one row per stoptimeupdate
+  expected_stop_time_updates = purrr::map(raw_expected$Entities, function (entity) {
+    purrr::map(entity$TripUpdate$StopTimeUpdates, function (s) {
+      tibble::tibble_row(
+        id = null_to_na(entity$Id),
+        stop_sequence = null_to_na(s$StopSequence),
+        stop_id = null_to_na(s$StopId),
+        arrival_delay = null_to_na(s$Arrival$Delay),
+        arrival_time = null_to_na(s$Arrival$Time),
+        arrival_scheduled_time = null_to_na(s$Arrival$ScheduledTime),
+        arrival_uncertainty = null_to_na(s$Arrival$Uncertainty),
+        departure_delay = null_to_na(s$Departure$Delay),
+        departure_time = null_to_na(s$Departure$Time),
+        departure_scheduled_time = null_to_na(s$Departure$ScheduledTime),
+        departure_uncertainty = null_to_na(s$Departure$Uncertainty),
+        departure_occupancy_status = null_to_na(s$DepartureOccupancyStatus),
+        stop_schedule_relationship = null_to_na(s$schedule_relationship)
+      )
+    }) |> purrr::list_rbind()
+  }) |> purrr::list_rbind()
+
+  # left join will duplicate each trip update for all of its stop time updates, and leave trip updates without stop time updates
+  # in with all NAs in stop time fields
+  expected = dplyr::left_join(expected_trip_updates, expected_stop_time_updates, by="id")
+
+  # In the Louisville JSON, the enums are represented as their underlying numbers. Correct enum
+  # mapping is ensured by the roundtrip tests
+  actual = read_gtfsrt_trip_updates(system.file("testdata/louisville-updates.pb.bz2", package = "gtfsrealtime"), label_values = FALSE) |>
+    # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
+    dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col)))|>
+    tibble::as_tibble()
+  
+  expect_equal(nrow(actual), 15216)
+  expect_equal(actual, expected)
+})

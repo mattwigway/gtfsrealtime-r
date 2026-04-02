@@ -10,7 +10,7 @@
     "cleanup": "shellscript",
     "cleanup.win": "shellscript"
   },
-  "python-envs.defaultEnvManager": "ms-python.python:conda",
-  "python-envs.defaultPackageManager": "ms-python.python:conda",
-  "python-envs.pythonProjects": []
+  "[rust]": {
+    "editor.formatOnSave": true
+  }
 }

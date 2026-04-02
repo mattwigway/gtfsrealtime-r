@@ -15,3 +15,5 @@ nyc-bus-demo
 # built packages
 gtfsrealtime*.tar.gz
 gtfsrealtime*.tgz
+
+.Renviron

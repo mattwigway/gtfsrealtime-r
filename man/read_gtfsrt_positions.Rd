@@ -4,7 +4,7 @@
 \alias{read_gtfsrt_positions}
 \title{Read GTFS-realtime vehicle positions into a data frame}
 \usage{
-read_gtfsrt_positions(filename, timezone, as_sf = FALSE)
+read_gtfsrt_positions(filename, timezone, as_sf = FALSE, label_values = TRUE)
 }
 \arguments{
 \item{filename}{filename to read. Can be uncompressed or compressed with
@@ -15,6 +15,10 @@ stored as Unix time in UTC; this option will convert to local times. If you
 want to read times in UTC, specify "Etc/UTC"}
 
 \item{as_sf}{return an sf (spatial) object rather than a data frame.}
+
+\item{label_values}{should enum types in GTFS-realtime (i.e. categorical variables)
+be converted to factors with their English labels. If false, they
+will be left as numeric codes. Default true.}
 }
 \description{
 Read GTFS-realtime vehicle positions into a data frame

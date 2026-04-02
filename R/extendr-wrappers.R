@@ -34,13 +34,40 @@ enum_Alert_Effect <- function() .Call(wrap__enum_Alert_Effect)
 
 enum_Alert_SeverityLevel <- function() .Call(wrap__enum_Alert_SeverityLevel)
 
-test_data_invalid_enum_positions <- function(filename) .Call(wrap__test_data_invalid_enum_positions, filename)
-
 test_data_enum_roundtrip_positions <- function(filename) .Call(wrap__test_data_enum_roundtrip_positions, filename)
+
+test_data_enum_roundtrip_alerts <- function(filename) .Call(wrap__test_data_enum_roundtrip_alerts, filename)
 
 test_data_enum_roundtrip_updates <- function(filename) .Call(wrap__test_data_enum_roundtrip_updates, filename)
 
-test_data_enum_roundtrip_alerts <- function(filename) .Call(wrap__test_data_enum_roundtrip_alerts, filename)
+test_data_invalid_enum_positions <- function(filename) .Call(wrap__test_data_invalid_enum_positions, filename)
+
+#' Dataset that has two trip updates with
+#' id 1: two stop times - should get expanded to two rows,
+#' id 2: one stop time - should remain one row,
+#' id 3: no stop times which should exist as a single row.
+#' id 4: Everything NA but structure present
+#' id 5: Everything NA at top level
+#' @keywords internal
+test_data_update_unwrapping <- function(filename) .Call(wrap__test_data_update_unwrapping, filename)
+
+#' Make sure we can read all values in vehicle positions
+#' For the other types this is tested incidentally by the unwrapping tests, but there's no unwrapping
+#' test for positions since each vehicle position record becomes just one row.
+#' @keywords internal
+test_data_positions_all_values <- function(filename) .Call(wrap__test_data_positions_all_values, filename)
+
+#' Alerts are hierarchical: a single alert can have multiple applicability periods, multiple affected entities,
+#' and translations to multiple languages. The read function flattens all of that to a tabular format, with one row
+#' for every combination of applicability, entity, and language.
+#'
+#' This has four alerts. The first one has all fields filled out, and has two each of applicability periods,
+#' entities informed, and language - so it should become 2*2*2 = 8 rows.
+#' The second one is identical but is missing some (but not all) Spanish translations
+#' The third one does not have Spanish translations, so it should become 2*2 = 4 rows
+#' The fourth one has no time ranges, entities, or languages so should just be one row
+#' the fifth one is all NA
+test_data_alert_unwrapping <- function(filename) .Call(wrap__test_data_alert_unwrapping, filename)
 
 
 # nolint end

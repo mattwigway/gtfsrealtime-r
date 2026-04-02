@@ -29,3 +29,24 @@ test_that("enums are correctly specified", {
   # make sure there are no more enums we missed
   expect_equal(sum(sapply(actual, class) == "factor"), 4)
 })
+
+test_that("unwrapping works", {
+  feed = tempfile()
+  test_data_alert_unwrapping(feed)$ok
+  actual = read_gtfsrt_alerts(feed) |>
+    # convert factors to char for comparisons
+    dplyr::mutate(dplyr::across(dplyr::where(is.factor), as.character)) |>
+    dplyr::arrange(id, start, end, agency_id, route_id, trip_trip_id, language)
+  unlink(feed)
+
+  # four alerts get expanded to 8 + 8 + 4 + 1 + 1 = 22
+  expect_equal(nrow(actual), 22)
+
+  # There are too many fields to hard code them all here, so I read it once
+  # and validated it manually. Read that validated version.
+  expected = read.csv(system.file("testdata/alerts_decoded.csv", package="gtfsrealtime")) |>
+    dplyr::arrange(id, start, end, agency_id, route_id, trip_trip_id, language) |>
+    dplyr::mutate(id = as.character(id), trip_start_date = as.character(trip_start_date), trip_modification_id = as.character(trip_modification_id))
+
+  expect_equal(actual, expected)
+})
