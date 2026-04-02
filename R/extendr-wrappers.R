@@ -46,6 +46,8 @@ test_data_invalid_enum_positions <- function(filename) .Call(wrap__test_data_inv
 #' id 1: two stop times - should get expanded to two rows,
 #' id 2: one stop time - should remain one row,
 #' id 3: no stop times which should exist as a single row.
+#' id 4: Everything NA but structure present
+#' id 5: Everything NA at top level
 #' @keywords internal
 test_data_update_unwrapping <- function(filename) .Call(wrap__test_data_update_unwrapping, filename)
 

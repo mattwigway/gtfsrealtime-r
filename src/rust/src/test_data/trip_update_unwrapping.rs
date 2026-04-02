@@ -15,6 +15,8 @@ use crate::{
 /// id 1: two stop times - should get expanded to two rows,
 /// id 2: one stop time - should remain one row,
 /// id 3: no stop times which should exist as a single row.
+/// id 4: Everything NA but structure present
+/// id 5: Everything NA at top level
 /// @keywords internal
 #[extendr]
 pub fn test_data_update_unwrapping(filename: &str) -> Result<()> {
@@ -148,8 +150,6 @@ pub fn test_data_update_unwrapping(filename: &str) -> Result<()> {
             delay: Some(2),
             trip_properties: None, // experimental
         },
-
-
         ///////////////////////////////////////////////////
         // id 4: one stop time update, NA at lowest level
         TripUpdate {
@@ -191,7 +191,6 @@ pub fn test_data_update_unwrapping(filename: &str) -> Result<()> {
             delay: None,
             trip_properties: None, // experimental
         },
-
         ///////////////////////////////////////////////////
         // id 5: one stop time update, NA at top level
         TripUpdate {

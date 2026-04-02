@@ -5,7 +5,9 @@
 \title{Dataset that has two trip updates with
 id 1: two stop times - should get expanded to two rows,
 id 2: one stop time - should remain one row,
-id 3: no stop times which should exist as a single row.}
+id 3: no stop times which should exist as a single row.
+id 4: Everything NA but structure present
+id 5: Everything NA at top level}
 \usage{
 test_data_update_unwrapping(filename)
 }
@@ -14,5 +16,7 @@ Dataset that has two trip updates with
 id 1: two stop times - should get expanded to two rows,
 id 2: one stop time - should remain one row,
 id 3: no stop times which should exist as a single row.
+id 4: Everything NA but structure present
+id 5: Everything NA at top level
 }
 \keyword{internal}
