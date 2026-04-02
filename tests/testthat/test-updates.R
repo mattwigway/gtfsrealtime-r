@@ -1,14 +1,14 @@
 test_that("can read updates", {
   file = system.file("nyc-trip-updates.pb.bz2", package = "gtfsrealtime")
 
-  updates = read_gtfsrt_trip_updates(file)
+  updates = read_gtfsrt_trip_updates(file, "America/New_York")
   expect_s3_class(updates, "data.frame")
   expect_snapshot(head(updates))
 })
 
 test_that("updates give useful errors", {
   expect_error(
-    read_gtfsrt_trip_updates("foo.pb"),
+    read_gtfsrt_trip_updates("foo.pb", "America/New_York"),
     regexp = "No such file or directory|The system cannot find the file specified"
   )
 })
@@ -18,7 +18,7 @@ test_that("updates give useful errors", {
 test_that("enum roundtrip is correct", {
   file = tempfile()
   expected = test_data_enum_roundtrip_updates(file)$ok
-  actual = read_gtfsrt_trip_updates(file)
+  actual = read_gtfsrt_trip_updates(file, "Australia/Sydney")
   unlink(file)
 
   expect_equal(as.character(actual$trip_schedule_relationship), expected$trip_schedule_relationship)
@@ -33,7 +33,7 @@ test_that("enum roundtrip is correct", {
 test_that("updates are unwrapped correctly", {
   file = tempfile()
   test_data_update_unwrapping(file)
-  rt = read_gtfsrt_trip_updates(file)
+  rt = read_gtfsrt_trip_updates(file, "Australia/Sydney")
   unlink(file)
 
   # id 1 should become two rows, so all update-level things should have been duplicated
@@ -54,10 +54,12 @@ test_that("updates are unwrapped correctly", {
   expect_equal(rt$stop_sequence, c(2, 4, 1, NA, NA, NA))
   expect_equal(rt$stop_id, c("stop1", "stop2", "stop1_2", NA, NA, NA))
   expect_equal(rt$arrival_delay, c(5, 10, 12, NA, NA, NA))
-  expect_equal(rt$arrival_time, c(1775059604, 1775059704, 1775058604, NA, NA, NA))
+  expect_equal(rt$arrival_time, as.POSIXct(c(1775059604, 1775059704, 1775058604, NA, NA, NA), "Australia/Sydney"))
+  expect_equal(rt$arrival_scheduled_time, as.POSIXct(c(1775059504, NA, NA, NA, NA, NA), "Australia/Sydney"))
   expect_equal(rt$arrival_uncertainty, c(35, 37, 30, NA, NA, NA))
   expect_equal(rt$departure_delay, c(25, 30, 20, NA, NA, NA))
-  expect_equal(rt$departure_time, c(1775059624, 1775059724, 1775058624, NA, NA, NA))
+  expect_equal(rt$departure_time, as.POSIXct(c(1775059624, 1775059724, 1775058624, NA, NA, NA), "Australia/Sydney"))
+  expect_equal(rt$departure_scheduled_time, as.POSIXct(c(1775059524, NA, NA, NA, NA, NA), "Australia/Sydney"))
   expect_equal(rt$departure_uncertainty, c(25, 27, 24, NA, NA, NA))
 })
 
@@ -120,7 +122,16 @@ test_that("updates match debug json", {
     }) |>
       purrr::list_rbind()
   }) |>
-    purrr::list_rbind()
+    purrr::list_rbind() |>
+    dplyr::mutate(dplyr::across(tidyselect::ends_with("time"), function(x) {
+      if (!all(is.na(x))) {
+        as.POSIXct(x, "America/New_York")
+      } else {
+        # if they are all NAs, don't change the column type, because all of the all NA
+        # columns are converted to logical when loading the data.
+        x
+      }
+    }))
 
   # left join will duplicate each trip update for all of its stop time updates, and leave trip updates without stop time updates
   # in with all NAs in stop time fields
@@ -130,6 +141,7 @@ test_that("updates match debug json", {
   # mapping is ensured by the roundtrip tests
   actual = read_gtfsrt_trip_updates(
     system.file("testdata/louisville-updates.pb.bz2", package = "gtfsrealtime"),
+    "America/New_York",
     label_values = FALSE
   ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical

@@ -49,13 +49,13 @@ pub fn test_data_update_unwrapping(filename: &str) -> Result<()> {
                         delay: Some(5),
                         time: Some(1775059604),
                         uncertainty: Some(35), // units are not documented...
-                        scheduled_time: None,
+                        scheduled_time: Some(1775059504),
                     }),
                     departure: Some(StopTimeEvent {
                         delay: Some(25),
                         time: Some(1775059624),
                         uncertainty: Some(25), // units are not documented...
-                        scheduled_time: None,
+                        scheduled_time: Some(1775059524),
                     }),
                     departure_occupancy_status: Some(OccupancyStatus::ManySeatsAvailable as i32),
                     schedule_relationship: Some(

@@ -4,7 +4,7 @@
 \alias{read_gtfsrt_trip_updates}
 \title{Read GTFS-realtime trip updates}
 \usage{
-read_gtfsrt_trip_updates(filename, label_values = TRUE)
+read_gtfsrt_trip_updates(filename, timezone, label_values = TRUE)
 }
 \arguments{
 \item{filename}{filename to read. Can be uncompressed or compressed with

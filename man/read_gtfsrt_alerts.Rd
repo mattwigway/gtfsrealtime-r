@@ -4,7 +4,7 @@
 \alias{read_gtfsrt_alerts}
 \title{Read GTFS-realtime alerts}
 \usage{
-read_gtfsrt_alerts(filename, label_values = TRUE)
+read_gtfsrt_alerts(filename, timezone, label_values = TRUE)
 }
 \arguments{
 \item{filename}{filename to read. Can be uncompressed or compressed with
