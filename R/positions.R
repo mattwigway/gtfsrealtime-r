@@ -11,13 +11,7 @@
 #'      will be left as numeric codes. Default true.
 #' @export
 read_gtfsrt_positions = function(filename, timezone, as_sf = FALSE, label_values = TRUE) {
-  if (!(timezone %in% OlsonNames())) {
-    cli_abort(c(
-      "Invalid time zone",
-      "i" = "Specify a timezone in Olson format, e.g. \"America/New_York\" or \"Etc/UTC\"",
-      "x" = glue("You specified \"{timezone}\"")
-    ))
-  }
+  check_timezone(timezone)
 
   result = read_gtfsrt_positions_internal(filename)
 

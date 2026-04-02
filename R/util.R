@@ -31,3 +31,16 @@ enum_to_factor = function(values, enum) {
     labels = labels
   )
 }
+
+#' Make sure a time zone is valid, and error if not
+#' @param timezone timezone to check
+#' @keywords internal
+check_timezone = function(timezone) {
+  if (!(timezone %in% OlsonNames())) {
+    cli_abort(c(
+      "Invalid time zone",
+      "i" = "Specify a timezone in Olson format, e.g. \"America/New_York\" or \"Etc/UTC\"",
+      "x" = glue("You specified \"{timezone}\"")
+    ))
+  }
+}
