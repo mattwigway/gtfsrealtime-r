@@ -10,7 +10,9 @@
 #'      be converted to factors with their English labels. If false, they
 #'      will be left as numeric codes. Default true.
 #' @export
-read_gtfsrt_trip_updates = function(filename, label_values = TRUE) {
+read_gtfsrt_trip_updates = function(filename, timezone, label_values = TRUE) {
+  check_timezone(timezone)
+
   result = read_gtfsrt_trip_updates_internal(filename)
 
   if (!is.null(result$err)) {
@@ -18,6 +20,11 @@ read_gtfsrt_trip_updates = function(filename, label_values = TRUE) {
   } else {
     result = result$ok
   }
+
+  result$arrival_time = as.POSIXct(result$arrival_time, tz = timezone)
+  result$arrival_scheduled_time = as.POSIXct(result$arrival_scheduled_time, tz = timezone)
+  result$departure_time = as.POSIXct(result$departure_time, tz = timezone)
+  result$departure_scheduled_time = as.POSIXct(result$departure_scheduled_time, tz = timezone)
 
   if (label_values) {
     result$trip_schedule_relationship = enum_to_factor(
