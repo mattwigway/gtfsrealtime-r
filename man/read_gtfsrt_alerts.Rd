@@ -10,6 +10,10 @@ read_gtfsrt_alerts(filename, timezone, label_values = TRUE)
 \item{filename}{filename to read. Can be uncompressed or compressed with
 gzip or bzip2. Can also be an http:// or https:// URL.}
 
+\item{timezone}{timezone of feed, in Olson format. Times in GTFS-realtime are
+stored as Unix time in UTC; this option will convert to local times. If you
+want to read times in UTC, specify "Etc/UTC"}
+
 \item{label_values}{should enum types in GTFS-realtime (i.e. categorical variables)
 be converted to factors with their English labels. If false, they
 will be left as numeric codes. Default true.}
