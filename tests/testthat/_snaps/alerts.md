@@ -3,20 +3,20 @@
     Code
       head(alerts)
     Output
-                                     id      start        end agency_id route_id
-      1 MTA NYCT_lmm:planned_work:22245 1735880435         NA  MTA NYCT      X38
-      2 MTA NYCT_lmm:planned_work:22245 1735880435         NA  MTA NYCT      X28
-      3 MTA NYCT_lmm:planned_work:29838 1768971600 1782792000  MTA NYCT     <NA>
-      4 MTA NYCT_lmm:planned_work:29838 1768971600 1782792000  MTA NYCT     <NA>
-      5       MTA NYCT_lmm:alert:503501 1769576637         NA  MTA NYCT     <NA>
-      6       MTA NYCT_lmm:alert:503501 1769576637         NA  MTA NYCT     <NA>
-        route_type direction_id trip_trip_id trip_route_id trip_direction_id
-      1         NA           NA         <NA>          <NA>                NA
-      2         NA           NA         <NA>          <NA>                NA
-      3         NA           NA         <NA>          M15+                 0
-      4         NA           NA         <NA>          M15+                 1
-      5         NA           NA         <NA>           S66                 1
-      6         NA           NA         <NA>           S66                 0
+                                     id               start        end agency_id
+      1 MTA NYCT_lmm:planned_work:22245 2025-01-03 00:00:35       <NA>  MTA NYCT
+      2 MTA NYCT_lmm:planned_work:22245 2025-01-03 00:00:35       <NA>  MTA NYCT
+      3 MTA NYCT_lmm:planned_work:29838 2026-01-21 00:00:00 2026-06-30  MTA NYCT
+      4 MTA NYCT_lmm:planned_work:29838 2026-01-21 00:00:00 2026-06-30  MTA NYCT
+      5       MTA NYCT_lmm:alert:503501 2026-01-28 00:03:57       <NA>  MTA NYCT
+      6       MTA NYCT_lmm:alert:503501 2026-01-28 00:03:57       <NA>  MTA NYCT
+        route_id route_type direction_id trip_trip_id trip_route_id trip_direction_id
+      1      X38         NA           NA         <NA>          <NA>                NA
+      2      X28         NA           NA         <NA>          <NA>                NA
+      3     <NA>         NA           NA         <NA>          M15+                 0
+      4     <NA>         NA           NA         <NA>          M15+                 1
+      5     <NA>         NA           NA         <NA>           S66                 1
+      6     <NA>         NA           NA         <NA>           S66                 0
         trip_start_time trip_start_date trip_schedule_relationship
       1            <NA>            <NA>                       <NA>
       2            <NA>            <NA>                       <NA>
