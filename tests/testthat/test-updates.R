@@ -25,7 +25,7 @@ test_that("enum roundtrip is correct", {
   expect_equal(as.character(actual$wheelchair_accessible), expected$wheelchair_accessible)
   expect_equal(as.character(actual$departure_occupancy_status), expected$departure_occupancy_status)
   expect_equal(as.character(actual$stop_schedule_relationship), expected$stop_schedule_relationship)
-   # make sure there are no more enums we missed
+  # make sure there are no more enums we missed
   expect_equal(sum(sapply(actual, class) == "factor"), 4)
 })
 
@@ -47,7 +47,10 @@ test_that("updates are unwrapped correctly", {
   expect_equal(rt$vehicle_id, c("veh1", "veh1", "veh2", NA, NA, NA))
   expect_equal(rt$vehicle_label, c("lab1", "lab1", "lab2", NA, NA, NA))
   expect_equal(rt$license_plate, c("PLA-0001", "PLA-0001", "PLA-0002", NA, NA, NA))
-  expect_equal(as.character(rt$wheelchair_accessible), c("WHEELCHAIR_ACCESSIBLE", "WHEELCHAIR_ACCESSIBLE", "NO_VALUE", NA, NA, NA))
+  expect_equal(
+    as.character(rt$wheelchair_accessible),
+    c("WHEELCHAIR_ACCESSIBLE", "WHEELCHAIR_ACCESSIBLE", "NO_VALUE", NA, NA, NA)
+  )
   expect_equal(rt$stop_sequence, c(2, 4, 1, NA, NA, NA))
   expect_equal(rt$stop_id, c("stop1", "stop2", "stop1_2", NA, NA, NA))
   expect_equal(rt$arrival_delay, c(5, 10, 12, NA, NA, NA))
@@ -62,10 +65,13 @@ test_that("updates match debug json", {
   # A number of agencies, for example Louisville, provide GTFS-realtime in both
   # protocol buffers and the much less efficient JSON format for debugging. Here
   # we make sure what we read from the PB matches the JSON.
-  raw_expected = jsonlite::parse_json(gzfile(system.file("testdata/louisville-updates.json.gz", package = "gtfsrealtime")))
+  raw_expected = jsonlite::parse_json(gzfile(system.file(
+    "testdata/louisville-updates.json.gz",
+    package = "gtfsrealtime"
+  )))
 
   # something missing from the JSON will be NULL, but then the column will be missing in the output
-  null_to_na = function (x) {
+  null_to_na = function(x) {
     if (is.null(x)) {
       NA
     } else {
@@ -74,7 +80,7 @@ test_that("updates match debug json", {
   }
 
   # flatten to a table, one row per trip update
-  expected_trip_updates = purrr::map(raw_expected$Entities, function (entity) {
+  expected_trip_updates = purrr::map(raw_expected$Entities, function(entity) {
     u = entity$TripUpdate
     tibble::tibble_row(
       id = null_to_na(entity$Id),
@@ -90,11 +96,12 @@ test_that("updates match debug json", {
       license_plate = null_to_na(u$Vehicle$LicensePlate),
       wheelchair_accessible = null_to_na(u$Vehicle$WheelchairAccessible)
     )
-  }) |> purrr::list_rbind()
+  }) |>
+    purrr::list_rbind()
 
   # make stop time updates, one row per stoptimeupdate
-  expected_stop_time_updates = purrr::map(raw_expected$Entities, function (entity) {
-    purrr::map(entity$TripUpdate$StopTimeUpdates, function (s) {
+  expected_stop_time_updates = purrr::map(raw_expected$Entities, function(entity) {
+    purrr::map(entity$TripUpdate$StopTimeUpdates, function(s) {
       tibble::tibble_row(
         id = null_to_na(entity$Id),
         stop_sequence = null_to_na(s$StopSequence),
@@ -110,20 +117,25 @@ test_that("updates match debug json", {
         departure_occupancy_status = null_to_na(s$DepartureOccupancyStatus),
         stop_schedule_relationship = null_to_na(s$schedule_relationship)
       )
-    }) |> purrr::list_rbind()
-  }) |> purrr::list_rbind()
+    }) |>
+      purrr::list_rbind()
+  }) |>
+    purrr::list_rbind()
 
   # left join will duplicate each trip update for all of its stop time updates, and leave trip updates without stop time updates
   # in with all NAs in stop time fields
-  expected = dplyr::left_join(expected_trip_updates, expected_stop_time_updates, by="id")
+  expected = dplyr::left_join(expected_trip_updates, expected_stop_time_updates, by = "id")
 
   # In the Louisville JSON, the enums are represented as their underlying numbers. Correct enum
   # mapping is ensured by the roundtrip tests
-  actual = read_gtfsrt_trip_updates(system.file("testdata/louisville-updates.pb.bz2", package = "gtfsrealtime"), label_values = FALSE) |>
+  actual = read_gtfsrt_trip_updates(
+    system.file("testdata/louisville-updates.pb.bz2", package = "gtfsrealtime"),
+    label_values = FALSE
+  ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
-    dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col)))|>
+    dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col))) |>
     tibble::as_tibble()
-  
+
   expect_equal(nrow(actual), 15216)
   expect_equal(actual, expected)
 })

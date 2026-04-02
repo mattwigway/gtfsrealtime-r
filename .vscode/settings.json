@@ -12,5 +12,9 @@
   },
   "[rust]": {
     "editor.formatOnSave": true
+  },
+  "[r]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "Posit.air-vscode"
   }
 }
