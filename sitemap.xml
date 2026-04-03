@@ -14,6 +14,8 @@
 <url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/read_gtfsrt_positions.html</loc></url>
 <url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/read_gtfsrt_trip_updates.html</loc></url>
 <url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/test_data_alert_unwrapping.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/test_data_duplicate_ids_alerts.html</loc></url>
+<url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/test_data_duplicate_ids_updates.html</loc></url>
 <url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/test_data_positions_all_values.html</loc></url>
 <url><loc>https://projects.indicatrix.org/gtfsrealtime-r/reference/test_data_update_unwrapping.html</loc></url>
 </urlset>
