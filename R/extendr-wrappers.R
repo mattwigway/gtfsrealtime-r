@@ -71,5 +71,20 @@ test_data_alert_unwrapping <- function(filename) .Call(wrap__test_data_alert_unw
 
 test_data_duplicate_ids_positions <- function(filename) .Call(wrap__test_data_duplicate_ids_positions, filename)
 
+#' Feed containing three trip updates.
+#' "id" is a trip update with no stop time updates
+#' "id" is another trip update with the same ID, with two stop time updates
+#' "id2" is another trip update with no stop time updates
+#' @param filename filename to save the feed
+#' @keywords internal
+test_data_duplicate_ids_updates <- function(filename) .Call(wrap__test_data_duplicate_ids_updates, filename)
+
+#' Write an alerts feed with duplicate IDs
+#' the first one is "id" and will not be expanded
+#' the second one is also id and has two TimeRanges so will be expanded
+#' @param filename filename to write feed to
+#' @keywords internal
+test_data_duplicate_ids_alerts <- function(filename) .Call(wrap__test_data_duplicate_ids_alerts, filename)
+
 
 # nolint end

@@ -221,10 +221,25 @@ test_that("all columns read correctly", {
 })
 
 test_that("duplicate ids are deduplicated", {
+  # expect_warning doesn't capture warnings issued in R! macros in Rust code.
+  # so we mock cli_warn and capture the results
+  warnings = list(warnings = list())
+  local_mocked_bindings(cli_warn = function(x) warnings$warnings <<- append(warnings$warnings, x), .package = "cli")
+
   file = tempfile()
   test_data_duplicate_ids_positions(file)
   pos = read_gtfsrt_positions(file, "America/New_York")
   unlink(file)
+
+  expect_equal(
+    warnings$warnings,
+    # the c("!" = ... gets unwrapped when appended to a list, and then the list has two duplicate elements,
+    # which somehow R is okay with (?)
+    list(
+      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_1',
+      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_2'
+    )
+  )
 
   # it should have been deduplicate
   expect_equal(
