@@ -1,7 +1,17 @@
 test_that("can read updates", {
+  # expect_warning doesn't capture warnings issued in R! macros in Rust code.
+  # so we mock cli_warn and capture the results
+  # and the indirection here is to allow us to modify something in this scope from the function
+  warnings = list(warnings = list())
+  local_mocked_bindings(cli_warn = function(x) warnings$warnings <<- append(warnings$warnings, x), .package = "cli")
+
   file = system.file("nyc-trip-updates.pb.bz2", package = "gtfsrealtime")
 
   updates = read_gtfsrt_trip_updates(file, "America/New_York")
+
+  # there are some duplicated IDs in the example file
+  expect_snapshot(warnings$warnings)
+
   expect_s3_class(updates, "data.frame")
   expect_snapshot(head(updates))
 })
@@ -190,4 +200,26 @@ test_that("updates match debug json", {
 
   expect_equal(nrow(actual), 15216)
   expect_equal(actual, expected)
+})
+
+test_that("id deduplication works", {
+  # expect_warning doesn't capture warnings issued in R! macros in Rust code.
+  # so we mock cli_warn and capture the results
+  warnings = list(warnings = list())
+  local_mocked_bindings(cli_warn = function(x) warnings$warnings <<- append(warnings$warnings, x), .package = "cli")
+
+  file = tempfile()
+  test_data_duplicate_ids_updates(file)
+  upd = read_gtfsrt_trip_updates(file, "America/New_York")
+  unlink(file)
+
+  expect_equal(
+    warnings$warnings,
+    list(
+      "!" = "ID id is duplicated. Replacing with id_duplicated_1"
+    )
+  )
+
+  # The second trip update (with the duplicated ID) has two stop time updates
+  expect_equal(upd$id, c("id", "id_duplicated_1", "id_duplicated_1", "id2"))
 })

@@ -103,3 +103,26 @@ test_that("unwrapping works", {
 
   expect_equal(actual, expected)
 })
+
+
+test_that("id deduplication works", {
+  # expect_warning doesn't capture warnings issued in R! macros in Rust code.
+  # so we mock cli_warn and capture the results
+  warnings = list(warnings = list())
+  local_mocked_bindings(cli_warn = function(x) warnings$warnings <<- append(warnings$warnings, x), .package = "cli")
+
+  file = tempfile()
+  test_data_duplicate_ids_alerts(file)
+  upd = read_gtfsrt_alerts(file, "America/New_York")
+  unlink(file)
+
+  expect_equal(
+    warnings$warnings,
+    list(
+      "!" = "ID id is duplicated. Replacing with id_duplicated_1"
+    )
+  )
+
+  # The second alert (with the duplicated ID) has two time periods
+  expect_equal(upd$id, c("id", "id_duplicated_1", "id_duplicated_1", "id2"))
+})
