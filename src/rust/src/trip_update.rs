@@ -3,7 +3,10 @@ use extendr_api::prelude::*;
 use crate::enums::enum_to_list;
 use crate::read::read_feed;
 use crate::transit_realtime::vehicle_descriptor::WheelchairAccessible;
-use crate::transit_realtime::*;
+use crate::{
+    check_types::{check_types, MessageType},
+    transit_realtime::*,
+};
 
 // GTFS-realtime uses a hierarchical trip update -> stop time update
 #[derive(IntoDataFrameRow, PartialEq, Debug)]
@@ -134,6 +137,10 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
         })
         .flatten()
         .collect();
+
+    if content.len() == 0 {
+        check_types(msg, MessageType::Updates)?;
+    }
 
     return content.into_dataframe();
 }

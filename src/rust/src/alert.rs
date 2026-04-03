@@ -3,6 +3,7 @@ use std::collections::HashSet;
 use extendr_api::prelude::*;
 
 use crate::{
+    check_types::{check_types, MessageType},
     enums::enum_to_list,
     read::read_feed,
     transit_realtime::{self, EntitySelector, TimeRange, TranslatedString},
@@ -215,6 +216,10 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
         })
         .flatten()
         .collect::<Vec<RAlert>>();
+
+    if content.len() == 0 {
+        check_types(msg, MessageType::Alerts)?;
+    }
 
     return content.into_dataframe();
 }
