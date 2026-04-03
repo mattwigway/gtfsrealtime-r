@@ -123,6 +123,6 @@ test_that("id deduplication works", {
     )
   )
 
-  # The second trip update (with the duplicated ID) has two stop time updates
+  # The second alert (with the duplicated ID) has two time periods
   expect_equal(upd$id, c("id", "id_duplicated_1", "id_duplicated_1", "id2"))
 })
