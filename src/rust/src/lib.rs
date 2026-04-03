@@ -5,6 +5,7 @@ pub mod transit_realtime {
 mod alert;
 mod check_types;
 mod enums;
+mod id_deduplicator;
 mod read;
 mod test_data;
 mod trip_update;

@@ -1,5 +1,6 @@
 use crate::check_types::{check_types, MessageType};
 use crate::enums::enum_to_list;
+use crate::id_deduplicator::IdDeduplicator;
 use crate::read::read_feed;
 use crate::transit_realtime::{self, trip_descriptor};
 use extendr_api::prelude::*;
@@ -47,6 +48,9 @@ pub struct RVehiclePosition {
 #[extendr]
 pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehiclePosition>> {
     let msg = read_feed(file)?;
+
+    let mut id_deduplicator = IdDeduplicator::new();
+
     let content: Vec<RVehiclePosition> = msg
         .entity
         .iter()
@@ -54,9 +58,10 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
         .map(|entity| {
             let veh = entity.vehicle.as_ref().unwrap();
             let trip = veh.trip.as_ref();
-
+            let id = id_deduplicator.deduplicate_id(entity.id.clone());
             RVehiclePosition {
-                id: entity.id.clone(),
+                // only one vehicle position per row, can move instead of cloning
+                id: id,
                 latitude: veh.position.as_ref().map_or(None, |pos| Some(pos.latitude)),
                 longitude: veh
                     .position

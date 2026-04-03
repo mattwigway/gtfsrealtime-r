@@ -1,6 +1,7 @@
 use extendr_api::prelude::*;
 
 use crate::enums::enum_to_list;
+use crate::id_deduplicator::{self, IdDeduplicator};
 use crate::read::read_feed;
 use crate::transit_realtime::vehicle_descriptor::WheelchairAccessible;
 use crate::{
@@ -49,6 +50,8 @@ pub struct RStopTimeUpdate {
 pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStopTimeUpdate>> {
     let msg = read_feed(file)?;
 
+    let mut id_deduplicator = IdDeduplicator::new();
+
     let content: Vec<RStopTimeUpdate> = msg
         .entity
         .iter()
@@ -56,6 +59,7 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
         .map(|entity| {
             // todo handle empty stop time updates
             let upd = entity.trip_update.as_ref().unwrap();
+            let id = id_deduplicator.deduplicate_id(entity.id.clone());
 
             // rust complains about moving modified_trip etc if we put these in the RStopTimeUpdate directly
             let modifications_id = upd
@@ -78,7 +82,7 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
                         let dep = stupd.departure.as_ref();
 
                         RStopTimeUpdate {
-                            id: entity.id.clone(),
+                            id: id.clone(),
                             trip_id: upd.trip.trip_id.clone(),
                             route_id: upd.trip.route_id.clone(),
                             direction_id: upd.trip.direction_id,

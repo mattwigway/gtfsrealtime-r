@@ -5,6 +5,7 @@ use extendr_api::prelude::*;
 use crate::{
     check_types::{check_types, MessageType},
     enums::enum_to_list,
+    id_deduplicator::IdDeduplicator,
     read::read_feed,
     transit_realtime::{self, EntitySelector, TimeRange, TranslatedString},
 };
@@ -89,12 +90,15 @@ fn message_for_language(
 pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
     let msg = read_feed(file)?;
 
+    let mut id_deduplicator = IdDeduplicator::new();
+
     let content = msg
         .entity
         .iter()
         .filter(|e| e.alert.is_some())
         .map(|entity| {
             let alert = entity.alert.as_ref().unwrap();
+            let id = id_deduplicator.deduplicate_id(entity.id.clone());
 
             // figure out what languages we have
             let mut languages: HashSet<Option<String>> = HashSet::new();
@@ -141,7 +145,7 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
                                     let trip = informed_entity.map_or(None, |e| e.trip.clone());
 
                                     RAlert {
-                                        id: entity.id.clone(),
+                                        id: id.clone(),
                                         start: range.map_or(None, |r| r.start),
                                         end: range.map_or(None, |r| r.end),
                                         agency_id: informed_entity

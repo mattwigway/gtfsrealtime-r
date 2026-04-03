@@ -1,5 +1,6 @@
 // code to create various GTFS-realtime datasets for use in tests
 mod alert_unwrapping;
+mod duplicate_ids;
 mod enum_roundtrip;
 mod enum_roundtrip_alerts;
 mod enum_roundtrip_positions;
@@ -107,4 +108,5 @@ extendr_module! {
     use trip_update_unwrapping;
     use positions_all_values;
     use alert_unwrapping;
+    use duplicate_ids;
 }

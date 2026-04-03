@@ -69,5 +69,7 @@ test_data_positions_all_values <- function(filename) .Call(wrap__test_data_posit
 #' the fifth one is all NA
 test_data_alert_unwrapping <- function(filename) .Call(wrap__test_data_alert_unwrapping, filename)
 
+test_data_duplicate_ids_positions <- function(filename) .Call(wrap__test_data_duplicate_ids_positions, filename)
+
 
 # nolint end
