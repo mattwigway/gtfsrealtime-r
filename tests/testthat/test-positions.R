@@ -219,3 +219,20 @@ test_that("all columns read correctly", {
 
   expect_equal(actual, expected, tolerance = 1e-4)
 })
+
+test_that("duplicate ids are deduplicated", {
+  file = tempfile()
+  test_data_duplicate_ids_positions(file)
+  pos = read_gtfsrt_positions(file, "America/New_York")
+  unlink(file)
+
+  # it should have been deduplicate
+  expect_equal(
+    pos$id,
+    c(
+      ")); stop(\"identifier with r code executed!\")#",
+      ")); stop(\"identifier with r code executed!\")#_duplicated_1",
+      ")); stop(\"identifier with r code executed!\")#_duplicated_2"
+    )
+  )
+})

@@ -22,7 +22,7 @@ pub fn test_data_duplicate_ids_positions(filename: &str) -> Result<()> {
                 // extendr does not interpolate rust code into R by naively doing string manipulation,
                 // but this just makes sure that IDs with R code in them aren't problematic.
                 // https://xkcd.com/327/
-                id: "\")); stop(\"identifier with r code executed!\")#".to_string(),
+                id: ")); stop(\"identifier with r code executed!\")#".to_string(),
                 is_deleted: None,
                 trip_update: None,
                 vehicle: Some(VehiclePosition {
@@ -44,7 +44,7 @@ pub fn test_data_duplicate_ids_positions(filename: &str) -> Result<()> {
                 trip_modifications: None,
             },
             FeedEntity {
-                id: "\")); stop(\"identifier with r code executed!\")#".to_string(),
+                id: ")); stop(\"identifier with r code executed!\")#".to_string(),
                 is_deleted: None,
                 trip_update: None,
                 vehicle: Some(VehiclePosition {
@@ -67,7 +67,7 @@ pub fn test_data_duplicate_ids_positions(filename: &str) -> Result<()> {
             },
             // a third one to make sure
             FeedEntity {
-                id: "\")); stop(\"identifier with r code executed!\")#".to_string(),
+                id: ")); stop(\"identifier with r code executed!\")#".to_string(),
                 is_deleted: None,
                 trip_update: None,
                 vehicle: Some(VehiclePosition {
