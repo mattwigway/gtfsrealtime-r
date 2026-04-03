@@ -5,7 +5,7 @@ use extendr_api::prelude::*;
 use prost::Message as _;
 
 use crate::transit_realtime::{
-    feed_header::Incrementality, trip_update::StopTimeUpdate, Alert, FeedEntity, FeedHeader,
+    trip_update::StopTimeUpdate, Alert, FeedEntity, FeedHeader,
     FeedMessage, TimeRange, TripDescriptor, TripUpdate, VehiclePosition,
 };
 

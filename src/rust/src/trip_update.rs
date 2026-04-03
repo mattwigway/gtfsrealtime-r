@@ -1,7 +1,7 @@
 use extendr_api::prelude::*;
 
 use crate::enums::enum_to_list;
-use crate::id_deduplicator::{self, IdDeduplicator};
+use crate::id_deduplicator::IdDeduplicator;
 use crate::read::read_feed;
 use crate::transit_realtime::vehicle_descriptor::WheelchairAccessible;
 use crate::{
