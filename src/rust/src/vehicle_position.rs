@@ -1,3 +1,4 @@
+use crate::check_types::{check_types, MessageType};
 use crate::enums::enum_to_list;
 use crate::read::read_feed;
 use crate::transit_realtime::{self, trip_descriptor};
@@ -96,6 +97,10 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
             }
         })
         .collect();
+
+    if content.len() == 0 {
+        check_types(msg, MessageType::Positions)?;
+    }
 
     return content.into_dataframe();
 }
