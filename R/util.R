@@ -34,7 +34,7 @@ enum_to_factor = function(values, enum) {
 
 #' Make sure a time zone is valid, and error if not
 #' @param timezone timezone to check
-#' @keywords internal
+#' @noRd
 check_timezone = function(timezone) {
   if (!(timezone %in% OlsonNames())) {
     cli_abort(c(

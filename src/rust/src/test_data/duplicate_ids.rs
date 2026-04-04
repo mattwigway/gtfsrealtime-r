@@ -5,8 +5,8 @@ use extendr_api::prelude::*;
 use prost::Message as _;
 
 use crate::transit_realtime::{
-    trip_update::StopTimeUpdate, Alert, FeedEntity, FeedHeader,
-    FeedMessage, TimeRange, TripDescriptor, TripUpdate, VehiclePosition,
+    trip_update::StopTimeUpdate, Alert, FeedEntity, FeedHeader, FeedMessage, TimeRange,
+    TripDescriptor, TripUpdate, VehiclePosition,
 };
 
 #[extendr]
@@ -105,7 +105,7 @@ pub fn test_data_duplicate_ids_positions(filename: &str) -> Result<()> {
 /// "id" is another trip update with the same ID, with two stop time updates
 /// "id2" is another trip update with no stop time updates
 /// @param filename filename to save the feed
-/// @keywords internal
+/// @noRd
 #[extendr]
 pub fn test_data_duplicate_ids_updates(filename: &str) -> Result<()> {
     let msg = FeedMessage {
@@ -225,7 +225,7 @@ pub fn test_data_duplicate_ids_updates(filename: &str) -> Result<()> {
 /// the first one is "id" and will not be expanded
 /// the second one is also id and has two TimeRanges so will be expanded
 /// @param filename filename to write feed to
-/// @keywords internal
+/// @noRd
 #[extendr]
 pub fn test_data_duplicate_ids_alerts(filename: &str) -> Result<()> {
     let msg = FeedMessage {

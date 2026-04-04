@@ -48,13 +48,13 @@ test_data_invalid_enum_positions <- function(filename) .Call(wrap__test_data_inv
 #' id 3: no stop times which should exist as a single row.
 #' id 4: Everything NA but structure present
 #' id 5: Everything NA at top level
-#' @keywords internal
+#' @noRd
 test_data_update_unwrapping <- function(filename) .Call(wrap__test_data_update_unwrapping, filename)
 
 #' Make sure we can read all values in vehicle positions
 #' For the other types this is tested incidentally by the unwrapping tests, but there's no unwrapping
 #' test for positions since each vehicle position record becomes just one row.
-#' @keywords internal
+#' @noRd
 test_data_positions_all_values <- function(filename) .Call(wrap__test_data_positions_all_values, filename)
 
 #' Alerts are hierarchical: a single alert can have multiple applicability periods, multiple affected entities,
@@ -76,14 +76,14 @@ test_data_duplicate_ids_positions <- function(filename) .Call(wrap__test_data_du
 #' "id" is another trip update with the same ID, with two stop time updates
 #' "id2" is another trip update with no stop time updates
 #' @param filename filename to save the feed
-#' @keywords internal
+#' @noRd
 test_data_duplicate_ids_updates <- function(filename) .Call(wrap__test_data_duplicate_ids_updates, filename)
 
 #' Write an alerts feed with duplicate IDs
 #' the first one is "id" and will not be expanded
 #' the second one is also id and has two TimeRanges so will be expanded
 #' @param filename filename to write feed to
-#' @keywords internal
+#' @noRd
 test_data_duplicate_ids_alerts <- function(filename) .Call(wrap__test_data_duplicate_ids_alerts, filename)
 
 

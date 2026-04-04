@@ -75,8 +75,8 @@ GTFS-realtime does not include time zone information; all times are specified in
 ```{r}
 system.time({positions = map(
     Sys.glob("vignette-prerender/nyc-bus-demo/vehicle-positions-*.pb.bz2"),
-    \(f) read_gtfsrt_positions(f, "America/New_York", as_sf=T)
-  )})
+    \(f) read_gtfsrt_positions(f, "America/New_York")
+) |> rbindlist()})
 
 head(positions)
 ```
