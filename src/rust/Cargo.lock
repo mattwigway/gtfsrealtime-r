@@ -186,13 +186,11 @@ dependencies = [
  "extendr-api",
  "flate2",
  "gtfsrt-macros",
- "heck",
  "prost 0.14.3",
  "prost-build",
  "prost-types 0.14.3",
  "strum",
  "strum_macros",
- "syn",
  "ureq",
 ]
 
