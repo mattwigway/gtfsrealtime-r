@@ -124,8 +124,8 @@ for that purpose use the label field. (path: \code{vehicle.id})
 \item \code{vehicle_label}: User visible label, i.e., something that must be shown to the passenger to help
 identify the correct vehicle. (path: \code{vehicle.label})
 \item \code{vehicle_license_plate}: The license plate of the vehicle. (path: \code{vehicle.license_plate})
-\item \code{wheelchair_accessible}: Whether the vehicle is wheelchair accessible. If provided,
-can overwrite the wheelchair_accessible value from the static GTFS. Possible values:
+\item \code{vehicle_wheelchair_accessible}: Whether the vehicle is wheelchair accessible. If provided,
+can overwrite the wheelchair_accessible value from the static GTFS. (path: \code{vehicle.wheelchair_accessible}). Possible values:
 \itemize{
 \item NO_VALUE The trip doesn't have information about wheelchair accessibility. This is the default behavior. If the static GTFS contains a wheelchair_accessible value, it won't be overwritten.
 \item UNKNOWN The trip has no accessibility value present. This value will overwrite the value from the GTFS.

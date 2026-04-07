@@ -19,6 +19,8 @@ use crate::{
 /// The third one does not have Spanish translations, so it should become 2*2 = 4 rows
 /// The fourth one has no time ranges, entities, or languages so should just be one row
 /// the fifth one is all NA
+///
+/// @noRd
 #[extendr]
 pub fn test_data_alert_unwrapping(filename: &str) -> Result<()> {
     let alerts = vec![

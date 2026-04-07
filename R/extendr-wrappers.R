@@ -67,6 +67,8 @@ test_data_positions_all_values <- function(filename) .Call(wrap__test_data_posit
 #' The third one does not have Spanish translations, so it should become 2*2 = 4 rows
 #' The fourth one has no time ranges, entities, or languages so should just be one row
 #' the fifth one is all NA
+#'
+#' @noRd
 test_data_alert_unwrapping <- function(filename) .Call(wrap__test_data_alert_unwrapping, filename)
 
 test_data_duplicate_ids_positions <- function(filename) .Call(wrap__test_data_duplicate_ids_positions, filename)
