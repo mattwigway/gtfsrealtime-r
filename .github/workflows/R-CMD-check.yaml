@@ -63,7 +63,7 @@ jobs:
 
       # We echo the SHA256 of the built .tar.gz so it can be validated that this is a GH Actions build
       - name: Echo SHA256 for verification
-        run: shasum -a 256 gtfsrealtime_$(grep -P --only-matching "(?<=^Version: ).*" DESCRIPTION).tar.gz
+        run: "shasum -a 256 gtfsrealtime_$(grep -P --only-matching '(?<=^Version: ).*' DESCRIPTION).tar.gz"
 
       - name: Save
         uses: actions/upload-artifact@v6
