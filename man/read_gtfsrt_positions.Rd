@@ -2,13 +2,13 @@
 % Please edit documentation in R/positions.R
 \name{read_gtfsrt_positions}
 \alias{read_gtfsrt_positions}
-\title{Read GTFS-realtime vehicle positions into a data frame}
+\title{Read GTFS-realtime vehicle positions into a data frame.}
 \usage{
 read_gtfsrt_positions(filename, timezone, as_sf = FALSE, label_values = TRUE)
 }
 \arguments{
 \item{filename}{filename to read. Can be uncompressed or compressed with
-gzip or bzip2. Can also be an http:// or https:// URL.}
+gzip or bzip2. Can also be an http: or https: URL.}
 
 \item{timezone}{timezone of feed, in Olson format. Times in GTFS-realtime are
 stored as Unix time in UTC; this option will convert to local times. If you
@@ -18,8 +18,173 @@ want to read times in UTC, specify "Etc/UTC"}
 
 \item{label_values}{should enum types in GTFS-realtime (i.e. categorical variables)
 be converted to factors with their English labels. If false, they
-will be left as numeric codes. Default true.}
+will be left as numeric codes? Default TRUE}
+}
+\value{
+data frame containing vehicle position data
 }
 \description{
-Read GTFS-realtime vehicle positions into a data frame
+Reads vehicle position data from a GTFS-realtime feed into a data.frame with
+one row per position update. GTFS-realtime timestamps are represented in Unix
+time; a timezone must be specified to convert these to time-zone-aware R date-time
+objects (i.e. POSIXct).
+}
+\details{
+Typically, GTFS-realtime feeds will contain only a single type of entity, but if there
+are multiple types of entities in a single feed, this function will read only the
+vehicle positions. Each vehicle position will become a single row in the data frame.
+
+The data frame will have the following columns. Note that most of these columns can contain NAs
+(and in most feeds, many will be entirely NA). GTFS-realtime is a hierarchical format that is
+converted to a flat format for use in R; the paths refer to where each column comes from
+within the GTFS-realtime VehiclePosition data structure. Each column is reported below with
+its definition, many of which come verbatim from the \href{https://gtfs.org/documentation/realtime/reference/}{GTFS-realtime specification}
+\itemize{
+\item \code{id}: GTFS-realtime entity ID. These are required by the specification to be unique within a
+GTFS-realtime file, but sometimes are not. If there are non-unique IDs in the feed, they will
+be made unique when data are loaded by appending \verb{_duplicate_1}, \verb{_duplicate_2}, and so on
+and a warning will be issued, which guarantees that all rows from a single file have unique IDs.
+When working with archived data, there will quite likely be duplicated IDs between files archived
+at different times (path: \code{id} property of \code{FeedEntity} containing this \code{VehiclePosition}).
+\item \code{latitude}: reported latitude of vehicle (path: \code{position.latitude}).
+\item \code{longitude}: reported latitude of vehicle (path: \code{position.latitude}).
+\item \code{bearing}: current bearing (compass heading) of vehicle, in degrees
+(path: \code{position.bearing}).
+\item \code{odometer}: the distance the vehicle is traveled, according to the specification
+should be in meters (path: \code{position.odometer}).
+\item \code{speed}: current speed of the vehicle, in meters per second
+(path: \code{position.speed}).
+\item \code{trip_id}: Trip ID the vehicle is currently serving (path: \code{trip.trip_id})
+\item \code{route_id}: Route ID the vehicle is currently serving (path \code{trip.route_id})
+\item \code{direction_id}: GTFS direction ID (0 or 1) of the trip the vehicle is currently
+serving (path: \code{trip.direction_id})
+\item \code{start_time}: the time this trip started, needed to differentiate trips in frequency
+based GTFS. (path: \code{trip.start_time})
+\item \code{start_date}: the time this trip started, needed to differentiate trips in frequency
+based GTFS or when the service day is otherwise not clear. (path: \code{trips.start_date})
+\item \code{schedule_relationship}: How is this trip related to the schedule in the static GTFS?
+(path: \code{trip.schedule_relationship}). Possible values:
+\itemize{
+\item \code{SCHEDULED}:
+Trip that is running in accordance with its GTFS schedule, or is close
+enough to the scheduled trip to be associated with it.
+\item \code{ADDED}:
+This value has been deprecated as the behavior was unspecified.
+Use \code{DUPLICATED} for an extra trip that is the same as a scheduled trip except the start date or time,
+or \code{NEW} for an extra trip that is unrelated to an existing trip.
+\item \code{UNSCHEDULED}:
+A trip that is running with no schedule associated to it (GTFS \code{frequencies.txt} \code{exact_times}=0).
+Trips with \code{trip_schedule_relationship}=\code{UNSCHEDULED} must also set all \code{stop_schedule_relationship}=\code{UNSCHEDULED.}
+\item \code{CANCELED}:
+A trip that existed in the schedule but was removed.
+\item \code{REPLACEMENT}:
+A trip that replaces an existing trip in the schedule.
+NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+\item \code{DUPLICATED}:
+An extra trip that was added in addition to a running schedule, for example, to replace a broken vehicle or to
+respond to sudden passenger load. Used with \code{trip_id}, \code{start_date},
+and \code{start_time} to copy an existing trip from static GTFS but start at a different service
+date and/or time. Duplicating a trip is allowed if the service related to the original trip in (CSV) GTFS
+(in calendar.txt or calendar_dates.txt) is operating within the next 30 days. The trip to be duplicated is
+identified via \code{trip_id.} This enumeration does not modify the existing trip referenced by
+\code{trip_id} - if a producer wants to cancel the original trip, it must publish a separate
+TripUpdate with the value of \code{CANCELED} or \code{DELETED}. If a producer wants to replace the original trip, a value of
+\code{REPLACEMENT} should be used instead.
+
+Trips defined in GTFS \code{frequencies.txt} with \code{exact_times} that is
+empty or equal to 0 cannot be duplicated.
+
+Existing producers and consumers that were using the ADDED enumeration to represent duplicated trips must follow
+\href{https://github.com/google/transit/tree/master/gtfs-realtime/spec/en/examples/migration-duplicated.md}{the migration guide}
+to transition to the \code{DUPLICATED} enumeration.
+NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+\item \code{DELETED}:
+A trip that existed in the schedule but was removed and must not be shown to users.
+\code{DELETED} should be used instead of \code{CANCELED} to indicate that a transit provider would like to entirely remove
+information about the corresponding trip from consuming applications, so the trip is not shown as cancelled to
+riders, e.g. a trip that is entirely being replaced by another trip.
+This designation becomes particularly important if several trips are cancelled and replaced with substitute service.
+If consumers were to show explicit information about the cancellations it would distract from the more important
+real-time predictions.
+NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+\item \code{NEW}:
+An extra trip unrelated to any existing trips, for example, to respond to sudden passenger load.
+NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+}
+\item \code{stop_id}: Stop ID in static GTFS the vehicle is at/approaching. See \code{current_status}. (path: \code{stop_id})
+\item \code{current_stop_sequence}: Stop sequence in static GTFS the vehicle is at/approaching (used to disambiguate
+trips that serve the same stop twice). See \code{current_status}.
+(path: \code{current_stop_sequence})
+\item \code{current_status}: Current status of the vehicle in relation to the stop identified by
+\code{stop_id}/\code{current_stop_sequence}. (path: \code{current_status}). Potential values:
+\itemize{
+\item "INCOMING_AT": The vehicle is approaching this stop.
+\item "STOPPED_AT": The vehicle is stopped at this stop.
+\item "IN_TRANSIT_TO": The GTFS-realtime specification says this means "The vehicle has
+departed and is in transit to the next stop." which would suggest that it has \emph{departed}
+the stop identified by \code{stop_id}. However, the value itself suggests the vehicle has
+departed the \emph{previous} stop. Auditing this across a number of GTFS feeds is planned.
+}
+\item \code{timestamp}: Moment at which the vehicle's position was measured. In the GTFS-realtime data
+this is recorded as second since January 1, 1970, UTC (i.e. Unix time), but when read by
+this function it will be converted to local time in the timezone specified by the function
+call. (path: \code{timestamp}).
+\item \code{congestion_level}: Congestion level the vehicle is experiencing. Possible values are
+UNKNOWN_CONGESTION_LEVEL, RUNNING_SMOOTHLY, STOP_AND_GO, CONGESTION, SEVERE_CONGESTION,
+with SEVERE_CONGESTION flagged as meaning "People leaving their cars."
+\item \code{occupancy_status}: How full the vehicle is. (path: \code{occupancy_status}). Possible values (with official
+descriptions from the GTFS-realtime spec).:
+\itemize{
+\item "EMPTY": The vehicle or carriage is considered empty by most measures, and has few or no
+passengers onboard, but is still accepting passengers.
+\item "MANY_SEATS_AVAILABLE": The vehicle or carriage has a large number of seats available.
+The amount of free seats out of the total seats available to be
+considered large enough to fall into this category is determined at the
+discretion of the producer.
+\item "FEW_SEATS_AVAILABLE": The vehicle or carriage has a relatively small number of seats available.
+The amount of free seats out of the total seats available to be
+considered small enough to fall into this category is determined at the
+discretion of the feed producer.
+\item "STANDING_ROOM_ONLY": The vehicle or carriage can currently accommodate only standing passengers.
+\item "CRUSHED_STANDING_ROOM_ONLY": The vehicle or carriage can currently accommodate only standing passengers
+and has limited space for them.
+\item "FULL": The vehicle or carriage is considered full by most measures, but may still be
+allowing passengers to board.
+\item "NOT_ACCEPTING_PASSENGERS": The vehicle or carriage is not accepting passengers, but usually accepts passengers for boarding.
+\item "NO_DATA_AVAILABLE": The vehicle or carriage doesn't have any occupancy data available at that time.
+\item "NOT_BOARDABLE": The vehicle or carriage is not boardable and never accepts passengers.
+Useful for special vehicles or carriages (engine, maintenance carriage, etc…).
+}
+\item \code{occupancy_percentage}: A percentage value indicating the degree of passenger occupancy in the vehicle.
+The values are represented as an integer without decimals. 0 means 0\% and 100 means 100\%.
+The value 100 should represent the total maximum occupancy the vehicle was designed for,
+including both seated and standing capacity, and current operating regulations allow.
+The value may exceed 100 if there are more passengers than the maximum designed capacity.
+The precision of occupancy_percentage should be low enough that individual passengers cannot be tracked boarding or alighting the vehicle.
+If multi_carriage_status is populated with per-carriage occupancy_percentage,
+then this field should describe the entire vehicle with all carriages accepting passengers considered.
+This field is still experimental, and subject to change. It may be formally adopted in the future. (path: \code{occupancy_percentage})
+\item \code{vehicle_id}: Internal system identification of the vehicle. Should be unique per vehicle, and is used for
+tracking the vehicle as it proceeds through the system. This id should not be made visible to the end-user;
+for that purpose use the label field. (path: \code{vehicle.id})
+\item \code{vehicle_label}: User visible label, i.e., something that must be shown to the passenger to help
+identify the correct vehicle. (path: \code{vehicle.label})
+\item \code{vehicle_license_plate}: The license plate of the vehicle. (path: \code{vehicle.license_plate})
+\item \code{vehicle_wheelchair_accessible}: Whether the vehicle is wheelchair accessible. If provided,
+can overwrite the wheelchair_accessible value from the static GTFS. (path: \code{vehicle.wheelchair_accessible}). Possible values:
+\itemize{
+\item NO_VALUE The trip doesn't have information about wheelchair accessibility. This is the default behavior. If the static GTFS contains a wheelchair_accessible value, it won't be overwritten.
+\item UNKNOWN The trip has no accessibility value present. This value will overwrite the value from the GTFS.
+\item WHEELCHAIR_ACCESSIBLE The trip is wheelchair accessible. This value will overwrite the value from the GTFS.
+\item WHEELCHAIR_INACCESSIBLEThe trip is not wheelchair accessible. This value will overwrite the value from the GTFS.
+}
+}
+}
+\examples{
+# This will read a positions feed included with gtfsrealtime. Replace with
+# the path to your own file if desired.
+file = system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime")
+
+# Need to specify timezone so timestamps will be in local time.
+read_gtfsrt_positions(file, "America/New_York")
 }

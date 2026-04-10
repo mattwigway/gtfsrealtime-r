@@ -14,12 +14,10 @@ bytes = "1.11.0"
 bzip2 = "0.6.1"
 extendr-api = { version = "0.8.1", features = ["result_list"] }
 flate2 = "1.1.8"
-heck = "0.5.0"
 prost = "0.14.3"
 prost-types = "0.14.3"
 strum = "0.28.0"
 strum_macros = "0.28.0"
-syn = "2.0.117"
 ureq = "3.1.4"
 gtfsrt-macros = { path = "../gtfsrt-macros" }
 

@@ -25,8 +25,8 @@ pub struct RStopTimeUpdate {
     // vehicle info
     vehicle_id: Option<String>,
     vehicle_label: Option<String>,
-    license_plate: Option<String>,
-    wheelchair_accessible: Option<i32>,
+    vehicle_license_plate: Option<String>,
+    vehicle_wheelchair_accessible: Option<i32>,
 
     // stop time updates, exploded
     stop_sequence: Option<u32>,
@@ -92,8 +92,8 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
                             modifications_id: modifications_id.clone(),
                             vehicle_id: vehicle_id.clone(),
                             vehicle_label: vehicle_label.clone(),
-                            license_plate: license_plate.clone(),
-                            wheelchair_accessible: wheelchair_accessible,
+                            vehicle_license_plate: license_plate.clone(),
+                            vehicle_wheelchair_accessible: wheelchair_accessible,
                             stop_sequence: stupd.stop_sequence,
                             stop_id: stupd.stop_id.clone(),
                             arrival_delay: arr.map_or(None, |d| d.delay),
@@ -122,8 +122,8 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
                     modifications_id: modifications_id.clone(),
                     vehicle_id: vehicle_id.clone(),
                     vehicle_label: vehicle_label.clone(),
-                    license_plate: license_plate.clone(),
-                    wheelchair_accessible: wheelchair_accessible,
+                    vehicle_license_plate: license_plate.clone(),
+                    vehicle_wheelchair_accessible: wheelchair_accessible,
                     stop_sequence: None,
                     stop_id: None,
                     arrival_delay: None,

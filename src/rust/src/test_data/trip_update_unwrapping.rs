@@ -17,7 +17,7 @@ use crate::{
 /// id 3: no stop times which should exist as a single row.
 /// id 4: Everything NA but structure present
 /// id 5: Everything NA at top level
-/// @keywords internal
+/// @noRd
 #[extendr]
 pub fn test_data_update_unwrapping(filename: &str) -> Result<()> {
     let values = vec![

@@ -72,7 +72,7 @@ test_that("enum roundtrip is correct", {
   unlink(file)
 
   expect_equal(as.character(actual$trip_schedule_relationship), expected$trip_schedule_relationship)
-  expect_equal(as.character(actual$wheelchair_accessible), expected$wheelchair_accessible)
+  expect_equal(as.character(actual$vehicle_wheelchair_accessible), expected$vehicle_wheelchair_accessible)
   expect_equal(as.character(actual$departure_occupancy_status), expected$departure_occupancy_status)
   expect_equal(as.character(actual$stop_schedule_relationship), expected$stop_schedule_relationship)
   # make sure there are no more enums we missed
@@ -96,9 +96,9 @@ test_that("updates are unwrapped correctly", {
   expect_equal(as.character(rt$trip_schedule_relationship), c("SCHEDULED", "SCHEDULED", "ADDED", "SCHEDULED", NA, NA))
   expect_equal(rt$vehicle_id, c("veh1", "veh1", "veh2", NA, NA, NA))
   expect_equal(rt$vehicle_label, c("lab1", "lab1", "lab2", NA, NA, NA))
-  expect_equal(rt$license_plate, c("PLA-0001", "PLA-0001", "PLA-0002", NA, NA, NA))
+  expect_equal(rt$vehicle_license_plate, c("PLA-0001", "PLA-0001", "PLA-0002", NA, NA, NA))
   expect_equal(
-    as.character(rt$wheelchair_accessible),
+    as.character(rt$vehicle_wheelchair_accessible),
     c("WHEELCHAIR_ACCESSIBLE", "WHEELCHAIR_ACCESSIBLE", "NO_VALUE", NA, NA, NA)
   )
   expect_equal(rt$stop_sequence, c(2, 4, 1, NA, NA, NA))
@@ -145,8 +145,8 @@ test_that("updates match debug json", {
       modifications_id = null_to_na(u$Trip$ModificationsId), # TODO why are we even reading this? It's experimental
       vehicle_id = null_to_na(u$Vehicle$Id),
       vehicle_label = null_to_na(u$Vehicle$Label),
-      license_plate = null_to_na(u$Vehicle$LicensePlate),
-      wheelchair_accessible = null_to_na(u$Vehicle$WheelchairAccessible)
+      vehicle_license_plate = null_to_na(u$Vehicle$LicensePlate),
+      vehicle_wheelchair_accessible = null_to_na(u$Vehicle$WheelchairAccessible)
     )
   }) |>
     purrr::list_rbind()

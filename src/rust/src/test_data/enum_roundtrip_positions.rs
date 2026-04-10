@@ -105,7 +105,7 @@ pub fn test_data_enum_roundtrip_positions(filename: &str) -> Result<List> {
                 None => None,
             })
             .collect::<Vec<Option<&str>>>(),
-        wheelchair_accessible = values
+        vehicle_wheelchair_accessible = values
             .iter()
             .map(
                 |p| match p.vehicle.as_ref().unwrap().wheelchair_accessible {

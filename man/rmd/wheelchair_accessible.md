@@ -1,0 +1,4 @@
+    - NO_VALUE The trip doesn't have information about wheelchair accessibility. This is the default behavior. If the static GTFS contains a wheelchair_accessible value, it won't be overwritten.
+    - UNKNOWN The trip has no accessibility value present. This value will overwrite the value from the GTFS.
+    - WHEELCHAIR_ACCESSIBLE The trip is wheelchair accessible. This value will overwrite the value from the GTFS.
+    - WHEELCHAIR_INACCESSIBLEThe trip is not wheelchair accessible. This value will overwrite the value from the GTFS.
