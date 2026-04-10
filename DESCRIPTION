@@ -1,8 +1,12 @@
 Package: gtfsrealtime
 Title: Read GTFS-realtime files into data frames, fast
 Version: 0.1.0.9000
-Authors@R: 
+Authors@R: c( 
     person("Matthew", "Bhagat-Conway", , "mwbc@unc.edu", role = c("aut", "cre", "cph"))
+    person(
+        given = "The GTFS-realtime authors and the authors of bundled Rust crates",
+        role = c("ctb", "cph"),
+        comment = "See inst/AUTHORS.md for information on bundled dependencies and their licensing and copyright status."))
 Description: GTFS-realtime is a format transit agencies use to provide current vehicle positions, predicted
     arrival times, and service alerts. This package provides efficient functions to read this format into
     data frames. It can be used to retrieve current data or to process archived data.
@@ -30,7 +34,8 @@ Suggests:
     tidyr,
     testthat (>= 3.3.0),
     jsonlite,
-    tidyselect
+    tidyselect,
+    tibble
 VignetteBuilder: knitr
 URL: http://projects.indicatrix.org/gtfsrealtime-r/
 Config/testthat/edition: 3
