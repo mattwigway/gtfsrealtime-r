@@ -58,21 +58,14 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: false
-          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf","--as-cran")'
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
           error-on: '"warning"'
-
-      # Only build the package on ubuntu latest, release
-      - name: Build R package for CRAN
-        if: ${{ (matrix.config.os == 'ubuntu-latest') && (matrix.config.r == 'release') }}
-        run: R CMD build .
 
       # We echo the SHA256 of the built .tar.gz so it can be validated that this is a GH Actions build
       - name: Echo SHA256 for verification
-        if: ${{ (matrix.config.os == 'ubuntu-latest') && (matrix.config.r == 'release') }}
         run: shasum -a 256 gtfsrealtime-*.tar.gz
 
       - name: Save
-        if: ${{ (matrix.config.os == 'ubuntu-latest') && (matrix.config.r == 'release') }}
         uses: actions/upload-artifact@v6
         with:
           name: build
