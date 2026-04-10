@@ -71,7 +71,7 @@ jobs:
 
       - name: Save
         if: ${{ (matrix.config.os == 'ubuntu-latest') && (matrix.config.r == 'release') }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: build
           path: ${{ env.CHECK_DIR }}/gtfsrealtime_*.tar.gz
