@@ -262,8 +262,8 @@ read_gtfsrt_trip_updates = function(filename, timezone, label_values = TRUE) {
       enum_VehiclePosition_OccupancyStatus()
     )
 
-    result$wheelchair_accessible = enum_to_factor(
-      result$wheelchair_accessible,
+    result$vehicle_wheelchair_accessible = enum_to_factor(
+      result$vehicle_wheelchair_accessible,
       enum_VehicleDescriptor_WheelchairAccessible()
     )
   }

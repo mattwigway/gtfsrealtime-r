@@ -54,7 +54,7 @@ test_that("enums are correctly specified", {
   unlink(feed)
 
   expect_equal(as.character(actual$schedule_relationship), expected$schedule_relationship)
-  expect_equal(as.character(actual$wheelchair_accessible), expected$wheelchair_accessible)
+  expect_equal(as.character(actual$vehicle_wheelchair_accessible), expected$vehicle_wheelchair_accessible)
   expect_equal(as.character(actual$current_status), expected$current_status)
   expect_equal(as.character(actual$congestion_level), expected$congestion_level)
   expect_equal(as.character(actual$occupancy_status), expected$occupancy_status)
@@ -103,7 +103,7 @@ test_that("Louisville debug JSON matches read_gtfsrt_positions", {
       vehicle_id = null_to_na(p$Vehicle$Id),
       vehicle_label = null_to_na(p$Vehicle$Label),
       vehicle_license_plate = null_to_na(p$Vehicle$LicensePlate),
-      wheelchair_accessible = null_to_na(p$Vehicle$WheelchairAccessible)
+      vehicle_wheelchair_accessible = null_to_na(p$Vehicle$WheelchairAccessible)
     )
   }) |>
     purrr::list_rbind()
@@ -152,7 +152,7 @@ test_that("all columns read correctly", {
       vehicle_id = "42",
       vehicle_label = "label",
       vehicle_license_plate = "LIC-4242",
-      wheelchair_accessible = "WHEELCHAIR_ACCESSIBLE"
+      vehicle_wheelchair_accessible = "WHEELCHAIR_ACCESSIBLE"
     ),
 
     # NAs because individual items are missing
@@ -179,7 +179,7 @@ test_that("all columns read correctly", {
       vehicle_id = NA,
       vehicle_label = NA,
       vehicle_license_plate = NA,
-      wheelchair_accessible = NA
+      vehicle_wheelchair_accessible = NA
     ),
 
     # NAs because structure is missing
@@ -206,7 +206,7 @@ test_that("all columns read correctly", {
       vehicle_id = NA,
       vehicle_label = NA,
       vehicle_license_plate = NA,
-      wheelchair_accessible = NA
+      vehicle_wheelchair_accessible = NA
     )
   )
 
