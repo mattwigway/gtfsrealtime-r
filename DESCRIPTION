@@ -1,8 +1,8 @@
 Package: gtfsrealtime
-Title: Read GTFS-realtime files into data frames, fast
+Title: Read GTFS-realtime Files into Data Frames
 Version: 0.1.0.9000
 Authors@R: c( 
-    person("Matthew", "Bhagat-Conway", , "mwbc@unc.edu", role = c("aut", "cre", "cph"))
+    person("Matthew", "Bhagat-Conway", , "mwbc@unc.edu", role = c("aut", "cre", "cph")),
     person(
         given = "The GTFS-realtime authors and the authors of bundled Rust crates",
         role = c("ctb", "cph"),
