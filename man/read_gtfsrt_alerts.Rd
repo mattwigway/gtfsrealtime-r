@@ -57,15 +57,70 @@ that this alert refers to. (path: \code{informed_entity.route_type})
 to specify a route-wide alert that affects all trips for a route, and generally will not be - \code{route_id} should be used instead.
 (path: \code{informed_entity.trip.route_id})
 \item \code{trip_direction_id}: The \verb{direction_id`` from the GTFS feed trips.txt file, indicating the direction of travel for trips this selector refers to. If trip_id is omitted, direction_id must be provided. Caution: this field is still experimental, and subject to change. It may be formally adopted in the future. (path: }informed_entity.trip.route_id`)
-\item \code{trip_start_time}: The initially scheduled start time of this trip instance. When the \verb{trip_id`` corresponds to a non-frequency-based trip, this field should either be omitted or be equal to the value in the GTFS feed. When the trip_id correponds to a frequency-based trip defined in GTFS }frequencies.txt\verb{, start_time is required and must be specified for trip updates and vehicle positions. If the trip corresponds to exact_times=1 GTFS record, then start_time must be some multiple (including zero) of headway_secs later than }frequencies.txt\verb{ }start_time\verb{for the corresponding time period. If the trip corresponds to exact_times=0, then its start_time may be arbitrary, and is initially expected to be the first departure of the trip. Once established, the}start_time\verb{of this frequency-based exact_times=0 trip should be considered immutable, even if the first departure time changes -- that time change may instead be reflected in a StopTimeUpdate in a TripUpdate. Format and semantics of the field is same as that of GTFS/frequencies.txt/start_time, e.g.,}11:15:35\verb{for 11:15:35 AM or}25:15:35\verb{for 1:15:35 AM the day after the service day. (path:}informed_entity.trip.start_time`)
+\item \code{trip_start_time}: The initially scheduled start time of this trip instance. When the \code{trip_id} corresponds to a non-frequency-based
+trip, this field should either be omitted or be equal to the value in the GTFS feed. When the trip_id correponds to a frequency-based
+trip defined in GTFS \code{frequencies.txt}, start_time is required and must be specified for trip updates and vehicle positions.
+If the trip corresponds to exact_times=1 GTFS record, then start_time must be some multiple (including zero) of headway_secs later than
+\code{frequencies.txt} \code{start_time} for the corresponding time period. If the trip corresponds to exact_times=0, then its start_time may be
+arbitrary, and is initially expected to be the first departure of the trip. Once established, the \code{start_time} of this frequency-based
+exact_times=0 trip should be considered immutable, even if the first departure time changes -- that time change may instead be reflected
+in a StopTimeUpdate in a TripUpdate. Format and semantics of the field is same as that of GTFS/frequencies.txt/start_time, e.g.,
+\code{11:15:35} for 11:15:35 AM or \code{25:15:35} for 1:15:35 AM the day after the service day. (path: \code{informed_entity.trip.start_time})
 \item \code{trip_start_date}: The start date of this trip instance in YYYYMMDD format. For scheduled trips (trips not defined in GTFS frequencies.txt),
 this field must be provided to disambiguate trips that are so late as to collide with a scheduled trip on a next day. For example, for a
 train that departs 8:00 and 20:00 every day, and is 12 hours late, there would be two distinct trips on the same time. This field can be
 provided but is not mandatory for schedules in which such collisions are impossible - for example, a service running on hourly schedule where
 a vehicle that is one hour late is not considered to be related to schedule anymore. This field is required for frequency-based trips defined
-in GTFS \code{frequencies.txt}. (path: \code{informed_entity.trip.trip_start_date})
+in GTFS \code{frequencies.txt}. (path: \code{informed_entity.trip.start_date})
 \item \code{trip_schedule_relationship}: The relation between this trip and the static schedule. This is not supposed to be used
-with alerts, but is provided for completeness. (path: \code{informed_entity.trip.schedule_relationship}).
+with alerts, but is provided for completeness. (path: \code{informed_entity.trip.schedule_relationship}). Possible values:
+\itemize{
+\item \code{SCHEDULED}:
+Trip that is running in accordance with its GTFS schedule, or is close
+enough to the scheduled trip to be associated with it.
+\item \code{ADDED}:
+This value has been deprecated as the behavior was unspecified.
+Use \code{DUPLICATED} for an extra trip that is the same as a scheduled trip except the start date or time,
+or \code{NEW} for an extra trip that is unrelated to an existing trip.
+\item \code{UNSCHEDULED}:
+A trip that is running with no schedule associated to it (GTFS \code{frequencies.txt} \code{exact_times}=0).
+Trips with \code{trip_schedule_relationship}=\code{UNSCHEDULED} must also set all \code{stop_schedule_relationship}=\code{UNSCHEDULED.}
+\item \code{CANCELED}:
+A trip that existed in the schedule but was removed.
+\item \code{REPLACEMENT}:
+A trip that replaces an existing trip in the schedule.
+NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+\item \code{DUPLICATED}:
+An extra trip that was added in addition to a running schedule, for example, to replace a broken vehicle or to
+respond to sudden passenger load. Used with \code{trip_id}, \code{start_date},
+and \code{start_time} to copy an existing trip from static GTFS but start at a different service
+date and/or time. Duplicating a trip is allowed if the service related to the original trip in (CSV) GTFS
+(in calendar.txt or calendar_dates.txt) is operating within the next 30 days. The trip to be duplicated is
+identified via \code{trip_id.} This enumeration does not modify the existing trip referenced by
+\code{trip_id} - if a producer wants to cancel the original trip, it must publish a separate
+TripUpdate with the value of \code{CANCELED} or \code{DELETED}. If a producer wants to replace the original trip, a value of
+\code{REPLACEMENT} should be used instead.
+
+Trips defined in GTFS \code{frequencies.txt} with \code{exact_times} that is
+empty or equal to 0 cannot be duplicated.
+
+Existing producers and consumers that were using the ADDED enumeration to represent duplicated trips must follow
+\href{https://github.com/google/transit/tree/master/gtfs-realtime/spec/en/examples/migration-duplicated.md}{the migration guide}
+to transition to the \code{DUPLICATED} enumeration.
+NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+\item \code{DELETED}:
+A trip that existed in the schedule but was removed and must not be shown to users.
+\code{DELETED} should be used instead of \code{CANCELED} to indicate that a transit provider would like to entirely remove
+information about the corresponding trip from consuming applications, so the trip is not shown as cancelled to
+riders, e.g. a trip that is entirely being replaced by another trip.
+This designation becomes particularly important if several trips are cancelled and replaced with substitute service.
+If consumers were to show explicit information about the cancellations it would distract from the more important
+real-time predictions.
+NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+\item \code{NEW}:
+An extra trip unrelated to any existing trips, for example, to respond to sudden passenger load.
+NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+}
 \item \code{trip_modification_id}: Linkage to any modifications done to this trip (shape changes, removal or addition of stops).
 Reading trip modifications themselves is not yet supported (see \href{https://github.com/mattwigway/gtfsrealtime-r/issues/21}{#21}).
 If you have a feed with trip modifications, please comment on that issue so we are aware they exist in the wild.

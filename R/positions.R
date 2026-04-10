@@ -38,8 +38,53 @@
 #' - `start_date`: the time this trip started, needed to differentiate trips in frequency
 #'    based GTFS or when the service day is otherwise not clear. (path: `trips.start_date`)
 #' - `schedule_relationship`: How is this trip related to the schedule in the static GTFS?
-#'      one of SCHEDULED, ADDED, UNSCHEDULED, CANCELED, REPLACEMENT, DUPLICATED, DELETED, NEW.
-#'      (path: `trip.schedule_relationship`)
+#'      (path: `trip.schedule_relationship`). Possible values:
+
+#'     - `SCHEDULED`:
+#'       Trip that is running in accordance with its GTFS schedule, or is close
+#'       enough to the scheduled trip to be associated with it.
+#'     - `ADDED`:
+#'       This value has been deprecated as the behavior was unspecified.
+#'       Use `DUPLICATED` for an extra trip that is the same as a scheduled trip except the start date or time,
+#'       or `NEW` for an extra trip that is unrelated to an existing trip.
+#'     - `UNSCHEDULED`:
+#'       A trip that is running with no schedule associated to it (GTFS `frequencies.txt` `exact_times`=0).
+#'       Trips with `trip_schedule_relationship`=`UNSCHEDULED` must also set all `stop_schedule_relationship`=`UNSCHEDULED.`
+#'     - `CANCELED`:
+#'       A trip that existed in the schedule but was removed.
+#'     - `REPLACEMENT`:
+#'       A trip that replaces an existing trip in the schedule.
+#'       NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+#'     - `DUPLICATED`:
+#'       An extra trip that was added in addition to a running schedule, for example, to replace a broken vehicle or to
+#'       respond to sudden passenger load. Used with `trip_id`, `start_date`,
+#'       and `start_time` to copy an existing trip from static GTFS but start at a different service
+#'       date and/or time. Duplicating a trip is allowed if the service related to the original trip in (CSV) GTFS
+#'       (in calendar.txt or calendar_dates.txt) is operating within the next 30 days. The trip to be duplicated is
+#'       identified via `trip_id.` This enumeration does not modify the existing trip referenced by
+#'       `trip_id` - if a producer wants to cancel the original trip, it must publish a separate
+#'       TripUpdate with the value of `CANCELED` or `DELETED`. If a producer wants to replace the original trip, a value of
+#'       `REPLACEMENT` should be used instead.
+#'
+#'       Trips defined in GTFS `frequencies.txt` with `exact_times` that is
+#'       empty or equal to 0 cannot be duplicated.
+#'
+#'       Existing producers and consumers that were using the ADDED enumeration to represent duplicated trips must follow
+#'       [the migration guide](https://github.com/google/transit/tree/master/gtfs-realtime/spec/en/examples/migration-duplicated.md)
+#'       to transition to the `DUPLICATED` enumeration.
+#'       NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+#'     - `DELETED`:
+#'       A trip that existed in the schedule but was removed and must not be shown to users.
+#'       `DELETED` should be used instead of `CANCELED` to indicate that a transit provider would like to entirely remove
+#'       information about the corresponding trip from consuming applications, so the trip is not shown as cancelled to
+#'       riders, e.g. a trip that is entirely being replaced by another trip.
+#'       This designation becomes particularly important if several trips are cancelled and replaced with substitute service.
+#'       If consumers were to show explicit information about the cancellations it would distract from the more important
+#'       real-time predictions.
+#'       NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+#'     - `NEW`:
+#'       An extra trip unrelated to any existing trips, for example, to respond to sudden passenger load.
+#'       NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
 #' - `stop_id`: Stop ID in static GTFS the vehicle is at/approaching. See `current_status`. (path: `stop_id`)
 #' - `current_stop_sequence`: Stop sequence in static GTFS the vehicle is at/approaching (used to disambiguate
 #'      trips that serve the same stop twice). See `current_status`.
