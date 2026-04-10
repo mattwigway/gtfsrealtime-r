@@ -21,4 +21,5 @@ gtfsrealtime*.tgz
 # vendored code is vendored at build time, not kept in repository.
 src/rust/vendor.tar.xz
 src/rust/vendor-config.toml
+src/rust/src/generated/
 LICENSE.d/*.txt
