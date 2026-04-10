@@ -1,5 +1,5 @@
 Package: gtfsrealtime
-Title: Read GTFS-realtime Files into Data Frames
+Title: Read GTFS-Realtime Files into Data Frames
 Version: 0.1.0.9000
 Authors@R: c( 
     person("Matthew", "Bhagat-Conway", , "mwbc@unc.edu", role = c("aut", "cre", "cph")),
