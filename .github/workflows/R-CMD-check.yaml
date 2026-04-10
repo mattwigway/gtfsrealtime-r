@@ -61,6 +61,8 @@ jobs:
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
           error-on: '"warning"'
 
+      - run: ls
+
       # We echo the SHA256 of the built .tar.gz so it can be validated that this is a GH Actions build
       - name: Echo SHA256 for verification
         run: "shasum -a 256 gtfsrealtime_*.tar.gz"
