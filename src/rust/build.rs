@@ -33,8 +33,8 @@ fn main() -> Result<()> {
             .type_attribute(".transit_realtime.Alert.Cause", &deriv)
             .type_attribute(".transit_realtime.Alert.Effect", &deriv)
             .type_attribute(".transit_realtime.Alert.SeverityLevel", &deriv)
-            .out_dir("../rust/src/generated")
-            .compile_protos(&["../rust/src/gtfs-realtime.proto"], &["../rust/src/"])?;
+            .out_dir("src/generated")
+            .compile_protos(&["src/gtfs-realtime.proto"], &["src/"])?;
     }
     Ok(())
 }
