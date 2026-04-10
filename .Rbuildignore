@@ -21,3 +21,4 @@
 ^vignettes/.*.R$
 ^vignettes/.*.html$
 \.gitkeep$
+^air.toml$
