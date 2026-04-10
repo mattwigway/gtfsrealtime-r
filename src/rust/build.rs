@@ -1,5 +1,4 @@
 use std::io::Result;
-use std::process::Command;
 use std::path::Path;
 
 use prost_build::Config;
