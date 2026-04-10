@@ -26,6 +26,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      # specify so that we can find it later
+      CHECK_DIR: check
 
     steps:
       - uses: actions/checkout@v4
@@ -60,6 +62,7 @@ jobs:
           upload-snapshots: false
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
           error-on: '"warning"'
+          check-dir: '"${{ env.CHECK_DIR }}"'
 
       - run: ls
 
