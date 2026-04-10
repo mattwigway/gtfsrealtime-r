@@ -84,13 +84,20 @@ head(positions)
     ## 4  FEW_SEATS_AVAILABLE                   NA MTA NYCT_7112          <NA>
     ## 5                 <NA>                   NA MTA NYCT_8443          <NA>
     ## 6 MANY_SEATS_AVAILABLE                   NA MTA NYCT_9775          <NA>
-    ##   vehicle_license_plate wheelchair_accessible                   geometry
-    ## 1                  <NA>                  <NA>  POINT (-73.95419 40.7872)
-    ## 2                  <NA>                  <NA> POINT (-73.78681 40.74109)
-    ## 3                  <NA>                  <NA> POINT (-73.84709 40.87092)
-    ## 4                  <NA>                  <NA>  POINT (-73.89967 40.6589)
-    ## 5                  <NA>                  <NA> POINT (-73.82975 40.75879)
-    ## 6                  <NA>                  <NA> POINT (-73.93855 40.85025)
+    ##   vehicle_license_plate vehicle_wheelchair_accessible
+    ## 1                  <NA>                          <NA>
+    ## 2                  <NA>                          <NA>
+    ## 3                  <NA>                          <NA>
+    ## 4                  <NA>                          <NA>
+    ## 5                  <NA>                          <NA>
+    ## 6                  <NA>                          <NA>
+    ##                     geometry
+    ## 1  POINT (-73.95419 40.7872)
+    ## 2 POINT (-73.78681 40.74109)
+    ## 3 POINT (-73.84709 40.87092)
+    ## 4  POINT (-73.89967 40.6589)
+    ## 5 POINT (-73.82975 40.75879)
+    ## 6 POINT (-73.93855 40.85025)
 
 ## Map the feed
 
