@@ -75,3 +75,4 @@ jobs:
         with:
           name: build
           path: ${{ env.CHECK_DIR }}/gtfsrealtime_*.tar.gz
+          archive: false
