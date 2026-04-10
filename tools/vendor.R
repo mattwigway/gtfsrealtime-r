@@ -59,7 +59,8 @@ public-domain and Apache-licensed code and documentation from the
 [GTFS-realtime specification](https://gtfs.org/documentation/realtime), written
 and copyrighted by the collective entity \"The GTFS specification authors\".
 Additionally, it includes code from a number of Rust crates. These crates and
-their authors are listed below.
+their authors are listed below. Full text of all licenses is available in
+`LICENSE.note`
 
 ",
   file = authfile
@@ -96,11 +97,26 @@ close(authfile)
 
 licenses = unique(unlist(lapply(crate_info, \(x) extract_licenses(x$license))))
 
+licfile = file("LICENSE.note", "wt")
+
+cat(
+  "
+This repository includes public-domain and Apache-licensed code and documentation from the
+[GTFS-realtime specification](https://gtfs.org/documentation/realtime), written
+and copyrighted by the collective entity \"The GTFS specification authors\".
+
+Source and binary distributions additionally redistribute Rust crates with various licenses.
+See `inst/AUTHORS.md` for details. In source and binary distributions, all licenses will be presented below.
+
+",
+  file = licfile
+)
+
 for (lic in licenses) {
-  cat(lic)
-  download.file(
-    sprintf("https://raw.githubusercontent.com/spdx/license-list-data/refs/heads/main/text/%s.txt", lic),
-    sprintf("LICENSE.d/%s.txt", lic),
-    "auto"
-  )
+  con = sprintf("https://raw.githubusercontent.com/spdx/license-list-data/refs/heads/main/text/%s.txt", lic)
+  lic_text = readLines(con)
+  cat(sprintf("\n## %s\n\n", lic), file = licfile)
+  cat(lic_text, file = licfile, sep = "\n")
 }
+
+close(licfile)
