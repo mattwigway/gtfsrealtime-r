@@ -112,16 +112,12 @@
 #' @returns data frame containing vehicle position data
 #'
 #' @examples
-#' library(gtfsrealtime)
-#'
 #' # This will read a positions feed included with gtfsrealtime. Replace with
 #' # the path to your own file if desired.
 #' file = system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime")
 #'
 #' # Need to specify timezone so timestamps will be in local time.
-#' positions = read_gtfsrt_positions(file, "America/New_York")
-#'
-#' head(positions)
+#' read_gtfsrt_positions(file, "America/New_York")
 #' @export
 read_gtfsrt_positions = function(filename, timezone, as_sf = FALSE, label_values = TRUE) {
   check_timezone(timezone)

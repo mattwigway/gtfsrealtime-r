@@ -135,14 +135,10 @@ can overwrite the wheelchair_accessible value from the static GTFS. (path: \code
 }
 }
 \examples{
-library(gtfsrealtime)
-
 # This will read a positions feed included with gtfsrealtime. Replace with
 # the path to your own file if desired.
 file = system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime")
 
 # Need to specify timezone so timestamps will be in local time.
-positions = read_gtfsrt_positions(file, "America/New_York")
-
-head(positions)
+read_gtfsrt_positions(file, "America/New_York")
 }
