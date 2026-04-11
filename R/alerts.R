@@ -110,7 +110,7 @@
 #'       empty or equal to 0 cannot be duplicated.
 #'
 #'       Existing producers and consumers that were using the ADDED enumeration to represent duplicated trips must follow
-#'       [the migration guide](https://github.com/google/transit/tree/master/gtfs-realtime/spec/en/examples/migration-duplicated.md)
+#'       [the migration guide](https://github.com/google/transit/blob/master/gtfs-realtime/spec/en/examples/migration-duplicated.md)
 #'       to transition to the `DUPLICATED` enumeration.
 #'       NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
 #'     - `DELETED`:

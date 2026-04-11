@@ -20,3 +20,5 @@
 ^vignettes/figures/nyc_bus_anim.gif$
 ^vignettes/.*.R$
 ^vignettes/.*.html$
+\.gitkeep$
+^air.toml$

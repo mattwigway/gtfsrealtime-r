@@ -1,6 +1,6 @@
 ## {gtfsrealtime}
 
-  [![R-CMD-check](https://github.com/mattwigway/gtfsrt-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mattwigway/gtfsrt-r/actions/workflows/R-CMD-check.yaml)
+  [![R-CMD-check](https://github.com/mattwigway/gtfsrealtime-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mattwigway/gtfsrealtime-r/actions/workflows/R-CMD-check.yaml)
 
 <img src="https://img.shields.io/badge/maintenance-experimental-blue.svg" alt="maintenance-status: experimental" />
 

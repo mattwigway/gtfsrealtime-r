@@ -26,6 +26,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      # specify so that we can find it later
+      CHECK_DIR: check
 
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +42,11 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          # RcppTOML and rextendr needed for vendoring process
+          extra-packages: |
+            any::rcmdcheck
+            any::RcppTOML
+            any::rextendr
           needs: check
 
       - uses: arduino/setup-protoc@v3
@@ -48,10 +54,25 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Vendor packages
+        run: Rscript tools/vendor.R
+
       - uses: r-lib/actions/check-r-package@v2
         with:
-          upload-snapshots: true
+          upload-snapshots: false
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
-          # We get a warning about downloading crates. Prior to CRAN submission we will vendor crates,
-          # but I don't want to do that earlier to avoid bloating the repository.
-          error-on: '"error"'
+          error-on: '"warning"'
+          check-dir: '"${{ env.CHECK_DIR }}"'
+
+      # We echo the SHA256 of the built .tar.gz so it can be validated that this is a GH Actions build
+      - name: Echo SHA256 for verification
+        if: ${{ (matrix.config.os == 'ubuntu-latest') && (matrix.config.r == 'release') }}
+        run: "shasum -a 256 ${{ env.CHECK_DIR }}/gtfsrealtime_*.tar.gz"
+
+      - name: Save
+        if: ${{ (matrix.config.os == 'ubuntu-latest') && (matrix.config.r == 'release') }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: build
+          path: ${{ env.CHECK_DIR }}/gtfsrealtime_*.tar.gz
+          archive: false

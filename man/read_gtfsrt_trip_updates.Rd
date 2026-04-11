@@ -99,7 +99,7 @@ Trips defined in GTFS \code{frequencies.txt} with \code{exact_times} that is
 empty or equal to 0 cannot be duplicated.
 
 Existing producers and consumers that were using the ADDED enumeration to represent duplicated trips must follow
-\href{https://github.com/google/transit/tree/master/gtfs-realtime/spec/en/examples/migration-duplicated.md}{the migration guide}
+\href{https://github.com/google/transit/blob/master/gtfs-realtime/spec/en/examples/migration-duplicated.md}{the migration guide}
 to transition to the \code{DUPLICATED} enumeration.
 NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
 \item \code{DELETED}:
