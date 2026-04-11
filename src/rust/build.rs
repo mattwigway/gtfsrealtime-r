@@ -32,8 +32,14 @@ fn main() -> Result<()> {
             .type_attribute(".transit_realtime.Alert.Cause", &deriv)
             .type_attribute(".transit_realtime.Alert.Effect", &deriv)
             .type_attribute(".transit_realtime.Alert.SeverityLevel", &deriv)
-            .out_dir("src/generated")
-            .compile_protos(&["src/gtfs-realtime.proto"], &["src/"])?;
+            .out_dir(concat!(env!("CARGO_MANIFEST_DIR"), "/src/generated"))
+            .compile_protos(
+                &[concat!(
+                    env!("CARGO_MANIFEST_DIR"),
+                    "/src/gtfs-realtime.proto"
+                )],
+                &[concat!(env!("CARGO_MANIFEST_DIR"), "/src/")],
+            )?;
     }
     Ok(())
 }
