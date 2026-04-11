@@ -3,6 +3,12 @@
 # - Creating inst/AUTHORS.md
 # - Creating LICENSE.note.md
 
+if (Sys.getenv("CI") != "true") {
+  warning(
+    "Vendoring packages will create src/rust/.cargo/ which needs to be deleted if it is desired to un-vendor packages"
+  )
+}
+
 if (!require(rextendr) | !require(RcppTOML)) {
   stop("rextendr and RcppTOML are needed at build time to prepare for CRAN submission")
 }
