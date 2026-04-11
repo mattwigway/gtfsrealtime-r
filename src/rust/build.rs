@@ -1,4 +1,5 @@
 use std::env;
+use std::fs::create_dir;
 use std::io::Result;
 use std::path::Path;
 use std::process::Command;
@@ -24,7 +25,7 @@ fn main() -> Result<()> {
         match Command::new("which").arg("protoc").output() {
             Ok(res) => {
                 let path = String::from_utf8(res.stdout).unwrap();
-                println!("protoc found at {path}");
+                eprintln!("protoc found at {path}");
             }
             Err(_) => println!("protoc not found"),
         }
@@ -37,6 +38,10 @@ fn main() -> Result<()> {
     // available on CRAN build machines. So transit_realtime.rs is built on
     // Github Actions and then rolled into the built package.
     if !Path::new("src/generated/transit_realtime.rs").exists() {
+        if !Path::new("src/generated").exists() {
+            create_dir(Path::new("src/generated"))?;
+        }
+
         let deriv = "#[derive(strum_macros::VariantArray, strum_macros::IntoStaticStr, gtfsrt_macros::AsStrName)]";
         Config::new()
             // I can't figure out a way to tell prost to just apply this to all enums without also applying to structs
