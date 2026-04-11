@@ -76,18 +76,21 @@ each column comes from.
   - `agency_id`: The `agency_id` from the GTFS static feed that this
     alert refers to. (path: `informed_entity.agency_id`)
 
-  - `route_id`: The
-    ``` route_id`` from the GTFS that this alert refers to. If  ```direction_id“
-    is provided, `route_id` must also be provided. (path:
-    \`informed_entity.route_id\`)
+  - `route_id`: The `route_id`from the GTFS that this alert refers to.
+    If `direction_id`is provided, `route_id` must also be provided.
+    (path: `informed_entity.route_id`)
 
   - `route_type`: The
     [`route_type`](https://gtfs.org/documentation/schedule/reference/#routestxt)
     from the static GTFS that this alert refers to. (path:
     `informed_entity.route_type`)
 
-  - `direction_id`: The
-    ``` direction_id`` from the static GTFS feed  ```trips.txt`file, used to select all trips in one direction for a route, specified by route_id. If`direction_id`is provided, route_id must also be provided. Caution: this field is still experimental, and subject to change. It may be formally adopted in the future. (path:`informed_entity.direction_id\`).
+  - `direction_id`: The `direction_id`from the static GTFS feed
+    `trips.txt` file, used to select all trips in one direction for a
+    route, specified by route_id. If `direction_id` is provided,
+    route_id must also be provided. Caution: this field is still
+    experimental, and subject to change. It may be formally adopted in
+    the future. (path: `informed_entity.direction_id`).
 
   - `trip_trip_id`: The `trip_id` from the GTFS feed that this selector
     refers to. For non frequency-based trips (trips not defined in GTFS
@@ -101,8 +104,12 @@ each column comes from.
     and generally will not be - `route_id` should be used instead.
     (path: `informed_entity.trip.route_id`)
 
-  - `trip_direction_id`: The
-    ``` direction_id`` from the GTFS feed trips.txt file, indicating the direction of travel for trips this selector refers to. If trip_id is omitted, direction_id must be provided. Caution: this field is still experimental, and subject to change. It may be formally adopted in the future. (path:  ```informed_entity.trip.route_id\`)
+  - `trip_direction_id`: The `direction_id`from the GTFS feed trips.txt
+    file, indicating the direction of travel for trips this selector
+    refers to. If trip_id is omitted, direction_id must be provided.
+    Caution: this field is still experimental, and subject to change. It
+    may be formally adopted in the future. (path:
+    `informed_entity.trip.route_id`)
 
   - `trip_start_time`: The initially scheduled start time of this trip
     instance. When the `trip_id` corresponds to a non-frequency-based
@@ -182,7 +189,7 @@ each column comes from.
       Existing producers and consumers that were using the ADDED
       enumeration to represent duplicated trips must follow [the
       migration
-      guide](https://github.com/google/transit/tree/master/gtfs-realtime/spec/en/examples/migration-duplicated.md)
+      guide](https://github.com/google/transit/blob/master/gtfs-realtime/spec/en/examples/migration-duplicated.md)
       to transition to the `DUPLICATED` enumeration. NOTE: This field is
       still experimental, and subject to change. It may be formally
       adopted in the future.
@@ -305,10 +312,7 @@ each column comes from.
 - `tts_description_text`: Text containing a description for the alert to
   be used for text-to-speech implementations. This field is the
   text-to-speech version of
-  ``` description_text``. It should contain the same information as  ```description_text“
-  but formatted such that it can be read as text-to-speech (for example,
-  abbreviations removed, numbers spelled out, etc.) (path:
-  `tts_description_text`)
+  ``` description_text``. It should contain the same information as  ```description_text`but formatted such that it can be read as text-to-speech (for example, abbreviations removed, numbers spelled out, etc.) (path: `tts_description_text\`)
 
 - `severity_level`: Severity of the alert. (path: `severity_level`).
   Possible values:

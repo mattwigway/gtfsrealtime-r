@@ -35,6 +35,7 @@ deduplicated by adding _duplicated_1, _duplicated_2, etc."></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/archived.html">Working with archived data</a></li>
     <li><a class="dropdown-item" href="../articles/positions.html">Vehicle positions</a></li>
   </ul></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
       </ul></div>
@@ -110,18 +111,23 @@ start and end times, in which case it will be presented in multiple rows. (path:
 the feed. (path: <code>active_period.end</code>).</p></li>
 <li><p>The next few colums represent the informed entity of the alert (i.e. the agency, route, etc. for which the alert
 should be shown). If there are multiple informed entities, the alert will be duplicated for each one.</p><ul><li><p><code>agency_id</code>: The <code>agency_id</code> from the GTFS static feed that this alert refers to. (path: <code>informed_entity.agency_id</code>)</p></li>
-<li><p><code>route_id</code>: The <code>route_id`` from the GTFS that this alert refers to. If </code>direction_id“ is provided, <code>route_id</code>
-must also be provided. (path: `informed_entity.route_id`)</p></li>
+<li><p><code>route_id</code>: The <code>route_id</code>from the GTFS that this alert refers to. If <code>direction_id</code>is provided, <code>route_id</code>
+must also be provided. (path: <code>informed_entity.route_id</code>)</p></li>
 <li><p><code>route_type</code>: The <a href="https://gtfs.org/documentation/schedule/reference/#routestxt" class="external-link"><code>route_type</code></a> from the static GTFS
 that this alert refers to. (path: <code>informed_entity.route_type</code>)</p></li>
-<li><p><code>direction_id</code>: The <code>direction_id`` from the static GTFS feed </code>trips.txt<code>file, used to select all trips in one direction for a route, specified by route_id. If</code>direction_id<code>is provided, route_id must also be provided. Caution: this field is still experimental, and subject to change. It may be formally adopted in the future. (path:</code>informed_entity.direction_id`).</p></li>
+<li><p><code>direction_id</code>: The <code>direction_id</code>from the static GTFS feed <code>trips.txt</code> file, used to select all trips in one
+direction for a route, specified by route_id. If <code>direction_id</code> is provided, route_id must also be provided.
+Caution: this field is still experimental, and subject to change. It may be formally adopted in the future.
+(path: <code>informed_entity.direction_id</code>).</p></li>
 <li><p><code>trip_trip_id</code>: The <code>trip_id</code> from the GTFS feed that this selector refers to. For non frequency-based trips
 (trips not defined in GTFS <code>frequencies.txt``), this field is enough to uniquely identify the trip. For frequency-based trips defined in GTFS </code>frequencies.txt<code>, </code>trip_id<code>, </code>start_time<code>, and </code>start_date<code>are all required. For scheduled-based trips (trips not defined in GTFS frequencies.txt), trip_id can only be omitted if the trip can be uniquely identified by a combination of</code>route_id<code>, </code>direction_id<code>, </code>start_time<code>, and </code>start_date<code>, and all those fields are provided. (path: </code>informed_entity.trip.trip_id`)</p></li>
 <li><p><code>trip_route_id</code>: The route_id from the GTFS that this trip refers to. If <code>trip_id</code> is omitted, <code>route_id</code>, <code>direction_id</code>,
 <code>start_time</code>, and <code>schedule_relationship</code>=<code>SCHEDULED</code> must all be set to identify a trip instance. <code>trip_route_id</code> should not be used
 to specify a route-wide alert that affects all trips for a route, and generally will not be - <code>route_id</code> should be used instead.
 (path: <code>informed_entity.trip.route_id</code>)</p></li>
-<li><p><code>trip_direction_id</code>: The <code>direction_id`` from the GTFS feed trips.txt file, indicating the direction of travel for trips this selector refers to. If trip_id is omitted, direction_id must be provided. Caution: this field is still experimental, and subject to change. It may be formally adopted in the future. (path: </code>informed_entity.trip.route_id`)</p></li>
+<li><p><code>trip_direction_id</code>: The <code>direction_id</code>from the GTFS feed trips.txt file, indicating the direction of travel for trips this
+selector refers to. If trip_id is omitted, direction_id must be provided. Caution: this field is still experimental, and subject
+to change. It may be formally adopted in the future. (path: <code>informed_entity.trip.route_id</code>)</p></li>
 <li><p><code>trip_start_time</code>: The initially scheduled start time of this trip instance. When the <code>trip_id</code> corresponds to a non-frequency-based
 trip, this field should either be omitted or be equal to the value in the GTFS feed. When the trip_id correponds to a frequency-based
 trip defined in GTFS <code>frequencies.txt</code>, start_time is required and must be specified for trip updates and vehicle positions.
@@ -166,7 +172,7 @@ TripUpdate with the value of <code>CANCELED</code> or <code>DELETED</code>. If a
 <p>Trips defined in GTFS <code>frequencies.txt</code> with <code>exact_times</code> that is
 empty or equal to 0 cannot be duplicated.</p>
 <p>Existing producers and consumers that were using the ADDED enumeration to represent duplicated trips must follow
-<a href="https://github.com/google/transit/tree/master/gtfs-realtime/spec/en/examples/migration-duplicated.md" class="external-link">the migration guide</a>
+<a href="https://github.com/google/transit/blob/master/gtfs-realtime/spec/en/examples/migration-duplicated.md" class="external-link">the migration guide</a>
 to transition to the <code>DUPLICATED</code> enumeration.
 NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.</p></li>
 <li><p><code>DELETED</code>:
@@ -235,8 +241,7 @@ This field is the text-to-speech version of header_text. It should contain the s
 <code>header_text</code> but formatted such that it can read as text-to-speech (for example, abbreviations removed,
 numbers spelled out, etc.) (path: <code>tts_header_text</code>)</p></li>
 <li><p><code>tts_description_text</code>: Text containing a description for the alert to be used for text-to-speech implementations.
-This field is the text-to-speech version of <code>description_text``. It should contain the same information as </code>description_text“ but formatted such that it can be read as text-to-speech (for example, abbreviations removed,
-numbers spelled out, etc.) (path: <code>tts_description_text</code>)</p></li>
+This field is the text-to-speech version of <code>description_text``. It should contain the same information as </code>description_text<code>but formatted such that it can be read as text-to-speech (for example, abbreviations removed, numbers spelled out, etc.) (path: </code>tts_description_text`)</p></li>
 <li><p><code>severity_level</code>: Severity of the alert. (path: <code>severity_level</code>). Possible values:</p><ul><li><p><code>UNKNOWN_SEVERITY</code></p></li>
 <li><p><code>INFO</code></p></li>
 <li><p><code>WARNING</code></p></li>

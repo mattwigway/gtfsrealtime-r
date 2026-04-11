@@ -27,6 +27,7 @@ objects (i.e. POSIXct)."></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/archived.html">Working with archived data</a></li>
     <li><a class="dropdown-item" href="../articles/positions.html">Vehicle positions</a></li>
   </ul></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
       </ul></div>
@@ -143,7 +144,7 @@ TripUpdate with the value of <code>CANCELED</code> or <code>DELETED</code>. If a
 <p>Trips defined in GTFS <code>frequencies.txt</code> with <code>exact_times</code> that is
 empty or equal to 0 cannot be duplicated.</p>
 <p>Existing producers and consumers that were using the ADDED enumeration to represent duplicated trips must follow
-<a href="https://github.com/google/transit/tree/master/gtfs-realtime/spec/en/examples/migration-duplicated.md" class="external-link">the migration guide</a>
+<a href="https://github.com/google/transit/blob/master/gtfs-realtime/spec/en/examples/migration-duplicated.md" class="external-link">the migration guide</a>
 to transition to the <code>DUPLICATED</code> enumeration.
 NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.</p></li>
 <li><p><code>DELETED</code>:

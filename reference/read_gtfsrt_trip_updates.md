@@ -147,7 +147,7 @@ Note that
 
     Existing producers and consumers that were using the ADDED
     enumeration to represent duplicated trips must follow [the migration
-    guide](https://github.com/google/transit/tree/master/gtfs-realtime/spec/en/examples/migration-duplicated.md)
+    guide](https://github.com/google/transit/blob/master/gtfs-realtime/spec/en/examples/migration-duplicated.md)
     to transition to the `DUPLICATED` enumeration. NOTE: This field is
     still experimental, and subject to change. It may be formally
     adopted in the future.
@@ -357,10 +357,10 @@ Note that
     is `NEW` or `REPLACEMENT`, in such case only the scheduled time, but
     not predictions, must be supplied. When `trip_schedule_relationship`
     is `NEW` or `REPLACEMENT`, `arrival_scheduled_time` and
-    \`departure_scheduled_time“ must still be given with scheduled
-    times, as the StopTimeUpdate defines the stop list of the trip. In
-    this case it indicates that the schedule is unrelated to the static
-    GTFS, but real-time prediction is not available yet.
+    `departure_scheduled_time`must still be given with scheduled times,
+    as the StopTimeUpdate defines the stop list of the trip. In this
+    case it indicates that the schedule is unrelated to the static GTFS,
+    but real-time prediction is not available yet.
 
   - `UNSCHEDULED`: The vehicle is operating a frequency-based trip (GTFS
     `frequencies.txt` with `exact_times` = 0). This value should not be
