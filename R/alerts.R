@@ -42,11 +42,11 @@
 #' - The next few colums represent the informed entity of the alert (i.e. the agency, route, etc. for which the alert
 #'   should be shown). If there are multiple informed entities, the alert will be duplicated for each one.
 #'   - `agency_id`: The `agency_id` from the GTFS static feed that this alert refers to. (path: `informed_entity.agency_id`)
-#'   - `route_id`: The `route_id`` from the GTFS that this alert refers to. If `direction_id`` is provided, `route_id`
+#'   - `route_id`: The `route_id`from the GTFS that this alert refers to. If `direction_id`is provided, `route_id`
 #'        must also be provided. (path: `informed_entity.route_id`)
 #'   - `route_type`: The [`route_type`](https://gtfs.org/documentation/schedule/reference/#routestxt) from the static GTFS
 #'        that this alert refers to. (path: `informed_entity.route_type`)
-#'   - `direction_id`: The `direction_id`` from the static GTFS feed `trips.txt` file, used to select all trips in one
+#'   - `direction_id`: The `direction_id`from the static GTFS feed `trips.txt` file, used to select all trips in one
 #'        direction for a route, specified by route_id. If `direction_id` is provided, route_id must also be provided.
 #'        Caution: this field is still experimental, and subject to change. It may be formally adopted in the future.
 #'        (path: `informed_entity.direction_id`).
@@ -60,7 +60,7 @@
 #'       `start_time`, and `schedule_relationship`=`SCHEDULED` must all be set to identify a trip instance. `trip_route_id` should not be used
 #'        to specify a route-wide alert that affects all trips for a route, and generally will not be - `route_id` should be used instead.
 #'        (path: `informed_entity.trip.route_id`)
-#'   - `trip_direction_id`: The `direction_id`` from the GTFS feed trips.txt file, indicating the direction of travel for trips this
+#'   - `trip_direction_id`: The `direction_id`from the GTFS feed trips.txt file, indicating the direction of travel for trips this
 #'        selector refers to. If trip_id is omitted, direction_id must be provided. Caution: this field is still experimental, and subject
 #'        to change. It may be formally adopted in the future. (path: `informed_entity.trip.route_id`)
 #'   - `trip_start_time`: The initially scheduled start time of this trip instance. When the `trip_id` corresponds to a non-frequency-based
@@ -178,7 +178,7 @@
 #'    numbers spelled out, etc.) (path: `tts_header_text`)
 #' - `tts_description_text`: Text containing a description for the alert to be used for text-to-speech implementations.
 #'    This field is the text-to-speech version of `description_text``. It should contain the same information as
-#'    `description_text`` but formatted such that it can be read as text-to-speech (for example, abbreviations removed,
+#'    `description_text`but formatted such that it can be read as text-to-speech (for example, abbreviations removed,
 #'    numbers spelled out, etc.) (path: `tts_description_text`)
 #' - `severity_level`: Severity of the alert. (path: `severity_level`). Possible values:
 #'     - `UNKNOWN_SEVERITY`

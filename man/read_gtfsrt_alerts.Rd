@@ -45,18 +45,23 @@ the feed. (path: \code{active_period.end}).
 should be shown). If there are multiple informed entities, the alert will be duplicated for each one.
 \itemize{
 \item \code{agency_id}: The \code{agency_id} from the GTFS static feed that this alert refers to. (path: \code{informed_entity.agency_id})
-\item \code{route_id}: The \verb{route_id`` from the GTFS that this alert refers to. If }direction_id`` is provided, \code{route_id}
-must also be provided. (path: `informed_entity.route_id`)
+\item \code{route_id}: The \code{route_id}from the GTFS that this alert refers to. If \code{direction_id}is provided, \code{route_id}
+must also be provided. (path: \code{informed_entity.route_id})
 \item \code{route_type}: The \href{https://gtfs.org/documentation/schedule/reference/#routestxt}{\code{route_type}} from the static GTFS
 that this alert refers to. (path: \code{informed_entity.route_type})
-\item \code{direction_id}: The \verb{direction_id`` from the static GTFS feed }trips.txt\verb{file, used to select all trips in one direction for a route, specified by route_id. If}direction_id\verb{is provided, route_id must also be provided. Caution: this field is still experimental, and subject to change. It may be formally adopted in the future. (path:}informed_entity.direction_id`).
+\item \code{direction_id}: The \code{direction_id}from the static GTFS feed \code{trips.txt} file, used to select all trips in one
+direction for a route, specified by route_id. If \code{direction_id} is provided, route_id must also be provided.
+Caution: this field is still experimental, and subject to change. It may be formally adopted in the future.
+(path: \code{informed_entity.direction_id}).
 \item \code{trip_trip_id}: The \code{trip_id} from the GTFS feed that this selector refers to. For non frequency-based trips
 (trips not defined in GTFS \verb{frequencies.txt``), this field is enough to uniquely identify the trip. For frequency-based trips defined in GTFS }frequencies.txt\verb{, }trip_id\verb{, }start_time\verb{, and }start_date\verb{are all required. For scheduled-based trips (trips not defined in GTFS frequencies.txt), trip_id can only be omitted if the trip can be uniquely identified by a combination of}route_id\verb{, }direction_id\verb{, }start_time\verb{, and }start_date\verb{, and all those fields are provided. (path: }informed_entity.trip.trip_id`)
 \item \code{trip_route_id}: The route_id from the GTFS that this trip refers to. If \code{trip_id} is omitted, \code{route_id}, \code{direction_id},
 \code{start_time}, and \code{schedule_relationship}=\code{SCHEDULED} must all be set to identify a trip instance. \code{trip_route_id} should not be used
 to specify a route-wide alert that affects all trips for a route, and generally will not be - \code{route_id} should be used instead.
 (path: \code{informed_entity.trip.route_id})
-\item \code{trip_direction_id}: The \verb{direction_id`` from the GTFS feed trips.txt file, indicating the direction of travel for trips this selector refers to. If trip_id is omitted, direction_id must be provided. Caution: this field is still experimental, and subject to change. It may be formally adopted in the future. (path: }informed_entity.trip.route_id`)
+\item \code{trip_direction_id}: The \code{direction_id}from the GTFS feed trips.txt file, indicating the direction of travel for trips this
+selector refers to. If trip_id is omitted, direction_id must be provided. Caution: this field is still experimental, and subject
+to change. It may be formally adopted in the future. (path: \code{informed_entity.trip.route_id})
 \item \code{trip_start_time}: The initially scheduled start time of this trip instance. When the \code{trip_id} corresponds to a non-frequency-based
 trip, this field should either be omitted or be equal to the value in the GTFS feed. When the trip_id correponds to a frequency-based
 trip defined in GTFS \code{frequencies.txt}, start_time is required and must be specified for trip updates and vehicle positions.
@@ -178,8 +183,7 @@ This field is the text-to-speech version of header_text. It should contain the s
 \code{header_text} but formatted such that it can read as text-to-speech (for example, abbreviations removed,
 numbers spelled out, etc.) (path: \code{tts_header_text})
 \item \code{tts_description_text}: Text containing a description for the alert to be used for text-to-speech implementations.
-This field is the text-to-speech version of \verb{description_text``. It should contain the same information as }description_text`` but formatted such that it can be read as text-to-speech (for example, abbreviations removed,
-numbers spelled out, etc.) (path: \code{tts_description_text})
+This field is the text-to-speech version of \verb{description_text``. It should contain the same information as }description_text\verb{but formatted such that it can be read as text-to-speech (for example, abbreviations removed, numbers spelled out, etc.) (path: }tts_description_text`)
 \item \code{severity_level}: Severity of the alert. (path: \code{severity_level}). Possible values:
 \itemize{
 \item \code{UNKNOWN_SEVERITY}
