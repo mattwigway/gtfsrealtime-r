@@ -202,7 +202,7 @@
 #'          specifying from which stop you do not have realtime timing information. When `NO_DATA` is set, arrival or
 #'          departure must not be supplied, unless `trip_schedule_relationship` is `NEW` or `REPLACEMENT`, in such case
 #'          only the scheduled time, but not predictions, must be supplied. When `trip_schedule_relationship` is `NEW`
-#'          or `REPLACEMENT`, `arrival_scheduled_time` and `departure_scheduled_time`` must still be given with
+#'          or `REPLACEMENT`, `arrival_scheduled_time` and `departure_scheduled_time`must still be given with
 #'          scheduled times, as the StopTimeUpdate
 #'          defines the stop list of the trip. In this case it indicates that the schedule is unrelated to the static
 #'          GTFS, but real-time prediction is not available yet.

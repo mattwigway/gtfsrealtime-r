@@ -217,7 +217,7 @@ available. When set \code{NO_DATA} is propagated through subsequent stops so thi
 specifying from which stop you do not have realtime timing information. When \code{NO_DATA} is set, arrival or
 departure must not be supplied, unless \code{trip_schedule_relationship} is \code{NEW} or \code{REPLACEMENT}, in such case
 only the scheduled time, but not predictions, must be supplied. When \code{trip_schedule_relationship} is \code{NEW}
-or \code{REPLACEMENT}, \code{arrival_scheduled_time} and `departure_scheduled_time`` must still be given with
+or \code{REPLACEMENT}, \code{arrival_scheduled_time} and \code{departure_scheduled_time}must still be given with
 scheduled times, as the StopTimeUpdate
 defines the stop list of the trip. In this case it indicates that the schedule is unrelated to the static
 GTFS, but real-time prediction is not available yet.
