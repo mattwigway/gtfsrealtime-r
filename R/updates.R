@@ -32,7 +32,7 @@
 #'      When working with archived data, there will quite likely be duplicated IDs between files archived
 #'      at different times (path: `id` property of `FeedEntity` containing this `TripUpdate`).
 #' - `trip_id`: The `trip_id` from the static GTFS feed that this selector refers to. For non frequency-based trips
-#'      (trips not defined in GTFS `frequencies.txt``), this field is enough to uniquely identify the trip. For
+#'      (trips not defined in GTFS `frequencies.txt`), this field is enough to uniquely identify the trip. For
 #'      frequency-based trips defined in GTFS `frequencies.txt`, `trip_id`, `start_time`, and `start_date` are all
 #'      required. For scheduled-based trips (trips not defined in GTFS frequencies.txt), `trip_id` can only be
 #'      omitted if the trip can be uniquely identified by a combination of `route_id`, `direction_id`, `start_time`,
@@ -209,7 +209,7 @@
 #'     - `UNSCHEDULED`: 	The vehicle is operating a frequency-based trip (GTFS `frequencies.txt` with `exact_times` = 0).
 #'          This value should not be used for trips that are not defined in GTFS `frequencies.txt`, or trips in GTFS
 #'          `frequencies.txt` with `exact_times` = 1. Trips containing stop_time_updates with
-#'          `stop_schedule_relationship`: `UNSCHEDULED` must also set the `trip_schedule_relationship``: `UNSCHEDULED`
+#'          `stop_schedule_relationship`: `UNSCHEDULED` must also set the `trip_schedule_relationship`: `UNSCHEDULED`
 #'
 #'           Caution: this field is still experimental, and subject to change. It may be formally adopted in the future.
 #'

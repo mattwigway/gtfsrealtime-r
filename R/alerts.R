@@ -51,7 +51,7 @@
 #'        Caution: this field is still experimental, and subject to change. It may be formally adopted in the future.
 #'        (path: `informed_entity.direction_id`).
 #'   - `trip_trip_id`: The `trip_id` from the GTFS feed that this selector refers to. For non frequency-based trips
-#'        (trips not defined in GTFS `frequencies.txt``), this field is enough to uniquely identify the trip. For
+#'        (trips not defined in GTFS `frequencies.txt`), this field is enough to uniquely identify the trip. For
 #'        frequency-based trips defined in GTFS `frequencies.txt`, `trip_id`, `start_time`, and `start_date` are all
 #'        required. For scheduled-based trips (trips not defined in GTFS frequencies.txt), trip_id can only be omitted
 #'        if the trip can be uniquely identified by a combination of `route_id`, `direction_id`, `start_time`, and
@@ -177,7 +177,7 @@
 #'    `header_text` but formatted such that it can read as text-to-speech (for example, abbreviations removed,
 #'    numbers spelled out, etc.) (path: `tts_header_text`)
 #' - `tts_description_text`: Text containing a description for the alert to be used for text-to-speech implementations.
-#'    This field is the text-to-speech version of `description_text``. It should contain the same information as
+#'    This field is the text-to-speech version of `description_text`. It should contain the same information as
 #'    `description_text`but formatted such that it can be read as text-to-speech (for example, abbreviations removed,
 #'    numbers spelled out, etc.) (path: `tts_description_text`)
 #' - `severity_level`: Severity of the alert. (path: `severity_level`). Possible values:

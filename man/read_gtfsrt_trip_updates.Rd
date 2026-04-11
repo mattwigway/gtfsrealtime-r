@@ -39,7 +39,14 @@ and a warning will be issued, which guarantees that all rows from a single file 
 When working with archived data, there will quite likely be duplicated IDs between files archived
 at different times (path: \code{id} property of \code{FeedEntity} containing this \code{TripUpdate}).
 \item \code{trip_id}: The \code{trip_id} from the static GTFS feed that this selector refers to. For non frequency-based trips
-(trips not defined in GTFS \verb{frequencies.txt``), this field is enough to uniquely identify the trip. For frequency-based trips defined in GTFS }frequencies.txt\verb{, }trip_id\verb{, }start_time\verb{, and }start_date\verb{are all required. For scheduled-based trips (trips not defined in GTFS frequencies.txt),}trip_id\verb{can only be omitted if the trip can be uniquely identified by a combination of}route_id\verb{, }direction_id\verb{, }start_time\verb{, and }start_date\verb{, and all those fields are provided. When }trip_schedule_relationship\code{is}NEW\verb{, it must be specified with a unique value not defined in the GTFS static. When }trip_schedule_relationship\code{is}REPLACEMENT\verb{, the trip_id identifies the trip from static GTFS to be replaced. When }trip_schedule_relationship\code{is}DUPLICATED\verb{within a TripUpdate, the}trip_id\verb{identifies the trip from static GTFS to be duplicated. (path:}trip.trip_id`)
+(trips not defined in GTFS \code{frequencies.txt}), this field is enough to uniquely identify the trip. For
+frequency-based trips defined in GTFS \code{frequencies.txt}, \code{trip_id}, \code{start_time}, and \code{start_date} are all
+required. For scheduled-based trips (trips not defined in GTFS frequencies.txt), \code{trip_id} can only be
+omitted if the trip can be uniquely identified by a combination of \code{route_id}, \code{direction_id}, \code{start_time},
+and \code{start_date}, and all those fields are provided. When \code{trip_schedule_relationship} is \code{NEW}, it must be
+specified with a unique value not defined in the GTFS static. When \code{trip_schedule_relationship} is \code{REPLACEMENT},
+the trip_id identifies the trip from static GTFS to be replaced. When \code{trip_schedule_relationship} is \code{DUPLICATED}
+within a TripUpdate, the \code{trip_id} identifies the trip from static GTFS to be duplicated. (path: \code{trip.trip_id})
 \item \code{route_id}: The \code{route_id} from the static GTFS that this selector refers to. If \code{trip_id} is omitted, \code{route_id},
 \code{direction_id}, \code{start_time}, and \code{trip_schedule_relationship}=\code{SCHEDULED} must all be set to identify a trip instance.
 When \code{trip_schedule_relationship} is \code{NEW}, \code{route_id} must be specified for route which the new trip belongs to.
@@ -224,7 +231,7 @@ GTFS, but real-time prediction is not available yet.
 \item \code{UNSCHEDULED}: 	The vehicle is operating a frequency-based trip (GTFS \code{frequencies.txt} with \code{exact_times} = 0).
 This value should not be used for trips that are not defined in GTFS \code{frequencies.txt}, or trips in GTFS
 \code{frequencies.txt} with \code{exact_times} = 1. Trips containing stop_time_updates with
-\code{stop_schedule_relationship}: \code{UNSCHEDULED} must also set the \verb{trip_schedule_relationship``: }UNSCHEDULED`
+\code{stop_schedule_relationship}: \code{UNSCHEDULED} must also set the \code{trip_schedule_relationship}: \code{UNSCHEDULED}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{Caution: this field is still experimental, and subject to change. It may be formally adopted in the future.
 }\if{html}{\out{</div>}}
