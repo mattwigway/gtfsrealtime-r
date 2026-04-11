@@ -2,7 +2,7 @@
 
   [![R-CMD-check](https://github.com/mattwigway/gtfsrealtime-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mattwigway/gtfsrealtime-r/actions/workflows/R-CMD-check.yaml)
 
-<img src="https://img.shields.io/badge/maintenance-experimental-blue.svg" alt="maintenance-status: experimental" />
+<img src="https://img.shields.io/badge/maintenance-actively_developed-blue.svg" alt="maintenance-status: actively-developed" />
 
 Fast library to read GTFS-realtime files into R data frames.
 
