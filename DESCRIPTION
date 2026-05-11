@@ -36,6 +36,7 @@ Suggests:
     jsonlite,
     tidyselect,
     tibble
+BugReports: https://github.com/mattwigway/gtfsrealtime-r/issues
 VignetteBuilder: knitr
 URL: http://projects.indicatrix.org/gtfsrealtime-r/
 Config/testthat/edition: 3
