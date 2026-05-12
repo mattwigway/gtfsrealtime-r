@@ -212,6 +212,7 @@
 #'          `stop_schedule_relationship`: `UNSCHEDULED` must also set the `trip_schedule_relationship``: `UNSCHEDULED`
 #'
 #'           Caution: this field is still experimental, and subject to change. It may be formally adopted in the future.
+#' - `file_timestamp`: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
 #'
 #' @param filename filename to read. Can be uncompressed or compressed with
 #'      gzip or bzip2. Can also be an http:// or https:// URL.
@@ -246,6 +247,7 @@ read_gtfsrt_trip_updates = function(filename, timezone, label_values = TRUE) {
   result$arrival_scheduled_time = as.POSIXct(result$arrival_scheduled_time, tz = timezone)
   result$departure_time = as.POSIXct(result$departure_time, tz = timezone)
   result$departure_scheduled_time = as.POSIXct(result$departure_scheduled_time, tz = timezone)
+  result$file_timestamp = as.POSIXct(result$file_timestamp, tz = timezone)
 
   if (label_values) {
     result$trip_schedule_relationship = enum_to_factor(

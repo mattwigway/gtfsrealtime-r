@@ -20,9 +20,12 @@ impl MessageType {
 }
 
 // Issue an R warning if there are unexpected types in the message
-pub fn check_types(msg: FeedMessage, expected_type: MessageType) -> Result<()> {
+pub fn check_types(msgs: Vec<FeedMessage>, expected_type: MessageType) -> Result<()> {
     if expected_type != MessageType::Positions {
-        if msg.entity.iter().any(|x| x.vehicle.is_some()) {
+        if msgs
+            .iter()
+            .any(|msg| msg.entity.iter().any(|x| x.vehicle.is_some()))
+        {
             R!(r#"
                 cli::cli_warn(c(
                     "!" = paste("File does not contain", {{ expected_type.to_text() }}),
@@ -34,7 +37,10 @@ pub fn check_types(msg: FeedMessage, expected_type: MessageType) -> Result<()> {
     }
 
     if expected_type != MessageType::Updates {
-        if msg.entity.iter().any(|x| x.trip_update.is_some()) {
+        if msgs
+            .iter()
+            .any(|msg| msg.entity.iter().any(|x| x.trip_update.is_some()))
+        {
             R!(r#"
                 cli::cli_warn(c(
                     "!" = paste("File does not contain", {{ expected_type.to_text() }}),
@@ -46,7 +52,10 @@ pub fn check_types(msg: FeedMessage, expected_type: MessageType) -> Result<()> {
     }
 
     if expected_type != MessageType::Alerts {
-        if msg.entity.iter().any(|x| x.alert.is_some()) {
+        if msgs
+            .iter()
+            .any(|msg| msg.entity.iter().any(|x| x.alert.is_some()))
+        {
             R!(r#"
                 cli::cli_warn(c(
                     "!" = paste("File does not contain", {{ expected_type.to_text() }}),

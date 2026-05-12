@@ -185,6 +185,7 @@
 #'     - `INFO`
 #'     - `WARNING`
 #'     - `SEVERE`
+#' - `file_timestamp`: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
 #'
 #'
 #' @param filename filename to read. Can be uncompressed or compressed with
@@ -217,6 +218,7 @@ read_gtfsrt_alerts = function(filename, timezone, label_values = TRUE) {
 
   result$start = as.POSIXct(result$start, tz = timezone)
   result$end = as.POSIXct(result$end, tz = timezone)
+  result$file_timestamp = as.POSIXct(result$file_timestamp, tz = timezone)
 
   if (label_values) {
     result$trip_schedule_relationship = enum_to_factor(

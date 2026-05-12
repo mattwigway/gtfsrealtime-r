@@ -42,69 +42,78 @@ pub struct RVehiclePosition {
     vehicle_label: Option<String>,
     vehicle_license_plate: Option<String>,
     vehicle_wheelchair_accessible: Option<i32>,
+
+    // timestamp of file generation
+    file_timestamp: Option<u64>,
 }
 
 // Read GTFS-RT vehicle positions
 #[extendr]
 pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehiclePosition>> {
-    let msg = read_feed(file)?;
+    let msgs = read_feed(file)?;
 
-    let mut id_deduplicator = IdDeduplicator::new();
-
-    let content: Vec<RVehiclePosition> = msg
-        .entity
+    let content: Vec<RVehiclePosition> = msgs
         .iter()
-        .filter(|entity| entity.vehicle.is_some())
-        .map(|entity| {
-            let veh = entity.vehicle.as_ref().unwrap();
-            let trip = veh.trip.as_ref();
-            let id = id_deduplicator.deduplicate_id(entity.id.clone());
-            RVehiclePosition {
-                // only one vehicle position per row, can move instead of cloning
-                id: id,
-                latitude: veh.position.as_ref().map_or(None, |pos| Some(pos.latitude)),
-                longitude: veh
-                    .position
-                    .as_ref()
-                    .map_or(None, |pos| Some(pos.longitude)),
-                bearing: veh.position.as_ref().map_or(None, |pos| pos.bearing),
-                odometer: veh.position.as_ref().map_or(None, |pos| pos.odometer),
-                speed: veh.position.as_ref().map_or(None, |pos| pos.speed),
+        .map(|msg| {
+            // it is expected that IDs are duplicated between messages in a zip file of (say) a day of data
+            let mut id_deduplicator = IdDeduplicator::new();
 
-                trip_id: trip.map_or(None, |t| t.trip_id.clone()),
-                route_id: trip.map_or(None, |t| t.route_id.clone()),
-                direction_id: trip.map_or(None, |t| t.direction_id),
-                start_time: trip.map_or(None, |t| t.start_time.clone()),
-                start_date: trip.map_or(None, |t| t.start_date.clone()),
-                schedule_relationship: trip.map_or(None, |t| t.schedule_relationship),
+            msg.entity
+                .iter()
+                .filter(|entity| entity.vehicle.is_some())
+                .map(move |entity| {
+                    let veh = entity.vehicle.as_ref().unwrap();
+                    let trip = veh.trip.as_ref();
+                    let id = id_deduplicator.deduplicate_id(entity.id.clone());
+                    RVehiclePosition {
+                        // only one vehicle position per row, can move instead of cloning
+                        id: id,
+                        latitude: veh.position.as_ref().map_or(None, |pos| Some(pos.latitude)),
+                        longitude: veh
+                            .position
+                            .as_ref()
+                            .map_or(None, |pos| Some(pos.longitude)),
+                        bearing: veh.position.as_ref().map_or(None, |pos| pos.bearing),
+                        odometer: veh.position.as_ref().map_or(None, |pos| pos.odometer),
+                        speed: veh.position.as_ref().map_or(None, |pos| pos.speed),
 
-                // stop
-                stop_id: veh.stop_id.clone(),
-                current_stop_sequence: veh.current_stop_sequence,
-                current_status: veh.current_status,
+                        trip_id: trip.map_or(None, |t| t.trip_id.clone()),
+                        route_id: trip.map_or(None, |t| t.route_id.clone()),
+                        direction_id: trip.map_or(None, |t| t.direction_id),
+                        start_time: trip.map_or(None, |t| t.start_time.clone()),
+                        start_date: trip.map_or(None, |t| t.start_date.clone()),
+                        schedule_relationship: trip.map_or(None, |t| t.schedule_relationship),
 
-                // misc
-                timestamp: veh.timestamp,
-                congestion_level: veh.congestion_level,
-                occupancy_status: veh.occupancy_status,
-                occupancy_percentage: veh.occupancy_percentage,
+                        // stop
+                        stop_id: veh.stop_id.clone(),
+                        current_stop_sequence: veh.current_stop_sequence,
+                        current_status: veh.current_status,
 
-                vehicle_id: veh.vehicle.as_ref().map_or(None, |veh| veh.id.clone()),
-                vehicle_label: veh.vehicle.as_ref().map_or(None, |veh| veh.label.clone()),
-                vehicle_license_plate: veh
-                    .vehicle
-                    .as_ref()
-                    .map_or(None, |veh| veh.license_plate.clone()),
-                vehicle_wheelchair_accessible: veh
-                    .vehicle
-                    .as_ref()
-                    .map_or(None, |veh| veh.wheelchair_accessible),
-            }
+                        // misc
+                        timestamp: veh.timestamp,
+                        congestion_level: veh.congestion_level,
+                        occupancy_status: veh.occupancy_status,
+                        occupancy_percentage: veh.occupancy_percentage,
+
+                        vehicle_id: veh.vehicle.as_ref().map_or(None, |veh| veh.id.clone()),
+                        vehicle_label: veh.vehicle.as_ref().map_or(None, |veh| veh.label.clone()),
+                        vehicle_license_plate: veh
+                            .vehicle
+                            .as_ref()
+                            .map_or(None, |veh| veh.license_plate.clone()),
+                        vehicle_wheelchair_accessible: veh
+                            .vehicle
+                            .as_ref()
+                            .map_or(None, |veh| veh.wheelchair_accessible),
+                        file_timestamp: msg.header.timestamp,
+                    }
+                })
         })
+        .flatten()
         .collect();
 
     if content.len() == 0 {
-        check_types(msg, MessageType::Positions)?;
+        check_types(msgs, MessageType::Positions)?;
     }
 
     return content.into_dataframe();

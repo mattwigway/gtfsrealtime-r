@@ -38,9 +38,10 @@ pub struct RAlert {
     tts_header_text: Option<String>,
     tts_description_text: Option<String>,
     severity_level: Option<i32>, // TODO
-                                 // image_url: Option<String>,
-                                 // image_type: Option<String>,
-                                 // image_alternative_text: Option<String>
+    // image_url: Option<String>,
+    // image_type: Option<String>,
+    // image_alternative_text: Option<String>
+    file_timestamp: Option<u64>,
 }
 
 fn accumulate_languages(
@@ -88,141 +89,157 @@ fn message_for_language(
 // Read a GTFS-rt service alerts feed.
 #[extendr]
 pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
-    let msg = read_feed(file)?;
+    let msgs = read_feed(file)?;
 
-    let mut id_deduplicator = IdDeduplicator::new();
-
-    let content = msg
-        .entity
+    let content = msgs
         .iter()
-        .filter(|e| e.alert.is_some())
-        .map(|entity| {
-            let alert = entity.alert.as_ref().unwrap();
-            let id = id_deduplicator.deduplicate_id(entity.id.clone());
+        .map(|msg| {
+            // IDs expected to be unique only within a feed
+            let mut id_deduplicator = IdDeduplicator::new();
 
-            // figure out what languages we have
-            let mut languages: HashSet<Option<String>> = HashSet::new();
-            accumulate_languages(&mut languages, &alert.cause_detail);
-            accumulate_languages(&mut languages, &alert.effect_detail);
-            accumulate_languages(&mut languages, &alert.url);
-            accumulate_languages(&mut languages, &alert.header_text);
-            accumulate_languages(&mut languages, &alert.description_text);
-            accumulate_languages(&mut languages, &alert.tts_header_text);
-            accumulate_languages(&mut languages, &alert.tts_description_text);
-            // todo the TranslatedImage, but hopefully it has the same translations...
-            accumulate_languages(&mut languages, &alert.image_alternative_text);
-
-            // if an alert doesn't have any of the translated strings, make sure we still get a record for it
-            if languages.is_empty() {
-                languages.insert(None);
-            }
-
-            // duplicate alert for each time range, but since time range is optional make sure there is at least one.
-            let ranges: Vec<Option<&TimeRange>> = if alert.active_period.is_empty() {
-                vec![None]
-            } else {
-                alert.active_period.iter().map(Some).collect()
-            };
-
-            // also duplicate alert for each informed entity. there should always be 1+ per spec,
-            // but allow for the possibility there is not.
-            let informed_entities: Vec<Option<&EntitySelector>> =
-                if alert.informed_entity.is_empty() {
-                    vec![None]
-                } else {
-                    alert.informed_entity.iter().map(Some).collect()
-                };
-
-            ranges
+            msg.entity
                 .iter()
-                .map(|range| {
-                    informed_entities
-                        .iter()
-                        .map(|informed_entity| {
-                            languages
-                                .iter()
-                                .map(|lang| {
-                                    let trip = informed_entity.map_or(None, |e| e.trip.clone());
+                .filter(|e| e.alert.is_some())
+                .map(move |entity| {
+                    let alert = entity.alert.as_ref().unwrap();
+                    let id = id_deduplicator.deduplicate_id(entity.id.clone());
 
-                                    RAlert {
-                                        id: id.clone(),
-                                        start: range.map_or(None, |r| r.start),
-                                        end: range.map_or(None, |r| r.end),
-                                        agency_id: informed_entity
-                                            .map_or(None, |e| e.agency_id.clone()),
-                                        route_id: informed_entity
-                                            .map_or(None, |e| e.route_id.clone()),
-                                        route_type: informed_entity.map_or(None, |e| e.route_type),
-                                        direction_id: informed_entity
-                                            .map_or(None, |e| e.direction_id),
-                                        // trip? works here because it is inside a function that returns an option (the closure in map_or)
-                                        trip_trip_id: trip
-                                            .as_ref()
-                                            .map_or(None, |t| t.trip_id.clone()),
-                                        trip_route_id: trip
-                                            .as_ref()
-                                            .map_or(None, |t| t.route_id.clone()),
-                                        trip_direction_id: trip
-                                            .as_ref()
-                                            .map_or(None, |t| t.direction_id.clone()),
-                                        trip_start_time: trip
-                                            .as_ref()
-                                            .map_or(None, |t| t.start_time.clone()),
-                                        trip_start_date: trip
-                                            .as_ref()
-                                            .map_or(None, |t| t.start_date.clone()),
-                                        trip_schedule_relationship: trip
-                                            .as_ref()
-                                            .map_or(None, |t| t.schedule_relationship.clone()),
-                                        trip_modification_id: trip.as_ref().map_or(None, |t| {
-                                            t.modified_trip.clone()?.modifications_id.clone()
-                                        }),
-                                        stop_id: informed_entity
-                                            .map_or(None, |e| e.stop_id.clone()),
-                                        cause: alert.cause,
-                                        effect: alert.effect,
-                                        language: lang.clone(),
-                                        cause_detail: message_for_language(
-                                            &lang,
-                                            &alert.cause_detail,
-                                        ),
-                                        effect_detail: message_for_language(
-                                            &lang,
-                                            &alert.effect_detail,
-                                        ),
-                                        url: message_for_language(&lang, &alert.url),
-                                        header_text: message_for_language(
-                                            &lang,
-                                            &alert.header_text,
-                                        ),
-                                        description_text: message_for_language(
-                                            &lang,
-                                            &alert.description_text,
-                                        ),
-                                        tts_header_text: message_for_language(
-                                            &lang,
-                                            &alert.tts_header_text,
-                                        ),
-                                        tts_description_text: message_for_language(
-                                            &lang,
-                                            &alert.tts_description_text,
-                                        ),
-                                        severity_level: alert.severity_level,
-                                    }
+                    // figure out what languages we have
+                    let mut languages: HashSet<Option<String>> = HashSet::new();
+                    accumulate_languages(&mut languages, &alert.cause_detail);
+                    accumulate_languages(&mut languages, &alert.effect_detail);
+                    accumulate_languages(&mut languages, &alert.url);
+                    accumulate_languages(&mut languages, &alert.header_text);
+                    accumulate_languages(&mut languages, &alert.description_text);
+                    accumulate_languages(&mut languages, &alert.tts_header_text);
+                    accumulate_languages(&mut languages, &alert.tts_description_text);
+                    // todo the TranslatedImage, but hopefully it has the same translations...
+                    accumulate_languages(&mut languages, &alert.image_alternative_text);
+
+                    // if an alert doesn't have any of the translated strings, make sure we still get a record for it
+                    if languages.is_empty() {
+                        languages.insert(None);
+                    }
+
+                    // duplicate alert for each time range, but since time range is optional make sure there is at least one.
+                    let ranges: Vec<Option<&TimeRange>> = if alert.active_period.is_empty() {
+                        vec![None]
+                    } else {
+                        alert.active_period.iter().map(Some).collect()
+                    };
+
+                    // also duplicate alert for each informed entity. there should always be 1+ per spec,
+                    // but allow for the possibility there is not.
+                    let informed_entities: Vec<Option<&EntitySelector>> =
+                        if alert.informed_entity.is_empty() {
+                            vec![None]
+                        } else {
+                            alert.informed_entity.iter().map(Some).collect()
+                        };
+
+                    ranges
+                        .iter()
+                        .map(|range| {
+                            informed_entities
+                                .iter()
+                                .map(|informed_entity| {
+                                    languages
+                                        .iter()
+                                        .map(|lang| {
+                                            let trip =
+                                                informed_entity.map_or(None, |e| e.trip.clone());
+
+                                            RAlert {
+                                                id: id.clone(),
+                                                start: range.map_or(None, |r| r.start),
+                                                end: range.map_or(None, |r| r.end),
+                                                agency_id: informed_entity
+                                                    .map_or(None, |e| e.agency_id.clone()),
+                                                route_id: informed_entity
+                                                    .map_or(None, |e| e.route_id.clone()),
+                                                route_type: informed_entity
+                                                    .map_or(None, |e| e.route_type),
+                                                direction_id: informed_entity
+                                                    .map_or(None, |e| e.direction_id),
+                                                // trip? works here because it is inside a function that returns an option (the closure in map_or)
+                                                trip_trip_id: trip
+                                                    .as_ref()
+                                                    .map_or(None, |t| t.trip_id.clone()),
+                                                trip_route_id: trip
+                                                    .as_ref()
+                                                    .map_or(None, |t| t.route_id.clone()),
+                                                trip_direction_id: trip
+                                                    .as_ref()
+                                                    .map_or(None, |t| t.direction_id.clone()),
+                                                trip_start_time: trip
+                                                    .as_ref()
+                                                    .map_or(None, |t| t.start_time.clone()),
+                                                trip_start_date: trip
+                                                    .as_ref()
+                                                    .map_or(None, |t| t.start_date.clone()),
+                                                trip_schedule_relationship: trip
+                                                    .as_ref()
+                                                    .map_or(None, |t| {
+                                                        t.schedule_relationship.clone()
+                                                    }),
+                                                trip_modification_id: trip.as_ref().map_or(
+                                                    None,
+                                                    |t| {
+                                                        t.modified_trip
+                                                            .clone()?
+                                                            .modifications_id
+                                                            .clone()
+                                                    },
+                                                ),
+                                                stop_id: informed_entity
+                                                    .map_or(None, |e| e.stop_id.clone()),
+                                                cause: alert.cause,
+                                                effect: alert.effect,
+                                                language: lang.clone(),
+                                                cause_detail: message_for_language(
+                                                    &lang,
+                                                    &alert.cause_detail,
+                                                ),
+                                                effect_detail: message_for_language(
+                                                    &lang,
+                                                    &alert.effect_detail,
+                                                ),
+                                                url: message_for_language(&lang, &alert.url),
+                                                header_text: message_for_language(
+                                                    &lang,
+                                                    &alert.header_text,
+                                                ),
+                                                description_text: message_for_language(
+                                                    &lang,
+                                                    &alert.description_text,
+                                                ),
+                                                tts_header_text: message_for_language(
+                                                    &lang,
+                                                    &alert.tts_header_text,
+                                                ),
+                                                tts_description_text: message_for_language(
+                                                    &lang,
+                                                    &alert.tts_description_text,
+                                                ),
+                                                severity_level: alert.severity_level,
+                                                file_timestamp: msg.header.timestamp,
+                                            }
+                                        })
+                                        .collect::<Vec<RAlert>>()
                                 })
+                                .flatten()
                                 .collect::<Vec<RAlert>>()
                         })
                         .flatten()
                         .collect::<Vec<RAlert>>()
                 })
                 .flatten()
-                .collect::<Vec<RAlert>>()
         })
         .flatten()
         .collect::<Vec<RAlert>>();
 
     if content.len() == 0 {
-        check_types(msg, MessageType::Alerts)?;
+        check_types(msgs, MessageType::Alerts)?;
     }
 
     return content.into_dataframe();

@@ -3,7 +3,7 @@ name = 'gtfsrealtime'
 publish = false
 version = '0.1.0'
 edition = '2021'
-rust-version = '1.82'
+rust-version = '1.88'
 
 [lib]
 crate-type = [ 'staticlib' ]
@@ -20,6 +20,7 @@ strum = "0.28.0"
 strum_macros = "0.28.0"
 ureq = "3.1.4"
 gtfsrt-macros = { path = "../gtfsrt-macros" }
+zip = "8.6.0"
 
 [profile.release]
 lto = true
