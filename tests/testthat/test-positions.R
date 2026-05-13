@@ -287,7 +287,7 @@ test_that("can read from zip", {
       dplyr::mutate(file_index = 2)
   )
 
-  file.remove(dir, recursive = TRUE)
+  unlink(dir, recursive = TRUE)
   file.remove(zfile)
 
   expect_equal(positions, expected)
