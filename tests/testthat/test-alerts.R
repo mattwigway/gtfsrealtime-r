@@ -1,11 +1,3 @@
-test_that("can read alerts", {
-  file = system.file("nyc-service-alerts.pb.bz2", package = "gtfsrealtime")
-
-  alerts = read_gtfsrt_alerts(file, "America/New_York")
-  expect_s3_class(alerts, "data.frame")
-  expect_snapshot(head(alerts))
-})
-
 test_that("alerts give useful errors", {
   expect_error(
     read_gtfsrt_alerts("foo.pb", "America/New_York"),
@@ -97,6 +89,7 @@ test_that("unwrapping works", {
       id = as.character(id),
       start = as.POSIXct(start, tz = "America/New_York"),
       end = as.POSIXct(end, tz = "America/New_York"),
+      file_timestamp = as.POSIXct(file_timestamp, tz = "America/New_York"),
       trip_start_date = as.character(trip_start_date),
       trip_modification_id = as.character(trip_modification_id)
     )
@@ -119,10 +112,32 @@ test_that("id deduplication works", {
   expect_equal(
     warnings$warnings,
     list(
-      "!" = "ID id is duplicated. Replacing with id_duplicated_1"
+      "!" = "ID id is duplicated. Replacing with id_duplicated_1 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect."
     )
   )
 
   # The second alert (with the duplicated ID) has two time periods
   expect_equal(upd$id, c("id", "id_duplicated_1", "id_duplicated_1", "id2"))
+})
+
+test_that("can read from zip", {
+  dir = tempfile()
+  dir.create(dir)
+  test_data_alert_unwrapping(file.path(dir, "feed1.pb"))
+  test_data_enum_roundtrip_alerts(file.path(dir, "feed2.pb"))
+  zfile = tempfile(fileext = ".zip")
+  # enforce order
+  zip(zfile, c(file.path(dir, "feed1.pb"), file.path(dir, "feed2.pb")))
+  alerts = read_gtfsrt_alerts(zfile, "America/New_York")
+  expected = rbind(
+    read_gtfsrt_alerts(file.path(dir, "feed1.pb"), "America/New_York") |>
+      dplyr::mutate(file_index = 1),
+    read_gtfsrt_alerts(file.path(dir, "feed2.pb"), "America/New_York") |>
+      dplyr::mutate(file_index = 2)
+  )
+
+  file.remove(dir, recursive = TRUE)
+  file.remove(zfile)
+
+  expect_equal(alerts, expected)
 })

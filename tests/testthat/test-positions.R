@@ -270,7 +270,5 @@ test_that("can read from zip", {
   file.remove(dir, recursive = TRUE)
   file.remove(zfile)
 
-  # make sure they come out in the right order
-
   expect_equal(positions, expected)
 })
