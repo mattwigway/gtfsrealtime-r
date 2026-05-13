@@ -59,7 +59,20 @@ Note that
 
 - `trip_id`: The `trip_id` from the static GTFS feed that this selector
   refers to. For non frequency-based trips (trips not defined in GTFS
-  ``` frequencies.txt``), this field is enough to uniquely identify the trip. For frequency-based trips defined in GTFS  ```frequencies.txt`, `trip_id`, `start_time`, and `start_date`are all required. For scheduled-based trips (trips not defined in GTFS frequencies.txt),`trip_id`can only be omitted if the trip can be uniquely identified by a combination of`route_id`, `direction_id`, `start_time`, and `start_date`, and all those fields are provided. When `trip_schedule_relationship`is`NEW`, it must be specified with a unique value not defined in the GTFS static. When `trip_schedule_relationship`is`REPLACEMENT`, the trip_id identifies the trip from static GTFS to be replaced. When `trip_schedule_relationship`is`DUPLICATED`within a TripUpdate, the`trip_id`identifies the trip from static GTFS to be duplicated. (path:`trip.trip_id\`)
+  `frequencies.txt`), this field is enough to uniquely identify the
+  trip. For frequency-based trips defined in GTFS `frequencies.txt`,
+  `trip_id`, `start_time`, and `start_date` are all required. For
+  scheduled-based trips (trips not defined in GTFS frequencies.txt),
+  `trip_id` can only be omitted if the trip can be uniquely identified
+  by a combination of `route_id`, `direction_id`, `start_time`, and
+  `start_date`, and all those fields are provided. When
+  `trip_schedule_relationship` is `NEW`, it must be specified with a
+  unique value not defined in the GTFS static. When
+  `trip_schedule_relationship` is `REPLACEMENT`, the trip_id identifies
+  the trip from static GTFS to be replaced. When
+  `trip_schedule_relationship` is `DUPLICATED` within a TripUpdate, the
+  `trip_id` identifies the trip from static GTFS to be duplicated.
+  (path: `trip.trip_id`)
 
 - `route_id`: The `route_id` from the static GTFS that this selector
   refers to. If `trip_id` is omitted, `route_id`, `direction_id`,
@@ -370,8 +383,8 @@ Note that
     used for trips that are not defined in GTFS `frequencies.txt`, or
     trips in GTFS `frequencies.txt` with `exact_times` = 1. Trips
     containing stop_time_updates with `stop_schedule_relationship`:
-    `UNSCHEDULED` must also set the
-    ``` trip_schedule_relationship``:  ```UNSCHEDULED\`
+    `UNSCHEDULED` must also set the `trip_schedule_relationship`:
+    `UNSCHEDULED`
 
         Caution: this field is still experimental, and subject to change. It may be formally adopted in the future.
 

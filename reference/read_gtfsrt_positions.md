@@ -37,10 +37,6 @@ read_gtfsrt_positions(filename, timezone, as_sf = FALSE, label_values = TRUE)
   converted to factors with their English labels. If false, they will be
   left as numeric codes? Default TRUE
 
-## Value
-
-data frame containing vehicle position data
-
 ## Details
 
 Typically, GTFS-realtime feeds will contain only a single type of
@@ -48,12 +44,13 @@ entity, but if there are multiple types of entities in a single feed,
 this function will read only the vehicle positions. Each vehicle
 position will become a single row in the data frame.
 
-The data frame will have the following columns. Note that most of these
-columns can contain NAs (and in most feeds, many will be entirely NA).
-GTFS-realtime is a hierarchical format that is converted to a flat
-format for use in R; the paths refer to where each column comes from
-within the GTFS-realtime VehiclePosition data structure. Each column is
-reported below with its definition, many of which come verbatim from the
+\#' @returns data frame containing vehicle position data. The data frame
+will have the following columns. Note that most of these columns can
+contain NAs (and in most feeds, many will be entirely NA). GTFS-realtime
+is a hierarchical format that is converted to a flat format for use in
+R; the paths refer to where each column comes from within the
+GTFS-realtime VehiclePosition data structure. Each column is reported
+below with its definition, many of which come verbatim from the
 [GTFS-realtime
 specification](https://gtfs.org/documentation/realtime/reference/)
 

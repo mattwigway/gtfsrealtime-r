@@ -30,6 +30,7 @@ objects (i.e. POSIXct)."></head><body>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/mattwigway/gtfsrealtime-r/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -39,7 +40,7 @@ objects (i.e. POSIXct)."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Read GTFS-realtime vehicle positions into a data frame.</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/mattwigway/gtfsrealtime-r/blob/main/R/positions.R" class="external-link"><code>R/positions.R</code></a></small>
       <div class="d-none name"><code>read_gtfsrt_positions.Rd</code></div>
     </div>
 
@@ -83,16 +84,13 @@ will be left as numeric codes? Default TRUE</p></dd>
 
 </dl></div>
     <div class="section level2">
-    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>data frame containing vehicle position data</p>
-    </div>
-    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Typically, GTFS-realtime feeds will contain only a single type of entity, but if there
 are multiple types of entities in a single feed, this function will read only the
 vehicle positions. Each vehicle position will become a single row in the data frame.</p>
-<p>The data frame will have the following columns. Note that most of these columns can contain NAs
-(and in most feeds, many will be entirely NA). GTFS-realtime is a hierarchical format that is
+<p>#' @returns data frame containing vehicle position data. The data frame will have the following columns.
+Note that most of these columns can contain NAs (and in most feeds, many will be entirely NA).
+GTFS-realtime is a hierarchical format that is
 converted to a flat format for use in R; the paths refer to where each column comes from
 within the GTFS-realtime VehiclePosition data structure. Each column is reported below with
 its definition, many of which come verbatim from the <a href="https://gtfs.org/documentation/realtime/reference/" class="external-link">GTFS-realtime specification</a></p><ul><li><p><code>id</code>: GTFS-realtime entity ID. These are required by the specification to be unique within a
