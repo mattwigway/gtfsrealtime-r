@@ -40,8 +40,6 @@ pub fn read_feed(
 
         if header == ZIP_MAGIC_BYTES {
             // try to read every element of the zip file
-            // Note there cannot be elements which are not GTFS realtime feeds, but it is ok if the
-            // feeds are compressed with gzip or bzip2 inside the zip archive
             let mut archive = ZipArchive::new(file)?;
 
             let mut messages: Vec<FeedMessage> = Vec::new();
@@ -55,13 +53,16 @@ pub fn read_feed(
                     match read_one_feed(buf) {
                         Ok(msg) => messages.push(msg),
                         Err(e) => {
-                            R!(r#"
-                                cli::cli_warn(c(
-                                    "!" = paste("Failed to read", {{ entry.name() }}),
-                                    "x" = {{ e.to_string() }},
-                                    "i" = "This file will be skipped"
-                                ))
-                            "#)?;
+                            // don't warn about weird apple files
+                            if !entry.name().ends_with(".DS_Store") {
+                                R!(r#"
+                                    cli::cli_warn(c(
+                                        "!" = paste("Failed to read", {{ entry.name() }}),
+                                        "x" = {{ e.to_string() }},
+                                        "i" = "This file will be skipped"
+                                    ))
+                                "#)?;
+                            }
                         }
                     };
                 }
