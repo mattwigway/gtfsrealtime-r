@@ -304,3 +304,22 @@ test_that("can read from zip", {
     )
   )
 })
+
+test_that("correctly reports that this is not a positions file", {
+  warnings = list(warnings = list())
+  local_mocked_bindings(cli_warn = function(x) warnings$warnings <<- append(warnings$warnings, x), .package = "cli")
+
+  feed = tempfile()
+  test_data_enum_roundtrip_alerts(feed)
+  read_gtfsrt_positions(feed, "Etc/UTC")
+  file.remove(feed)
+
+  expect_equal(
+    warnings$warnings,
+    list(
+      "!" = "File does not contain vehicle positions.",
+      "i" = "It does contain alerts",
+      "v" = "You can read them with {.fn read_gtfsrt_alerts}"
+    )
+  )
+})

@@ -141,3 +141,22 @@ test_that("can read from zip", {
 
   expect_equal(alerts, expected)
 })
+
+test_that("correctly reports that this is not an alerts file", {
+  warnings = list(warnings = list())
+  local_mocked_bindings(cli_warn = function(x) warnings$warnings <<- append(warnings$warnings, x), .package = "cli")
+
+  feed = tempfile()
+  test_data_enum_roundtrip_updates(feed)
+  read_gtfsrt_alerts(feed, "Etc/UTC")
+  file.remove(feed)
+
+  expect_equal(
+    warnings$warnings,
+    list(
+      "!" = "File does not contain alerts.",
+      "i" = "It does contain trip updates",
+      "v" = "You can read them with {.fn read_gtfsrt_trip_updates}"
+    )
+  )
+})
