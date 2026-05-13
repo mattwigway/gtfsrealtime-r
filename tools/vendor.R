@@ -40,7 +40,7 @@ extract_licenses = function(licenses) {
 }
 
 # vendor Rust packages
-rextendr::vendor_pkgs()
+rextendr::vendor_crates()
 
 # extract author and license information
 vendor_files = untar("src/rust/vendor.tar.xz", list = TRUE)
