@@ -35,7 +35,7 @@ impl IdDeduplicator {
                     // rather than dealing with the result further up.
                     let _ = R!(r#"
                         cli::cli_warn(c(
-                            "!" = paste("ID", {{ id }}, "is duplicated. Replacing with", {{ new_id.clone() }})
+                            "!" = paste("ID", {{ id }}, "is duplicated. Replacing with", {{ new_id.clone() }}, ". This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect.")
                         ))
                     "#);
 

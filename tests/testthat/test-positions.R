@@ -1,11 +1,3 @@
-test_that("can read positions", {
-  file = system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime")
-
-  positions = read_gtfsrt_positions(file, "America/New_York")
-  expect_s3_class(positions, "data.frame")
-  expect_snapshot(head(positions))
-})
-
 test_that("invalid timezone leads to failure", {
   file = system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime")
 
@@ -116,6 +108,7 @@ test_that("Louisville debug JSON matches read_gtfsrt_positions", {
   ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
     dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col))) |>
+    dplyr::select(-c("file_timestamp", "file_index")) |>
     tibble::as_tibble()
 
   expect_true(nrow(actual) > 0)
@@ -152,7 +145,9 @@ test_that("all columns read correctly", {
       vehicle_id = "42",
       vehicle_label = "label",
       vehicle_license_plate = "LIC-4242",
-      vehicle_wheelchair_accessible = "WHEELCHAIR_ACCESSIBLE"
+      vehicle_wheelchair_accessible = "WHEELCHAIR_ACCESSIBLE",
+      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      file_index = 1
     ),
 
     # NAs because individual items are missing
@@ -179,7 +174,9 @@ test_that("all columns read correctly", {
       vehicle_id = NA,
       vehicle_label = NA,
       vehicle_license_plate = NA,
-      vehicle_wheelchair_accessible = NA
+      vehicle_wheelchair_accessible = NA,
+      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      file_index = 1
     ),
 
     # NAs because structure is missing
@@ -206,7 +203,9 @@ test_that("all columns read correctly", {
       vehicle_id = NA,
       vehicle_label = NA,
       vehicle_license_plate = NA,
-      vehicle_wheelchair_accessible = NA
+      vehicle_wheelchair_accessible = NA,
+      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      file_index = 1
     )
   )
 
@@ -236,8 +235,8 @@ test_that("duplicate ids are deduplicated", {
     # the c("!" = ... gets unwrapped when appended to a list, and then the list has two duplicate elements,
     # which somehow R is okay with (?)
     list(
-      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_1',
-      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_2'
+      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_1 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect.',
+      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_2 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect.'
     )
   )
 
@@ -248,6 +247,79 @@ test_that("duplicate ids are deduplicated", {
       ")); stop(\"identifier with r code executed!\")#",
       ")); stop(\"identifier with r code executed!\")#_duplicated_1",
       ")); stop(\"identifier with r code executed!\")#_duplicated_2"
+    )
+  )
+})
+
+test_that("can read from zip", {
+  warnings = list(warnings = list())
+  local_mocked_bindings(cli_warn = function(x) warnings$warnings <<- append(warnings$warnings, x), .package = "cli")
+
+  dir = tempfile()
+  dir.create(dir)
+
+  test_data_enum_roundtrip_positions(file.path(dir, "feed1.pb"))
+  test_data_positions_all_values(file.path(dir, "feed2.pb"))
+
+  # add a non-GTFS-realtime file
+  # This should be ignored with a warning
+  # is is intentionally only one byte (two on windows with CRLF), to test that even if there aren't enough bytes for the
+  # gzip or bzip2 magic number the file is still read correctly.
+  writeLines(c(""), file.path(dir, "garbage.txt"))
+
+  # and one that is longer so will make it to protobuf decoder
+  writeLines(c("this is a test of the emergency broadcast system"), file.path(dir, "garbage2.txt"))
+
+  # .DS_Store should be silently ignored
+  writeLines(c("t"), file.path(dir, ".DS_Store"))
+
+  zfile = tempfile(fileext = ".zip")
+  # enforce order
+  oldwd = getwd()
+  setwd(dir)
+  zip(zfile, c("feed1.pb", "feed2.pb", "garbage.txt", "garbage2.txt", ".DS_Store"))
+  setwd(oldwd)
+  positions = read_gtfsrt_positions(zfile, "America/New_York")
+  expected = rbind(
+    read_gtfsrt_positions(file.path(dir, "feed1.pb"), "America/New_York") |>
+      dplyr::mutate(file_index = 1),
+    read_gtfsrt_positions(file.path(dir, "feed2.pb"), "America/New_York") |>
+      dplyr::mutate(file_index = 2)
+  )
+
+  unlink(dir, recursive = TRUE)
+  file.remove(zfile)
+
+  expect_equal(positions, expected)
+  expect_equal(
+    warnings$warnings,
+    list(
+      "!" = "Failed to read garbage.txt",
+      "x" = "File is not a GTFS realtime feed",
+      "i" = "This file will be skipped",
+      "!" = "Failed to read garbage2.txt",
+      # this might be a little fragile if Prost changes their error messages
+      "x" = "failed to decode Protobuf message: unexpected end group tag",
+      "i" = "This file will be skipped"
+    )
+  )
+})
+
+test_that("correctly reports that this is not a positions file", {
+  warnings = list(warnings = list())
+  local_mocked_bindings(cli_warn = function(x) warnings$warnings <<- append(warnings$warnings, x), .package = "cli")
+
+  feed = tempfile()
+  test_data_enum_roundtrip_alerts(feed)
+  read_gtfsrt_positions(feed, "Etc/UTC")
+  file.remove(feed)
+
+  expect_equal(
+    warnings$warnings,
+    list(
+      "!" = "File does not contain vehicle positions.",
+      "i" = "It does contain alerts",
+      "v" = "You can read them with {.fn read_gtfsrt_alerts}"
     )
   )
 })

@@ -212,9 +212,14 @@
 #'          `stop_schedule_relationship`: `UNSCHEDULED` must also set the `trip_schedule_relationship``: `UNSCHEDULED`
 #'
 #'           Caution: this field is still experimental, and subject to change. It may be formally adopted in the future.
+#' - `file_timestamp`: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
+#' - `file_index`: When reading a ZIP file, a one-based index of which file each observation came from
+#'    Note that it is in the the order the files appeared in the ZIP file, which may not be chronological.
 #'
 #' @param filename filename to read. Can be uncompressed or compressed with
-#'      gzip or bzip2. Can also be an http:// or https:// URL.
+#'      gzip or bzip2, or can be a ZIP file containing multiple feeds (e.g.,
+#'      all trip updates for a whole day). Can also be an http:// or https:// URL
+#'      (ZIP files are not supported when reading from a URL, but gzip and bzip2 are).
 #' @param timezone timezone of feed, in Olson format. Times in GTFS-realtime are
 #'  stored as Unix time in UTC; this option will convert to local times. If you
 #'  want to read times in UTC, specify "Etc/UTC"
@@ -246,6 +251,7 @@ read_gtfsrt_trip_updates = function(filename, timezone, label_values = TRUE) {
   result$arrival_scheduled_time = as.POSIXct(result$arrival_scheduled_time, tz = timezone)
   result$departure_time = as.POSIXct(result$departure_time, tz = timezone)
   result$departure_scheduled_time = as.POSIXct(result$departure_scheduled_time, tz = timezone)
+  result$file_timestamp = as.POSIXct(result$file_timestamp, tz = timezone)
 
   if (label_values) {
     result$trip_schedule_relationship = enum_to_factor(

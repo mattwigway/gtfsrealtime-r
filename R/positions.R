@@ -144,9 +144,14 @@
 #'    can overwrite the wheelchair_accessible value from the static GTFS. (path: `vehicle.wheelchair_accessible`). Possible values:
 #' ```{r child="man/rmd/wheelchair_accessible.md"}
 #' ```
+#' - `file_timestamp`: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
+#' - `file_index`: When reading a ZIP file, a one-based index of which file each observation came from
+#'    Note that it is in the the order the files appeared in the ZIP file, which may not be chronological.
 #'
 #' @param filename filename to read. Can be uncompressed or compressed with
-#'      gzip or bzip2. Can also be an http: or https: URL.
+#'      gzip or bzip2, or can be a ZIP file containing multiple feeds (e.g.,
+#'      all positions for a whole day). Can also be an http:// or https:// URL
+#'      (ZIP files are not supported when reading from a URL, but gzip and bzip2 are).
 #' @param timezone timezone of feed, in Olson format. Times in GTFS-realtime are
 #'  stored as Unix time in UTC; this option will convert to local times. If you
 #'  want to read times in UTC, specify "Etc/UTC"
@@ -176,6 +181,7 @@ read_gtfsrt_positions = function(filename, timezone, as_sf = FALSE, label_values
   }
 
   result$timestamp = as.POSIXct(result$timestamp, tz = timezone)
+  result$file_timestamp = as.POSIXct(result$file_timestamp, tz = timezone)
 
   if (label_values) {
     result$schedule_relationship = enum_to_factor(
