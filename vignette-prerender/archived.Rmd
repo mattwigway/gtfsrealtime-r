@@ -34,16 +34,11 @@ This data is too large to include with the `gtfsrealtime` package, so [it is ava
 
 ```{r}
 suppressMessages({
-  if (!dir.exists("nyc-bus-demo")) {
-    zipfile = tempfile(fileext = ".zip")
-
+  if (!file.exists("nyc-bus-demo.zip")) {
     download.file(
       "https://files.indicatrix.org/gtfsrealtime-r/nyc-bus-demo.zip",
-      zipfile
+      "nyc-bus-demo.zip"
     )
-
-    unzip(zipfile, exdir=".")
-    file.remove(zipfile)
   }
 })
 ```
@@ -68,15 +63,11 @@ Next, we read in multiple GTFS-realtime files, and stack them all together. Ther
 
 GTFS-realtime does not include time zone information; all times are specified in UTC. We specify a time zone so that times are automatically converted to local time. Time zones are specified in standardized TZ database format (generally `Continent/City`; for a list, [see here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If you do not want to convert times, you can specify a time zone of `Etc/UTC`.
 
-`\(f) read_gtfsrt_positions(f, "America/New_York")` creates an _anonymous function_ - that is, a function without a name - that takes as input the filename (which it calls `f`) and then runs the `read_gtfsrt_positions` function with the filename as the first argument, and US eastern time (`America/New_York`) as the second.
-
 ## Read data
 
 ```{r}
-system.time({positions = map(
-    Sys.glob("vignette-prerender/nyc-bus-demo/vehicle-positions-*.pb.bz2"),
-    \(f) read_gtfsrt_positions(f, "America/New_York")
-) |> rbindlist()})
+# gtfsrealtime can read multiple GTFS realtime feeds in a zip file, as long as there is nothing else in the ZIP file
+system.time({positions = read_gtfsrt_positions("nyc-bus-demo.zip", "America/New_York")})
 
 head(positions)
 ```
@@ -93,9 +84,12 @@ Some of the observations are duplicates, as not every bus reports in every minut
 
 The syntax below groups by timestamp and vehicle ID (the last part). It then takes the first row of each SubDataset (`.SD[1]`).
 
-Note that, at least in the New York data, there are sometimes multiple reports with the same timestamp and vehicle ID but different locations. This is some type of data error, so I just pick the first reported position for a given time.
+Note that, at least in the New York data, there are sometimes multiple reports with the same timestamp and vehicle ID but different locations. This is some type of data error, so I just arbitrarily pick one.
 
 ```{r}
+# data.table allows fast manipulation of tabular data with a powerful syntax
+positions = data.table(positions)
+
 positions = positions[, .SD[1], by = c("timestamp", "vehicle_id")]
 ```
 
