@@ -75,7 +75,7 @@ test_that("updates are unwrapped correctly", {
   expect_equal(rt$route_id, c("rte1", "rte1", "rte2", "rte3", NA, NA))
   expect_equal(rt$start_time, c("06:00:00", "06:00:00", "06:00:02", "06:00:03", NA, NA))
   expect_equal(rt$start_date, c("20260401", "20260401", "20260402", "20260403", NA, NA))
-  expect_equal(as.character(rt$trip_schedule_relationship), c("SCHEDULED", "SCHEDULED", "ADDED", "SCHEDULED", NA, NA))
+  expect_equal(as.character(rt$trip_schedule_relationship), c("SCHEDULED", "SCHEDULED", "NEW", "SCHEDULED", NA, NA))
   expect_equal(rt$vehicle_id, c("veh1", "veh1", "veh2", NA, NA, NA))
   expect_equal(rt$vehicle_label, c("lab1", "lab1", "lab2", NA, NA, NA))
   expect_equal(rt$vehicle_license_plate, c("PLA-0001", "PLA-0001", "PLA-0002", NA, NA, NA))

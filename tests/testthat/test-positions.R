@@ -134,7 +134,7 @@ test_that("all columns read correctly", {
       direction_id = 1,
       start_time = "07:00:00",
       start_date = "20260401",
-      schedule_relationship = "ADDED",
+      schedule_relationship = "SCHEDULED",
       stop_id = "stop",
       current_stop_sequence = 10,
       current_status = "STOPPED_AT",

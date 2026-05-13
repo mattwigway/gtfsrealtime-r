@@ -20,6 +20,8 @@ VENDOR_DIR = $(CURDIR)/vendor
 # configure via tools/msrv.R.
 #
 # vendor.tar.xz, if present, is unzipped and used for offline compilation.
+#
+# BC: setting MACOSX_DEPLOYMENT_TARGET manually to avoid warnings about SDK version mismatches
 $(STATLIB):
 
 	if [ -f ./rust/vendor.tar.xz ]; then \
@@ -28,6 +30,7 @@ $(STATLIB):
 		cp rust/vendor-config.toml $(CARGOTMP)/config.toml; \
 	fi
 
+	export MACOSX_DEPLOYMENT_TARGET=10.12 && \
 	export CARGO_HOME=$(CARGOTMP) && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
 	@PANIC_EXPORTS@RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ --lib @PROFILE@ --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) @TARGET@

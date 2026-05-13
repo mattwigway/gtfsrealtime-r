@@ -22,9 +22,6 @@ want to read times in UTC, specify "Etc/UTC"}
 be converted to factors with their English labels. If false, they
 will be left as numeric codes? Default TRUE}
 }
-\value{
-data frame containing vehicle position data
-}
 \description{
 Reads vehicle position data from a GTFS-realtime feed into a data.frame with
 one row per position update. GTFS-realtime timestamps are represented in Unix
@@ -36,8 +33,9 @@ Typically, GTFS-realtime feeds will contain only a single type of entity, but if
 are multiple types of entities in a single feed, this function will read only the
 vehicle positions. Each vehicle position will become a single row in the data frame.
 
-The data frame will have the following columns. Note that most of these columns can contain NAs
-(and in most feeds, many will be entirely NA). GTFS-realtime is a hierarchical format that is
+#' @returns data frame containing vehicle position data. The data frame will have the following columns.
+Note that most of these columns can contain NAs (and in most feeds, many will be entirely NA).
+GTFS-realtime is a hierarchical format that is
 converted to a flat format for use in R; the paths refer to where each column comes from
 within the GTFS-realtime VehiclePosition data structure. Each column is reported below with
 its definition, many of which come verbatim from the \href{https://gtfs.org/documentation/realtime/reference/}{GTFS-realtime specification}

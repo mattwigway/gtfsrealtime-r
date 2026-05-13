@@ -5,6 +5,10 @@
 // control. When the source package is built by GH actions, the code is generated
 // and gets included in the .tar.gz without needing to be in the repository.
 pub mod transit_realtime {
+    // with prost_build 0.14, ScheduleRelationship::Added gets marked as #[deprecated] because it is deprecated
+    // but that then causes a warning about deprecated code being used in the generated code itself.
+    // so we tell Rust not to warn us about deprecations in the generated code only.
+    #![allow(deprecated)]
     include!("generated/transit_realtime.rs");
 }
 

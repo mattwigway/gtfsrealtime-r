@@ -24,7 +24,9 @@ pub fn test_data_positions_all_values(filename: &str) -> Result<()> {
                 direction_id: Some(1),
                 start_time: Some("07:00:00".to_owned()),
                 start_date: Some("20260401".to_owned()),
-                schedule_relationship: Some(trip_descriptor::ScheduleRelationship::Added as i32),
+                schedule_relationship: Some(
+                    trip_descriptor::ScheduleRelationship::Scheduled as i32,
+                ),
                 modified_trip: None, // unused
             }),
             vehicle: Some(VehicleDescriptor {

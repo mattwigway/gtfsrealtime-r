@@ -27,4 +27,4 @@ lto = true
 codegen-units = 1
 
 [build-dependencies]
-prost-build = "0.12.3"
+prost-build = "0.14.3"

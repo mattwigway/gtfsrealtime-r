@@ -3,6 +3,12 @@
 # - Creating inst/AUTHORS.md
 # - Creating LICENSE.note.md
 
+if (Sys.getenv("CI") != "true") {
+  warning(
+    "Vendoring packages will create src/rust/.cargo/ which needs to be deleted if it is desired to un-vendor packages"
+  )
+}
+
 if (!require(rextendr) | !require(RcppTOML)) {
   stop("rextendr and RcppTOML are needed at build time to prepare for CRAN submission")
 }
@@ -34,7 +40,7 @@ extract_licenses = function(licenses) {
 }
 
 # vendor Rust packages
-rextendr::vendor_pkgs()
+rextendr::vendor_crates()
 
 # extract author and license information
 vendor_files = untar("src/rust/vendor.tar.xz", list = TRUE)
