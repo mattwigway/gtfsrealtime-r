@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use extendr_api::prelude::*;
 
 use crate::{
@@ -46,14 +44,17 @@ pub struct RAlert {
 }
 
 fn accumulate_languages(
-    set: &mut HashSet<Option<String>>,
+    langs: &mut Vec<Option<String>>,
     translated_string: &Option<TranslatedString>,
 ) {
     match translated_string {
         None => (),
         Some(str) => {
             for message in &str.translation {
-                set.insert(message.language.clone());
+                let lang = message.language.clone();
+                if !langs.contains(&lang) {
+                    langs.push(lang);
+                }
             }
         }
     }
@@ -107,7 +108,12 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
                     let id = id_deduplicator.deduplicate_id(entity.id.clone());
 
                     // figure out what languages we have
-                    let mut languages: HashSet<Option<String>> = HashSet::new();
+                    // we use a Vec rather than a hashset here for two reasons.
+                    // (1) HashSet iteration order is not defined, and in testing may even change
+                    // within reading a single file, which can cause issues with testing.
+                    // (2) There will rarely be more than 2-3 languages, and a linear search
+                    // of a short vector like this is probably faster than a HashSet.
+                    let mut languages: Vec<Option<String>> = Vec::new();
                     accumulate_languages(&mut languages, &alert.cause_detail);
                     accumulate_languages(&mut languages, &alert.effect_detail);
                     accumulate_languages(&mut languages, &alert.url);
@@ -120,7 +126,7 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
 
                     // if an alert doesn't have any of the translated strings, make sure we still get a record for it
                     if languages.is_empty() {
-                        languages.insert(None);
+                        languages.push(None);
                     }
 
                     // duplicate alert for each time range, but since time range is optional make sure there is at least one.
