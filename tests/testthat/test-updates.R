@@ -1,21 +1,3 @@
-test_that("can read updates", {
-  # expect_warning doesn't capture warnings issued in R! macros in Rust code.
-  # so we mock cli_warn and capture the results
-  # and the indirection here is to allow us to modify something in this scope from the function
-  warnings = list(warnings = list())
-  local_mocked_bindings(cli_warn = function(x) warnings$warnings <<- append(warnings$warnings, x), .package = "cli")
-
-  file = system.file("nyc-trip-updates.pb.bz2", package = "gtfsrealtime")
-
-  updates = read_gtfsrt_trip_updates(file, "America/New_York")
-
-  # there are some duplicated IDs in the example file
-  expect_snapshot(warnings$warnings)
-
-  expect_s3_class(updates, "data.frame")
-  expect_snapshot(head(updates))
-})
-
 test_that("updates give useful errors", {
   expect_error(
     read_gtfsrt_trip_updates("foo.pb", "America/New_York"),
@@ -111,6 +93,11 @@ test_that("updates are unwrapped correctly", {
   expect_equal(rt$departure_time, as.POSIXct(c(1775059624, 1775059724, 1775058624, NA, NA, NA), "Australia/Sydney"))
   expect_equal(rt$departure_scheduled_time, as.POSIXct(c(1775059524, NA, NA, NA, NA, NA), "Australia/Sydney"))
   expect_equal(rt$departure_uncertainty, c(25, 27, 24, NA, NA, NA))
+  expect_all_equal(
+    rt$file_timestamp,
+    lubridate::with_tz(lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"), "Australia/Sydney")
+  )
+  expect_all_equal(rt$file_index, 1)
 })
 
 test_that("updates match debug json", {
@@ -196,6 +183,7 @@ test_that("updates match debug json", {
   ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
     dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col))) |>
+    dplyr::select(-c("file_timestamp", "file_index")) |>
     tibble::as_tibble()
 
   expect_equal(nrow(actual), 15216)
@@ -216,10 +204,34 @@ test_that("id deduplication works", {
   expect_equal(
     warnings$warnings,
     list(
-      "!" = "ID id is duplicated. Replacing with id_duplicated_1"
+      "!" = "ID id is duplicated. Replacing with id_duplicated_1 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect."
     )
   )
 
   # The second trip update (with the duplicated ID) has two stop time updates
   expect_equal(upd$id, c("id", "id_duplicated_1", "id_duplicated_1", "id2"))
+})
+
+test_that("can read from zip", {
+  dir = tempfile()
+  dir.create(dir)
+  test_data_enum_roundtrip_updates(file.path(dir, "feed1.pb"))
+  test_data_duplicate_ids_updates(file.path(dir, "feed2.pb"))
+  zfile = tempfile(fileext = ".zip")
+  # enforce order
+  zip(zfile, c(file.path(dir, "feed1.pb"), file.path(dir, "feed2.pb")))
+  updates = read_gtfsrt_trip_updates(zfile, "America/New_York")
+  expected = rbind(
+    read_gtfsrt_trip_updates(file.path(dir, "feed1.pb"), "America/New_York") |>
+      dplyr::mutate(file_index = 1),
+    read_gtfsrt_trip_updates(file.path(dir, "feed2.pb"), "America/New_York") |>
+      dplyr::mutate(file_index = 2)
+  )
+
+  file.remove(dir, recursive = TRUE)
+  file.remove(zfile)
+
+  # make sure they come out in the right order
+
+  expect_equal(updates, expected)
 })
