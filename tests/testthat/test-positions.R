@@ -263,9 +263,9 @@ test_that("can read from zip", {
 
   # add a non-GTFS-realtime file
   # This should be ignored with a warning
-  # is is intentionally only two bytes, to test that even if there aren't enough bytes for the
+  # is is intentionally only one byte (two on windows with CRLF), to test that even if there aren't enough bytes for the
   # gzip or bzip2 magic number the file is still read correctly.
-  writeLines(c("t"), file.path(dir, "garbage.txt"))
+  writeLines(c(""), file.path(dir, "garbage.txt"))
 
   # and one that is longer so will make it to protobuf decoder
   writeLines(c("this is a test of the emergency broadcast system"), file.path(dir, "garbage2.txt"))
