@@ -98,7 +98,7 @@ pub fn test_data_update_unwrapping(filename: &str) -> Result<()> {
                 direction_id: Some(0),
                 start_date: Some("20260402".to_owned()),
                 start_time: Some("06:00:02".to_owned()),
-                schedule_relationship: Some(trip_descriptor::ScheduleRelationship::Added as i32),
+                schedule_relationship: Some(trip_descriptor::ScheduleRelationship::New as i32),
                 modified_trip: None, // experimental, unused
             },
             vehicle: Some(VehicleDescriptor {
