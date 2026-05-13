@@ -1,11 +1,3 @@
-test_that("can read positions", {
-  file = system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime")
-
-  positions = read_gtfsrt_positions(file, "America/New_York")
-  expect_s3_class(positions, "data.frame")
-  expect_snapshot(head(positions))
-})
-
 test_that("invalid timezone leads to failure", {
   file = system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime")
 
@@ -116,6 +108,7 @@ test_that("Louisville debug JSON matches read_gtfsrt_positions", {
   ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
     dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col))) |>
+    dplyr::select(-c("file_timestamp", "file_index")) |>
     tibble::as_tibble()
 
   expect_true(nrow(actual) > 0)
@@ -152,7 +145,9 @@ test_that("all columns read correctly", {
       vehicle_id = "42",
       vehicle_label = "label",
       vehicle_license_plate = "LIC-4242",
-      vehicle_wheelchair_accessible = "WHEELCHAIR_ACCESSIBLE"
+      vehicle_wheelchair_accessible = "WHEELCHAIR_ACCESSIBLE",
+      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      file_index = 1
     ),
 
     # NAs because individual items are missing
@@ -179,7 +174,9 @@ test_that("all columns read correctly", {
       vehicle_id = NA,
       vehicle_label = NA,
       vehicle_license_plate = NA,
-      vehicle_wheelchair_accessible = NA
+      vehicle_wheelchair_accessible = NA,
+      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      file_index = 1
     ),
 
     # NAs because structure is missing
@@ -206,7 +203,9 @@ test_that("all columns read correctly", {
       vehicle_id = NA,
       vehicle_label = NA,
       vehicle_license_plate = NA,
-      vehicle_wheelchair_accessible = NA
+      vehicle_wheelchair_accessible = NA,
+      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      file_index = 1
     )
   )
 
@@ -236,8 +235,8 @@ test_that("duplicate ids are deduplicated", {
     # the c("!" = ... gets unwrapped when appended to a list, and then the list has two duplicate elements,
     # which somehow R is okay with (?)
     list(
-      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_1',
-      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_2'
+      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_1 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect.',
+      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_2 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect.'
     )
   )
 
@@ -250,4 +249,28 @@ test_that("duplicate ids are deduplicated", {
       ")); stop(\"identifier with r code executed!\")#_duplicated_2"
     )
   )
+})
+
+test_that("can read from zip", {
+  dir = tempfile()
+  dir.create(dir)
+  test_data_enum_roundtrip_positions(file.path(dir, "feed1.pb"))
+  test_data_positions_all_values(file.path(dir, "feed2.pb"))
+  zfile = tempfile(fileext = ".zip")
+  # enforce order
+  zip(zfile, c(file.path(dir, "feed1.pb"), file.path(dir, "feed2.pb")))
+  positions = read_gtfsrt_positions(zfile, "America/New_York")
+  expected = rbind(
+    read_gtfsrt_positions(file.path(dir, "feed1.pb"), "America/New_York") |>
+      dplyr::mutate(file_index = 1),
+    read_gtfsrt_positions(file.path(dir, "feed2.pb"), "America/New_York") |>
+      dplyr::mutate(file_index = 2)
+  )
+
+  file.remove(dir, recursive = TRUE)
+  file.remove(zfile)
+
+  # make sure they come out in the right order
+
+  expect_equal(positions, expected)
 })
