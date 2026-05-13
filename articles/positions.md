@@ -9,6 +9,7 @@ First, we need to load libraries. I will be using the {gtfsrealtime}
 package, as well as the {ggplot2} package for mapping.
 
 ``` r
+
 library(gtfsrealtime)
 library(ggplot2)
 ```
@@ -18,18 +19,21 @@ library(ggplot2)
 This feed comes from the New York City bus network. This file is
 included with {gtfsrealtime} and is bzipped to save space.
 {gtfsrealtime} can automatically detect and read uncompressed files as
-well as those compressed with gzip and bzip2. `as_sf` tells
-{gtfsrealtime} to load the positions to an {sf} object rather than a
-plain data frame. GTFS-realtime does not include time zone information;
-all times are specified in UTC. We specify a time zone so that times are
-automatically converted to local time. Time zones are specified in
-standardized TZ database format (generally `Continent/City`; for a list,
-[see
+well as those compressed with gzip and bzip2; it can also read ZIP files
+containing multiple position updates, and read directly from an
+`http://` or `https://` URL (though it cannot read a ZIP file from a
+URL). `as_sf` tells {gtfsrealtime} to load the positions to an {sf}
+object rather than a plain data frame. GTFS-realtime does not include
+time zone information; all times are specified in UTC. We specify a time
+zone so that times are automatically converted to local time. Time zones
+are specified in standardized TZ database format (generally
+`Continent/City`; for a list, [see
 here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If
 you do not want to convert times, you can specify a time zone of
 `Etc/UTC`.
 
 ``` r
+
 positions = read_gtfsrt_positions(
   system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime"),
   "America/New_York",
@@ -48,10 +52,11 @@ status of individual carriages in trains (as those do not map neatly to
 the tabular format).
 
 ``` r
+
 head(positions)
 ```
 
-    ## Simple feature collection with 6 features and 21 fields
+    ## Simple feature collection with 6 features and 23 fields
     ## Geometry type: POINT
     ## Dimension:     XY
     ## Bounding box:  xmin: -73.95419 ymin: 40.6589 xmax: -73.78681 ymax: 40.87092
@@ -84,20 +89,20 @@ head(positions)
     ## 4  FEW_SEATS_AVAILABLE                   NA MTA NYCT_7112          <NA>
     ## 5                 <NA>                   NA MTA NYCT_8443          <NA>
     ## 6 MANY_SEATS_AVAILABLE                   NA MTA NYCT_9775          <NA>
-    ##   vehicle_license_plate vehicle_wheelchair_accessible
-    ## 1                  <NA>                          <NA>
-    ## 2                  <NA>                          <NA>
-    ## 3                  <NA>                          <NA>
-    ## 4                  <NA>                          <NA>
-    ## 5                  <NA>                          <NA>
-    ## 6                  <NA>                          <NA>
-    ##                     geometry
-    ## 1  POINT (-73.95419 40.7872)
-    ## 2 POINT (-73.78681 40.74109)
-    ## 3 POINT (-73.84709 40.87092)
-    ## 4  POINT (-73.89967 40.6589)
-    ## 5 POINT (-73.82975 40.75879)
-    ## 6 POINT (-73.93855 40.85025)
+    ##   vehicle_license_plate vehicle_wheelchair_accessible      file_timestamp
+    ## 1                  <NA>                          <NA> 2026-01-21 18:58:35
+    ## 2                  <NA>                          <NA> 2026-01-21 18:58:35
+    ## 3                  <NA>                          <NA> 2026-01-21 18:58:35
+    ## 4                  <NA>                          <NA> 2026-01-21 18:58:35
+    ## 5                  <NA>                          <NA> 2026-01-21 18:58:35
+    ## 6                  <NA>                          <NA> 2026-01-21 18:58:35
+    ##   file_index                   geometry
+    ## 1          1  POINT (-73.95419 40.7872)
+    ## 2          1 POINT (-73.78681 40.74109)
+    ## 3          1 POINT (-73.84709 40.87092)
+    ## 4          1  POINT (-73.89967 40.6589)
+    ## 5          1 POINT (-73.82975 40.75879)
+    ## 6          1 POINT (-73.93855 40.85025)
 
 ## Map the feed
 
@@ -107,6 +112,7 @@ occupancy. We see the outline of New York City and the current bus
 positions.
 
 ``` r
+
 positions |>
   ggplot(aes(color=occupancy_status)) +
     geom_sf() +

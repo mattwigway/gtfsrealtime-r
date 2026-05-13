@@ -14,6 +14,7 @@ The package is installable from
 Run the following at your R prompt:
 
 ``` r
+
 install.packages('gtfsrealtime', repos = c('https://mattwigway.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 

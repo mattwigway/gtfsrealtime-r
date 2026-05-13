@@ -98,16 +98,11 @@ directory <code>nyc-bus-demo</code> in the current working
 directory.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.exists</a></span><span class="op">(</span><span class="st">"nyc-bus-demo"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">zipfile</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zip"</span><span class="op">)</span></span>
-<span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"nyc-bus-demo.zip"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span></span>
 <span>      <span class="st">"https://files.indicatrix.org/gtfsrealtime-r/nyc-bus-demo.zip"</span>,</span>
-<span>      <span class="va">zipfile</span></span>
+<span>      <span class="st">"nyc-bus-demo.zip"</span></span>
 <span>    <span class="op">)</span></span>
-<span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">unzip</a></span><span class="op">(</span><span class="va">zipfile</span>, exdir<span class="op">=</span><span class="st">"."</span><span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="va">zipfile</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -122,12 +117,48 @@ be loaded with <code><a href="https://tidyverse.tidyverse.org" class="external-l
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://projects.indicatrix.org/gtfsrealtime-r/" class="external-link">gtfsrealtime</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## data.table 1.17.8 using 4 threads (see ?getDTthreads).  Latest news: r-datatable.com</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'data.table'</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## The following object is masked from 'package:purrr':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     transpose</span></span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'dplyr'</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## The following objects are masked from 'package:data.table':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     between, first, last</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     filter, lag</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## The following objects are masked from 'package:base':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     intersect, setdiff, setequal, union</span></span></code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'lubridate'</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## The following objects are masked from 'package:data.table':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     hour, isoweek, mday, minute, month, quarter, second, wday, week, yday, year</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## The following objects are masked from 'package:base':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     date, intersect, setdiff, union</span></span></code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Linking to GEOS 3.14.1, GDAL 3.5.3, PROJ 9.5.1; sf_use_s2() is TRUE</span></span></code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-rust.r-universe.dev/gifski" class="external-link">gifski</a></span><span class="op">)</span></span></code></pre></div>
 <p>Next, we read in multiple GTFS-realtime files, and stack them all
 together. There are 1,440 GTFS-realtime files, from 3:00 AM local time
@@ -149,50 +180,47 @@ converted to local time. Time zones are specified in standardized TZ
 database format (generally <code>Continent/City</code>; for a list, <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" class="external-link">see
 here</a>). If you do not want to convert times, you can specify a time
 zone of <code>Etc/UTC</code>.</p>
-<p><code>\(f) read_gtfsrt_positions(f, "America/New_York")</code>
-creates an <em>anonymous function</em> - that is, a function without a
-name - that takes as input the filename (which it calls <code>f</code>)
-and then runs the <code>read_gtfsrt_positions</code> function with the
-filename as the first argument, and US eastern time
-(<code>America/New_York</code>) as the second.</p>
 </div>
 <div class="section level2">
 <h2 id="read-data">Read data<a class="anchor" aria-label="anchor" href="#read-data"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">positions</span> <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/Sys.glob.html" class="external-link">Sys.glob</a></span><span class="op">(</span><span class="st">"nyc-bus-demo/vehicle-positions-*.pb.bz2"</span><span class="op">)</span>,</span>
-<span>    \<span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="fu"><a href="../reference/read_gtfsrt_positions.html">read_gtfsrt_positions</a></span><span class="op">(</span><span class="va">f</span>, <span class="st">"America/New_York"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html" class="external-link">rbindlist</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">positions</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##               id latitude longitude  bearing odometer speed                            trip_id route_id direction_id</span></span>
-<span><span class="co">##           &lt;char&gt;    &lt;num&gt;     &lt;num&gt;    &lt;num&gt;    &lt;num&gt; &lt;num&gt;                             &lt;char&gt;   &lt;char&gt;        &lt;num&gt;</span></span>
-<span><span class="co">## 1: MTA NYCT_7116 40.67004 -73.84773 343.8108       NA    NA  EN_A6-Weekday-SDon-013500_B15_103      B15            0</span></span>
-<span><span class="co">## 2: MTA NYCT_8446 40.70428 -73.79269 310.4622       NA    NA   JA_A6-Weekday-SDon-016700_Q5_201       Q5            0</span></span>
-<span><span class="co">## 3: MTA NYCT_9760 40.74069 -73.99020 234.0276       NA    NA   MV_A6-Weekday-SDon-013000_M2_202       M2            1</span></span>
-<span><span class="co">## 4: MTA NYCT_7160 40.71404 -73.95068 359.4692       NA    NA         FP_M6-Weekday-017500_L90_5      L90            0</span></span>
-<span><span class="co">## 5: MTA NYCT_5314 40.81609 -73.91773 341.5651       NA    NA WF_A6-Weekday-SDon-015000_BX19_301     BX19            0</span></span>
-<span><span class="co">## 6: MTA NYCT_5338 40.86142 -73.89084 329.7436       NA    NA  KB_A6-Weekday-SDon-015500_BX9_601      BX9            1</span></span>
-<span><span class="co">##    start_time start_date schedule_relationship stop_id current_stop_sequence current_status           timestamp</span></span>
-<span><span class="co">##        &lt;char&gt;     &lt;char&gt;                &lt;fctr&gt;  &lt;char&gt;                 &lt;num&gt;         &lt;fctr&gt;              &lt;POSc&gt;</span></span>
-<span><span class="co">## 1:       &lt;NA&gt;   20260128                  &lt;NA&gt;  904253                    NA           &lt;NA&gt; 2026-01-28 03:00:26</span></span>
-<span><span class="co">## 2:       &lt;NA&gt;   20260128                  &lt;NA&gt;  503967                    NA           &lt;NA&gt; 2026-01-28 03:00:24</span></span>
-<span><span class="co">## 3:       &lt;NA&gt;   20260128                  &lt;NA&gt;  400330                    NA           &lt;NA&gt; 2026-01-28 03:00:06</span></span>
-<span><span class="co">## 4:       &lt;NA&gt;   20260128                  &lt;NA&gt;  302319                    NA           &lt;NA&gt; 2026-01-28 03:00:02</span></span>
-<span><span class="co">## 5:       &lt;NA&gt;   20260128                  &lt;NA&gt;  103748                    NA           &lt;NA&gt; 2026-01-28 03:00:24</span></span>
-<span><span class="co">## 6:       &lt;NA&gt;   20260128                  &lt;NA&gt;  104102                    NA           &lt;NA&gt; 2026-01-28 03:00:02</span></span>
-<span><span class="co">##    congestion_level     occupancy_status occupancy_percentage    vehicle_id vehicle_label vehicle_license_plate</span></span>
-<span><span class="co">##              &lt;fctr&gt;               &lt;fctr&gt;                &lt;num&gt;        &lt;char&gt;        &lt;char&gt;                &lt;char&gt;</span></span>
-<span><span class="co">## 1:             &lt;NA&gt; MANY_SEATS_AVAILABLE                   NA MTA NYCT_7116          &lt;NA&gt;                  &lt;NA&gt;</span></span>
-<span><span class="co">## 2:             &lt;NA&gt;                 &lt;NA&gt;                   NA MTA NYCT_8446          &lt;NA&gt;                  &lt;NA&gt;</span></span>
-<span><span class="co">## 3:             &lt;NA&gt;                 &lt;NA&gt;                   NA MTA NYCT_9760          &lt;NA&gt;                  &lt;NA&gt;</span></span>
-<span><span class="co">## 4:             &lt;NA&gt;                 &lt;NA&gt;                   NA MTA NYCT_7160          &lt;NA&gt;                  &lt;NA&gt;</span></span>
-<span><span class="co">## 5:             &lt;NA&gt;                 &lt;NA&gt;                   NA MTA NYCT_5314          &lt;NA&gt;                  &lt;NA&gt;</span></span>
-<span><span class="co">## 6:             &lt;NA&gt;                 &lt;NA&gt;                   NA MTA NYCT_5338          &lt;NA&gt;                  &lt;NA&gt;</span></span></code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># gtfsrealtime can read multiple GTFS realtime feeds in a zip file, as long as there is nothing else in the ZIP file</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span><span class="va">positions</span> <span class="op">=</span> <span class="fu"><a href="../reference/read_gtfsrt_positions.html">read_gtfsrt_positions</a></span><span class="op">(</span><span class="st">"nyc-bus-demo.zip"</span>, <span class="st">"America/New_York"</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    user  system elapsed </span></span>
+<span><span class="co">##   9.983   2.821  13.996</span></span></code></pre>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">positions</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##              id latitude longitude   bearing odometer speed                            trip_id route_id direction_id</span></span>
+<span><span class="co">## 1 MTA NYCT_7116 40.65841 -73.90079 204.64677       NA    NA  EN_A6-Weekday-SDon-021000_B15_103      B15            1</span></span>
+<span><span class="co">## 2 MTA NYCT_8447 40.65276 -73.73687  87.46083       NA    NA  JA_A6-Weekday-SDon-019500_Q86_653      Q86            1</span></span>
+<span><span class="co">## 3 MTA NYCT_9760 40.82083 -73.93955  52.98173       NA    NA   MV_A6-Weekday-SDon-019400_M2_202       M2            0</span></span>
+<span><span class="co">## 4 MTA NYCT_7102 40.66895 -73.91563 187.95752       NA    NA    EN_A6-Weekday-SDon-023000_B12_1      B12            1</span></span>
+<span><span class="co">## 5 MTA NYCT_8481 40.62516 -74.14923 173.41806       NA    NA CA_A6-Weekday-SDon-021000_S4898_71      S48            1</span></span>
+<span><span class="co">## 6 MTA NYCT_5314 40.85237 -73.88198 254.32916       NA    NA WF_A6-Weekday-SDon-019500_BX19_301     BX19            1</span></span>
+<span><span class="co">##   start_time start_date schedule_relationship stop_id current_stop_sequence current_status           timestamp</span></span>
+<span><span class="co">## 1       &lt;NA&gt;   20260128                  &lt;NA&gt;  301050                    NA           &lt;NA&gt; 2026-01-28 03:55:53</span></span>
+<span><span class="co">## 2       &lt;NA&gt;   20260128                  &lt;NA&gt;  700896                    NA           &lt;NA&gt; 2026-01-28 03:56:09</span></span>
+<span><span class="co">## 3       &lt;NA&gt;   20260128                  &lt;NA&gt;  400241                    NA           &lt;NA&gt; 2026-01-28 03:56:06</span></span>
+<span><span class="co">## 4       &lt;NA&gt;   20260128                  &lt;NA&gt;  301594                    NA           &lt;NA&gt; 2026-01-28 03:55:52</span></span>
+<span><span class="co">## 5       &lt;NA&gt;   20260128                  &lt;NA&gt;  201566                    NA           &lt;NA&gt; 2026-01-28 03:55:59</span></span>
+<span><span class="co">## 6       &lt;NA&gt;   20260128                  &lt;NA&gt;  100642                    NA           &lt;NA&gt; 2026-01-28 03:55:58</span></span>
+<span><span class="co">##   congestion_level     occupancy_status occupancy_percentage    vehicle_id vehicle_label vehicle_license_plate</span></span>
+<span><span class="co">## 1             &lt;NA&gt; MANY_SEATS_AVAILABLE                   NA MTA NYCT_7116          &lt;NA&gt;                  &lt;NA&gt;</span></span>
+<span><span class="co">## 2             &lt;NA&gt;                 &lt;NA&gt;                   NA MTA NYCT_8447          &lt;NA&gt;                  &lt;NA&gt;</span></span>
+<span><span class="co">## 3             &lt;NA&gt; MANY_SEATS_AVAILABLE                   NA MTA NYCT_9760          &lt;NA&gt;                  &lt;NA&gt;</span></span>
+<span><span class="co">## 4             &lt;NA&gt;                 &lt;NA&gt;                   NA MTA NYCT_7102          &lt;NA&gt;                  &lt;NA&gt;</span></span>
+<span><span class="co">## 5             &lt;NA&gt;                 &lt;NA&gt;                   NA MTA NYCT_8481          &lt;NA&gt;                  &lt;NA&gt;</span></span>
+<span><span class="co">## 6             &lt;NA&gt;                 &lt;NA&gt;                   NA MTA NYCT_5314          &lt;NA&gt;                  &lt;NA&gt;</span></span>
+<span><span class="co">##   vehicle_wheelchair_accessible      file_timestamp file_index</span></span>
+<span><span class="co">## 1                          &lt;NA&gt; 2026-01-28 03:56:17          1</span></span>
+<span><span class="co">## 2                          &lt;NA&gt; 2026-01-28 03:56:17          1</span></span>
+<span><span class="co">## 3                          &lt;NA&gt; 2026-01-28 03:56:17          1</span></span>
+<span><span class="co">## 4                          &lt;NA&gt; 2026-01-28 03:56:17          1</span></span>
+<span><span class="co">## 5                          &lt;NA&gt; 2026-01-28 03:56:17          1</span></span>
+<span><span class="co">## 6                          &lt;NA&gt; 2026-01-28 03:56:17          1</span></span></code></pre>
 <p>We have read 2.8 million vehicle observations:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">positions</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 2825902</span></span></code></pre>
 </div>
@@ -209,16 +237,19 @@ It then takes the first row of each SubDataset
 (<code>.SD[1]</code>).</p>
 <p>Note that, at least in the New York data, there are sometimes
 multiple reports with the same timestamp and vehicle ID but different
-locations. This is some type of data error, so I just pick the first
-reported position for a given time.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">positions</span> <span class="op">=</span> <span class="va">positions</span><span class="op">[</span>, <span class="va">.SD</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"timestamp"</span>, <span class="st">"vehicle_id"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+locations. This is some type of data error, so I just arbitrarily pick
+one.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># data.table allows fast manipulation of tabular data with a powerful syntax</span></span>
+<span><span class="va">positions</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">positions</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">positions</span> <span class="op">=</span> <span class="va">positions</span><span class="op">[</span>, <span class="va">.SD</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"timestamp"</span>, <span class="st">"vehicle_id"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>The data are spatial, so we can convert to an <code>sf</code> object
 for remaining spatial analyses. The data in GTFS realtime is always WGS
 84 latitude/longitude, so we specify that the CRS is 4326 when creating
 the dataset, then immediately project to 32118, State Plane New York
 Long Island.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">positions</span> <span class="op">=</span> <span class="va">positions</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span>coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"longitude"</span>, <span class="st">"latitude"</span><span class="op">)</span>, crs<span class="op">=</span><span class="fl">4326</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fl">32118</span><span class="op">)</span></span></code></pre></div>
@@ -230,7 +261,7 @@ Long Island.</p>
 grab all position reports within (say) the last five minutes, and get
 the most recent one for each vehicle. We can write a function to do
 this:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snapshot_positions</span> <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">positions</span>, <span class="va">time</span>, <span class="va">tolerance_mins</span><span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># sf uses tidyverse syntax rather than data.table</span></span>
 <span>  <span class="va">positions</span> <span class="op">|&gt;</span></span>
@@ -240,11 +271,11 @@ this:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p>And we can use that function to get all vehicle positions at 8 AM on
 the day our data were collected:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># note! important to specify correct time zone</span></span>
 <span><span class="va">pos_8am</span> <span class="op">=</span> <span class="fu">snapshot_positions</span><span class="op">(</span><span class="va">positions</span>, <span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd_hms.html" class="external-link">ymd_hms</a></span><span class="op">(</span><span class="st">"2026-01-28 8:00:00"</span>, tz <span class="op">=</span> <span class="st">"America/New_York"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We could plot those positions:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pos_8am</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># theme_void removes all plot elements</span></span>
@@ -262,13 +293,13 @@ plot of chunk unnamed-chunk-8
 “frame” (plot of bus locations) for each minute, and then use <a href="https://cran.r-project.org/web/packages/gifski/index.html" class="external-link">gifski</a>
 to convert to an animated GIF. First, we will create a temporary
 directory to hold those frames:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">framedir</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">framedir</span><span class="op">)</span></span></code></pre></div>
 <p>Next, we will render the plots to image files in that directory, one
 at a time. We have data from 3am NYC time 2026-01-28 to 3am 2026-01-29,
 so we will have 1,440 frames one minute apart.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># as.list is necessary to preserve column type:</span></span>
 <span><span class="co"># https://stackoverflow.com/questions/77838146</span></span>
 <span><span class="va">times</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd_hms.html" class="external-link">ymd_hms</a></span><span class="op">(</span><span class="st">"2026-01-28 03:00:00"</span>, tz<span class="op">=</span><span class="st">"America/New_York"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/period.html" class="external-link">minutes</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1440</span><span class="op">)</span><span class="op">)</span></span>
@@ -293,7 +324,7 @@ so we will have 1,440 frames one minute apart.</p>
 <span>    width<span class="op">=</span><span class="fl">4</span>, height<span class="op">=</span><span class="fl">4</span>, dpi<span class="op">=</span><span class="fl">100</span>, bg<span class="op">=</span><span class="st">"white"</span>, plot <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Lastly, we render all the frames we created to an animated GIF:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-rust.r-universe.dev/gifski/reference/gifski.html" class="external-link">gifski</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">framedir</span>, full.names<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  <span class="st">"figures/nyc_bus_anim.gif"</span>,</span>
@@ -312,7 +343,7 @@ plot of chunk unnamed-chunk-12
 </div>
 <p>And finally, clean up after ourselves by removing the temporary
 directory.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">framedir</span>, recursive<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -324,16 +355,20 @@ could also group by trip ID to get single runs), and then summarizing
 and converting the combined points into a linestring (line feature).</p>
 <p>This is quite slow, which seems to be related to the use of
 <code>st_cast</code>; this issue needs further investigation.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trajectories</span> <span class="op">=</span> <span class="va">positions</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">vehicle_id</span>, <span class="va">trip_id</span>, <span class="va">timestamp</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">vehicle_id</span>, <span class="va">trip_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>do_union<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html" class="external-link">st_cast</a></span><span class="op">(</span><span class="st">"LINESTRING"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `summarise()` has grouped output by 'vehicle_id'. You can override using the `.groups` argument.</span></span></code></pre>
+<pre><code><span><span class="co">## `summarise()` has regrouped the output.</span></span>
+<span><span class="co">## ℹ Summaries were computed grouped by vehicle_id and trip_id.</span></span>
+<span><span class="co">## ℹ Output is grouped by vehicle_id.</span></span>
+<span><span class="co">## ℹ Use `summarise(.groups = "drop_last")` to silence this message.</span></span>
+<span><span class="co">## ℹ Use `summarise(.by = c(vehicle_id, trip_id))` for per-operation grouping (`?dplyr::dplyr_by`) instead.</span></span></code></pre>
 <p>We can then plot all of those trajectories over the course of the
 day:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">trajectories</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -343,7 +378,7 @@ plot of chunk unnamed-chunk-14
 </p>
 </div>
 <p>Or extract a single trajectory:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">trajectories</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -353,7 +388,7 @@ plot of chunk unnamed-chunk-15
 </p>
 </div>
 <p>Or extract a single trajectory and combine it with times:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trajectory</span> <span class="op">=</span> <span class="va">trajectories</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span></span>
 <span><span class="va">points</span> <span class="op">=</span> <span class="va">positions</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">vehicle_id</span> <span class="op">==</span> <span class="va">trajectory</span><span class="op">$</span><span class="va">vehicle_id</span> <span class="op">&amp;</span> <span class="va">trip_id</span> <span class="op">==</span> <span class="va">trajectory</span><span class="op">$</span><span class="va">trip_id</span><span class="op">)</span></span>

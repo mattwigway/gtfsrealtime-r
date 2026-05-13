@@ -20,7 +20,10 @@ read_gtfsrt_alerts(filename, timezone, label_values = TRUE)
 - filename:
 
   filename to read. Can be uncompressed or compressed with gzip or
-  bzip2. Can also be an http:// or https:// URL.
+  bzip2, or can be a ZIP file containing multiple feeds (e.g., all
+  alerts for a whole day). Can also be an http:// or https:// URL (ZIP
+  files are not supported when reading from a URL, but gzip and bzip2
+  are).
 
 - timezone:
 
@@ -324,6 +327,13 @@ each column comes from.
   - `WARNING`
 
   - `SEVERE`
+
+- `file_timestamp`: Timestamp of the GTFS-realtime file itself (i.e.
+  when the file was generated, not when the updates were generated)
+
+- `file_index`: When reading a ZIP file, a one-based index of which file
+  each observation came from Note that it is in the the order the files
+  appeared in the ZIP file, which may not be chronological.
 
 ## Details
 
@@ -3363,435 +3373,866 @@ read_gtfsrt_alerts(file, "America/New_York")
 #> 428                                                                                                                                                                                                                                                                                                                                                     Bronx-bound Q50 buses may experience delays in Flushing, but no stops are missed; buses use Farrington St from 35th Ave to 31st Rd\nPlease allow additional travel time.\n\nWhat's happening?\nNYC DEP sewer maintenance\n\nNote: Bus arrival information may not be available/accurate while buses are detoured
 #> 429                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   Eastbound Q32 and Q60 stop on Queens Blvd at 45th St is closed; please use the stops on Queens Blvd at 41st St or 46th St instead\nWhat's happening?\nConstruction
 #> 430                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   Eastbound Q32 and Q60 stop on Queens Blvd at 45th St is closed; please use the stops on Queens Blvd at 41st St or 46th St instead\nWhat's happening?\nConstruction
-#>     tts_header_text tts_description_text severity_level
-#> 1              <NA>                 <NA>           <NA>
-#> 2              <NA>                 <NA>           <NA>
-#> 3              <NA>                 <NA>           <NA>
-#> 4              <NA>                 <NA>           <NA>
-#> 5              <NA>                 <NA>           <NA>
-#> 6              <NA>                 <NA>           <NA>
-#> 7              <NA>                 <NA>           <NA>
-#> 8              <NA>                 <NA>           <NA>
-#> 9              <NA>                 <NA>           <NA>
-#> 10             <NA>                 <NA>           <NA>
-#> 11             <NA>                 <NA>           <NA>
-#> 12             <NA>                 <NA>           <NA>
-#> 13             <NA>                 <NA>           <NA>
-#> 14             <NA>                 <NA>           <NA>
-#> 15             <NA>                 <NA>           <NA>
-#> 16             <NA>                 <NA>           <NA>
-#> 17             <NA>                 <NA>           <NA>
-#> 18             <NA>                 <NA>           <NA>
-#> 19             <NA>                 <NA>           <NA>
-#> 20             <NA>                 <NA>           <NA>
-#> 21             <NA>                 <NA>           <NA>
-#> 22             <NA>                 <NA>           <NA>
-#> 23             <NA>                 <NA>           <NA>
-#> 24             <NA>                 <NA>           <NA>
-#> 25             <NA>                 <NA>           <NA>
-#> 26             <NA>                 <NA>           <NA>
-#> 27             <NA>                 <NA>           <NA>
-#> 28             <NA>                 <NA>           <NA>
-#> 29             <NA>                 <NA>           <NA>
-#> 30             <NA>                 <NA>           <NA>
-#> 31             <NA>                 <NA>           <NA>
-#> 32             <NA>                 <NA>           <NA>
-#> 33             <NA>                 <NA>           <NA>
-#> 34             <NA>                 <NA>           <NA>
-#> 35             <NA>                 <NA>           <NA>
-#> 36             <NA>                 <NA>           <NA>
-#> 37             <NA>                 <NA>           <NA>
-#> 38             <NA>                 <NA>           <NA>
-#> 39             <NA>                 <NA>           <NA>
-#> 40             <NA>                 <NA>           <NA>
-#> 41             <NA>                 <NA>           <NA>
-#> 42             <NA>                 <NA>           <NA>
-#> 43             <NA>                 <NA>           <NA>
-#> 44             <NA>                 <NA>           <NA>
-#> 45             <NA>                 <NA>           <NA>
-#> 46             <NA>                 <NA>           <NA>
-#> 47             <NA>                 <NA>           <NA>
-#> 48             <NA>                 <NA>           <NA>
-#> 49             <NA>                 <NA>           <NA>
-#> 50             <NA>                 <NA>           <NA>
-#> 51             <NA>                 <NA>           <NA>
-#> 52             <NA>                 <NA>           <NA>
-#> 53             <NA>                 <NA>           <NA>
-#> 54             <NA>                 <NA>           <NA>
-#> 55             <NA>                 <NA>           <NA>
-#> 56             <NA>                 <NA>           <NA>
-#> 57             <NA>                 <NA>           <NA>
-#> 58             <NA>                 <NA>           <NA>
-#> 59             <NA>                 <NA>           <NA>
-#> 60             <NA>                 <NA>           <NA>
-#> 61             <NA>                 <NA>           <NA>
-#> 62             <NA>                 <NA>           <NA>
-#> 63             <NA>                 <NA>           <NA>
-#> 64             <NA>                 <NA>           <NA>
-#> 65             <NA>                 <NA>           <NA>
-#> 66             <NA>                 <NA>           <NA>
-#> 67             <NA>                 <NA>           <NA>
-#> 68             <NA>                 <NA>           <NA>
-#> 69             <NA>                 <NA>           <NA>
-#> 70             <NA>                 <NA>           <NA>
-#> 71             <NA>                 <NA>           <NA>
-#> 72             <NA>                 <NA>           <NA>
-#> 73             <NA>                 <NA>           <NA>
-#> 74             <NA>                 <NA>           <NA>
-#> 75             <NA>                 <NA>           <NA>
-#> 76             <NA>                 <NA>           <NA>
-#> 77             <NA>                 <NA>           <NA>
-#> 78             <NA>                 <NA>           <NA>
-#> 79             <NA>                 <NA>           <NA>
-#> 80             <NA>                 <NA>           <NA>
-#> 81             <NA>                 <NA>           <NA>
-#> 82             <NA>                 <NA>           <NA>
-#> 83             <NA>                 <NA>           <NA>
-#> 84             <NA>                 <NA>           <NA>
-#> 85             <NA>                 <NA>           <NA>
-#> 86             <NA>                 <NA>           <NA>
-#> 87             <NA>                 <NA>           <NA>
-#> 88             <NA>                 <NA>           <NA>
-#> 89             <NA>                 <NA>           <NA>
-#> 90             <NA>                 <NA>           <NA>
-#> 91             <NA>                 <NA>           <NA>
-#> 92             <NA>                 <NA>           <NA>
-#> 93             <NA>                 <NA>           <NA>
-#> 94             <NA>                 <NA>           <NA>
-#> 95             <NA>                 <NA>           <NA>
-#> 96             <NA>                 <NA>           <NA>
-#> 97             <NA>                 <NA>           <NA>
-#> 98             <NA>                 <NA>           <NA>
-#> 99             <NA>                 <NA>           <NA>
-#> 100            <NA>                 <NA>           <NA>
-#> 101            <NA>                 <NA>           <NA>
-#> 102            <NA>                 <NA>           <NA>
-#> 103            <NA>                 <NA>           <NA>
-#> 104            <NA>                 <NA>           <NA>
-#> 105            <NA>                 <NA>           <NA>
-#> 106            <NA>                 <NA>           <NA>
-#> 107            <NA>                 <NA>           <NA>
-#> 108            <NA>                 <NA>           <NA>
-#> 109            <NA>                 <NA>           <NA>
-#> 110            <NA>                 <NA>           <NA>
-#> 111            <NA>                 <NA>           <NA>
-#> 112            <NA>                 <NA>           <NA>
-#> 113            <NA>                 <NA>           <NA>
-#> 114            <NA>                 <NA>           <NA>
-#> 115            <NA>                 <NA>           <NA>
-#> 116            <NA>                 <NA>           <NA>
-#> 117            <NA>                 <NA>           <NA>
-#> 118            <NA>                 <NA>           <NA>
-#> 119            <NA>                 <NA>           <NA>
-#> 120            <NA>                 <NA>           <NA>
-#> 121            <NA>                 <NA>           <NA>
-#> 122            <NA>                 <NA>           <NA>
-#> 123            <NA>                 <NA>           <NA>
-#> 124            <NA>                 <NA>           <NA>
-#> 125            <NA>                 <NA>           <NA>
-#> 126            <NA>                 <NA>           <NA>
-#> 127            <NA>                 <NA>           <NA>
-#> 128            <NA>                 <NA>           <NA>
-#> 129            <NA>                 <NA>           <NA>
-#> 130            <NA>                 <NA>           <NA>
-#> 131            <NA>                 <NA>           <NA>
-#> 132            <NA>                 <NA>           <NA>
-#> 133            <NA>                 <NA>           <NA>
-#> 134            <NA>                 <NA>           <NA>
-#> 135            <NA>                 <NA>           <NA>
-#> 136            <NA>                 <NA>           <NA>
-#> 137            <NA>                 <NA>           <NA>
-#> 138            <NA>                 <NA>           <NA>
-#> 139            <NA>                 <NA>           <NA>
-#> 140            <NA>                 <NA>           <NA>
-#> 141            <NA>                 <NA>           <NA>
-#> 142            <NA>                 <NA>           <NA>
-#> 143            <NA>                 <NA>           <NA>
-#> 144            <NA>                 <NA>           <NA>
-#> 145            <NA>                 <NA>           <NA>
-#> 146            <NA>                 <NA>           <NA>
-#> 147            <NA>                 <NA>           <NA>
-#> 148            <NA>                 <NA>           <NA>
-#> 149            <NA>                 <NA>           <NA>
-#> 150            <NA>                 <NA>           <NA>
-#> 151            <NA>                 <NA>           <NA>
-#> 152            <NA>                 <NA>           <NA>
-#> 153            <NA>                 <NA>           <NA>
-#> 154            <NA>                 <NA>           <NA>
-#> 155            <NA>                 <NA>           <NA>
-#> 156            <NA>                 <NA>           <NA>
-#> 157            <NA>                 <NA>           <NA>
-#> 158            <NA>                 <NA>           <NA>
-#> 159            <NA>                 <NA>           <NA>
-#> 160            <NA>                 <NA>           <NA>
-#> 161            <NA>                 <NA>           <NA>
-#> 162            <NA>                 <NA>           <NA>
-#> 163            <NA>                 <NA>           <NA>
-#> 164            <NA>                 <NA>           <NA>
-#> 165            <NA>                 <NA>           <NA>
-#> 166            <NA>                 <NA>           <NA>
-#> 167            <NA>                 <NA>           <NA>
-#> 168            <NA>                 <NA>           <NA>
-#> 169            <NA>                 <NA>           <NA>
-#> 170            <NA>                 <NA>           <NA>
-#> 171            <NA>                 <NA>           <NA>
-#> 172            <NA>                 <NA>           <NA>
-#> 173            <NA>                 <NA>           <NA>
-#> 174            <NA>                 <NA>           <NA>
-#> 175            <NA>                 <NA>           <NA>
-#> 176            <NA>                 <NA>           <NA>
-#> 177            <NA>                 <NA>           <NA>
-#> 178            <NA>                 <NA>           <NA>
-#> 179            <NA>                 <NA>           <NA>
-#> 180            <NA>                 <NA>           <NA>
-#> 181            <NA>                 <NA>           <NA>
-#> 182            <NA>                 <NA>           <NA>
-#> 183            <NA>                 <NA>           <NA>
-#> 184            <NA>                 <NA>           <NA>
-#> 185            <NA>                 <NA>           <NA>
-#> 186            <NA>                 <NA>           <NA>
-#> 187            <NA>                 <NA>           <NA>
-#> 188            <NA>                 <NA>           <NA>
-#> 189            <NA>                 <NA>           <NA>
-#> 190            <NA>                 <NA>           <NA>
-#> 191            <NA>                 <NA>           <NA>
-#> 192            <NA>                 <NA>           <NA>
-#> 193            <NA>                 <NA>           <NA>
-#> 194            <NA>                 <NA>           <NA>
-#> 195            <NA>                 <NA>           <NA>
-#> 196            <NA>                 <NA>           <NA>
-#> 197            <NA>                 <NA>           <NA>
-#> 198            <NA>                 <NA>           <NA>
-#> 199            <NA>                 <NA>           <NA>
-#> 200            <NA>                 <NA>           <NA>
-#> 201            <NA>                 <NA>           <NA>
-#> 202            <NA>                 <NA>           <NA>
-#> 203            <NA>                 <NA>           <NA>
-#> 204            <NA>                 <NA>           <NA>
-#> 205            <NA>                 <NA>           <NA>
-#> 206            <NA>                 <NA>           <NA>
-#> 207            <NA>                 <NA>           <NA>
-#> 208            <NA>                 <NA>           <NA>
-#> 209            <NA>                 <NA>           <NA>
-#> 210            <NA>                 <NA>           <NA>
-#> 211            <NA>                 <NA>           <NA>
-#> 212            <NA>                 <NA>           <NA>
-#> 213            <NA>                 <NA>           <NA>
-#> 214            <NA>                 <NA>           <NA>
-#> 215            <NA>                 <NA>           <NA>
-#> 216            <NA>                 <NA>           <NA>
-#> 217            <NA>                 <NA>           <NA>
-#> 218            <NA>                 <NA>           <NA>
-#> 219            <NA>                 <NA>           <NA>
-#> 220            <NA>                 <NA>           <NA>
-#> 221            <NA>                 <NA>           <NA>
-#> 222            <NA>                 <NA>           <NA>
-#> 223            <NA>                 <NA>           <NA>
-#> 224            <NA>                 <NA>           <NA>
-#> 225            <NA>                 <NA>           <NA>
-#> 226            <NA>                 <NA>           <NA>
-#> 227            <NA>                 <NA>           <NA>
-#> 228            <NA>                 <NA>           <NA>
-#> 229            <NA>                 <NA>           <NA>
-#> 230            <NA>                 <NA>           <NA>
-#> 231            <NA>                 <NA>           <NA>
-#> 232            <NA>                 <NA>           <NA>
-#> 233            <NA>                 <NA>           <NA>
-#> 234            <NA>                 <NA>           <NA>
-#> 235            <NA>                 <NA>           <NA>
-#> 236            <NA>                 <NA>           <NA>
-#> 237            <NA>                 <NA>           <NA>
-#> 238            <NA>                 <NA>           <NA>
-#> 239            <NA>                 <NA>           <NA>
-#> 240            <NA>                 <NA>           <NA>
-#> 241            <NA>                 <NA>           <NA>
-#> 242            <NA>                 <NA>           <NA>
-#> 243            <NA>                 <NA>           <NA>
-#> 244            <NA>                 <NA>           <NA>
-#> 245            <NA>                 <NA>           <NA>
-#> 246            <NA>                 <NA>           <NA>
-#> 247            <NA>                 <NA>           <NA>
-#> 248            <NA>                 <NA>           <NA>
-#> 249            <NA>                 <NA>           <NA>
-#> 250            <NA>                 <NA>           <NA>
-#> 251            <NA>                 <NA>           <NA>
-#> 252            <NA>                 <NA>           <NA>
-#> 253            <NA>                 <NA>           <NA>
-#> 254            <NA>                 <NA>           <NA>
-#> 255            <NA>                 <NA>           <NA>
-#> 256            <NA>                 <NA>           <NA>
-#> 257            <NA>                 <NA>           <NA>
-#> 258            <NA>                 <NA>           <NA>
-#> 259            <NA>                 <NA>           <NA>
-#> 260            <NA>                 <NA>           <NA>
-#> 261            <NA>                 <NA>           <NA>
-#> 262            <NA>                 <NA>           <NA>
-#> 263            <NA>                 <NA>           <NA>
-#> 264            <NA>                 <NA>           <NA>
-#> 265            <NA>                 <NA>           <NA>
-#> 266            <NA>                 <NA>           <NA>
-#> 267            <NA>                 <NA>           <NA>
-#> 268            <NA>                 <NA>           <NA>
-#> 269            <NA>                 <NA>           <NA>
-#> 270            <NA>                 <NA>           <NA>
-#> 271            <NA>                 <NA>           <NA>
-#> 272            <NA>                 <NA>           <NA>
-#> 273            <NA>                 <NA>           <NA>
-#> 274            <NA>                 <NA>           <NA>
-#> 275            <NA>                 <NA>           <NA>
-#> 276            <NA>                 <NA>           <NA>
-#> 277            <NA>                 <NA>           <NA>
-#> 278            <NA>                 <NA>           <NA>
-#> 279            <NA>                 <NA>           <NA>
-#> 280            <NA>                 <NA>           <NA>
-#> 281            <NA>                 <NA>           <NA>
-#> 282            <NA>                 <NA>           <NA>
-#> 283            <NA>                 <NA>           <NA>
-#> 284            <NA>                 <NA>           <NA>
-#> 285            <NA>                 <NA>           <NA>
-#> 286            <NA>                 <NA>           <NA>
-#> 287            <NA>                 <NA>           <NA>
-#> 288            <NA>                 <NA>           <NA>
-#> 289            <NA>                 <NA>           <NA>
-#> 290            <NA>                 <NA>           <NA>
-#> 291            <NA>                 <NA>           <NA>
-#> 292            <NA>                 <NA>           <NA>
-#> 293            <NA>                 <NA>           <NA>
-#> 294            <NA>                 <NA>           <NA>
-#> 295            <NA>                 <NA>           <NA>
-#> 296            <NA>                 <NA>           <NA>
-#> 297            <NA>                 <NA>           <NA>
-#> 298            <NA>                 <NA>           <NA>
-#> 299            <NA>                 <NA>           <NA>
-#> 300            <NA>                 <NA>           <NA>
-#> 301            <NA>                 <NA>           <NA>
-#> 302            <NA>                 <NA>           <NA>
-#> 303            <NA>                 <NA>           <NA>
-#> 304            <NA>                 <NA>           <NA>
-#> 305            <NA>                 <NA>           <NA>
-#> 306            <NA>                 <NA>           <NA>
-#> 307            <NA>                 <NA>           <NA>
-#> 308            <NA>                 <NA>           <NA>
-#> 309            <NA>                 <NA>           <NA>
-#> 310            <NA>                 <NA>           <NA>
-#> 311            <NA>                 <NA>           <NA>
-#> 312            <NA>                 <NA>           <NA>
-#> 313            <NA>                 <NA>           <NA>
-#> 314            <NA>                 <NA>           <NA>
-#> 315            <NA>                 <NA>           <NA>
-#> 316            <NA>                 <NA>           <NA>
-#> 317            <NA>                 <NA>           <NA>
-#> 318            <NA>                 <NA>           <NA>
-#> 319            <NA>                 <NA>           <NA>
-#> 320            <NA>                 <NA>           <NA>
-#> 321            <NA>                 <NA>           <NA>
-#> 322            <NA>                 <NA>           <NA>
-#> 323            <NA>                 <NA>           <NA>
-#> 324            <NA>                 <NA>           <NA>
-#> 325            <NA>                 <NA>           <NA>
-#> 326            <NA>                 <NA>           <NA>
-#> 327            <NA>                 <NA>           <NA>
-#> 328            <NA>                 <NA>           <NA>
-#> 329            <NA>                 <NA>           <NA>
-#> 330            <NA>                 <NA>           <NA>
-#> 331            <NA>                 <NA>           <NA>
-#> 332            <NA>                 <NA>           <NA>
-#> 333            <NA>                 <NA>           <NA>
-#> 334            <NA>                 <NA>           <NA>
-#> 335            <NA>                 <NA>           <NA>
-#> 336            <NA>                 <NA>           <NA>
-#> 337            <NA>                 <NA>           <NA>
-#> 338            <NA>                 <NA>           <NA>
-#> 339            <NA>                 <NA>           <NA>
-#> 340            <NA>                 <NA>           <NA>
-#> 341            <NA>                 <NA>           <NA>
-#> 342            <NA>                 <NA>           <NA>
-#> 343            <NA>                 <NA>           <NA>
-#> 344            <NA>                 <NA>           <NA>
-#> 345            <NA>                 <NA>           <NA>
-#> 346            <NA>                 <NA>           <NA>
-#> 347            <NA>                 <NA>           <NA>
-#> 348            <NA>                 <NA>           <NA>
-#> 349            <NA>                 <NA>           <NA>
-#> 350            <NA>                 <NA>           <NA>
-#> 351            <NA>                 <NA>           <NA>
-#> 352            <NA>                 <NA>           <NA>
-#> 353            <NA>                 <NA>           <NA>
-#> 354            <NA>                 <NA>           <NA>
-#> 355            <NA>                 <NA>           <NA>
-#> 356            <NA>                 <NA>           <NA>
-#> 357            <NA>                 <NA>           <NA>
-#> 358            <NA>                 <NA>           <NA>
-#> 359            <NA>                 <NA>           <NA>
-#> 360            <NA>                 <NA>           <NA>
-#> 361            <NA>                 <NA>           <NA>
-#> 362            <NA>                 <NA>           <NA>
-#> 363            <NA>                 <NA>           <NA>
-#> 364            <NA>                 <NA>           <NA>
-#> 365            <NA>                 <NA>           <NA>
-#> 366            <NA>                 <NA>           <NA>
-#> 367            <NA>                 <NA>           <NA>
-#> 368            <NA>                 <NA>           <NA>
-#> 369            <NA>                 <NA>           <NA>
-#> 370            <NA>                 <NA>           <NA>
-#> 371            <NA>                 <NA>           <NA>
-#> 372            <NA>                 <NA>           <NA>
-#> 373            <NA>                 <NA>           <NA>
-#> 374            <NA>                 <NA>           <NA>
-#> 375            <NA>                 <NA>           <NA>
-#> 376            <NA>                 <NA>           <NA>
-#> 377            <NA>                 <NA>           <NA>
-#> 378            <NA>                 <NA>           <NA>
-#> 379            <NA>                 <NA>           <NA>
-#> 380            <NA>                 <NA>           <NA>
-#> 381            <NA>                 <NA>           <NA>
-#> 382            <NA>                 <NA>           <NA>
-#> 383            <NA>                 <NA>           <NA>
-#> 384            <NA>                 <NA>           <NA>
-#> 385            <NA>                 <NA>           <NA>
-#> 386            <NA>                 <NA>           <NA>
-#> 387            <NA>                 <NA>           <NA>
-#> 388            <NA>                 <NA>           <NA>
-#> 389            <NA>                 <NA>           <NA>
-#> 390            <NA>                 <NA>           <NA>
-#> 391            <NA>                 <NA>           <NA>
-#> 392            <NA>                 <NA>           <NA>
-#> 393            <NA>                 <NA>           <NA>
-#> 394            <NA>                 <NA>           <NA>
-#> 395            <NA>                 <NA>           <NA>
-#> 396            <NA>                 <NA>           <NA>
-#> 397            <NA>                 <NA>           <NA>
-#> 398            <NA>                 <NA>           <NA>
-#> 399            <NA>                 <NA>           <NA>
-#> 400            <NA>                 <NA>           <NA>
-#> 401            <NA>                 <NA>           <NA>
-#> 402            <NA>                 <NA>           <NA>
-#> 403            <NA>                 <NA>           <NA>
-#> 404            <NA>                 <NA>           <NA>
-#> 405            <NA>                 <NA>           <NA>
-#> 406            <NA>                 <NA>           <NA>
-#> 407            <NA>                 <NA>           <NA>
-#> 408            <NA>                 <NA>           <NA>
-#> 409            <NA>                 <NA>           <NA>
-#> 410            <NA>                 <NA>           <NA>
-#> 411            <NA>                 <NA>           <NA>
-#> 412            <NA>                 <NA>           <NA>
-#> 413            <NA>                 <NA>           <NA>
-#> 414            <NA>                 <NA>           <NA>
-#> 415            <NA>                 <NA>           <NA>
-#> 416            <NA>                 <NA>           <NA>
-#> 417            <NA>                 <NA>           <NA>
-#> 418            <NA>                 <NA>           <NA>
-#> 419            <NA>                 <NA>           <NA>
-#> 420            <NA>                 <NA>           <NA>
-#> 421            <NA>                 <NA>           <NA>
-#> 422            <NA>                 <NA>           <NA>
-#> 423            <NA>                 <NA>           <NA>
-#> 424            <NA>                 <NA>           <NA>
-#> 425            <NA>                 <NA>           <NA>
-#> 426            <NA>                 <NA>           <NA>
-#> 427            <NA>                 <NA>           <NA>
-#> 428            <NA>                 <NA>           <NA>
-#> 429            <NA>                 <NA>           <NA>
-#> 430            <NA>                 <NA>           <NA>
+#>     tts_header_text tts_description_text severity_level      file_timestamp
+#> 1              <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 2              <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 3              <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 4              <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 5              <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 6              <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 7              <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 8              <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 9              <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 10             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 11             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 12             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 13             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 14             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 15             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 16             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 17             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 18             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 19             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 20             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 21             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 22             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 23             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 24             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 25             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 26             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 27             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 28             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 29             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 30             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 31             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 32             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 33             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 34             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 35             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 36             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 37             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 38             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 39             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 40             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 41             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 42             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 43             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 44             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 45             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 46             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 47             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 48             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 49             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 50             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 51             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 52             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 53             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 54             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 55             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 56             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 57             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 58             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 59             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 60             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 61             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 62             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 63             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 64             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 65             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 66             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 67             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 68             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 69             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 70             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 71             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 72             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 73             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 74             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 75             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 76             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 77             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 78             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 79             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 80             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 81             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 82             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 83             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 84             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 85             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 86             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 87             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 88             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 89             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 90             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 91             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 92             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 93             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 94             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 95             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 96             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 97             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 98             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 99             <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 100            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 101            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 102            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 103            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 104            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 105            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 106            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 107            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 108            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 109            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 110            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 111            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 112            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 113            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 114            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 115            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 116            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 117            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 118            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 119            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 120            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 121            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 122            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 123            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 124            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 125            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 126            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 127            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 128            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 129            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 130            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 131            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 132            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 133            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 134            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 135            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 136            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 137            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 138            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 139            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 140            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 141            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 142            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 143            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 144            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 145            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 146            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 147            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 148            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 149            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 150            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 151            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 152            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 153            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 154            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 155            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 156            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 157            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 158            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 159            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 160            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 161            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 162            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 163            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 164            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 165            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 166            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 167            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 168            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 169            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 170            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 171            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 172            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 173            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 174            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 175            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 176            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 177            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 178            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 179            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 180            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 181            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 182            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 183            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 184            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 185            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 186            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 187            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 188            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 189            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 190            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 191            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 192            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 193            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 194            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 195            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 196            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 197            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 198            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 199            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 200            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 201            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 202            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 203            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 204            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 205            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 206            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 207            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 208            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 209            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 210            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 211            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 212            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 213            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 214            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 215            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 216            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 217            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 218            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 219            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 220            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 221            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 222            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 223            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 224            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 225            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 226            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 227            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 228            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 229            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 230            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 231            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 232            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 233            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 234            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 235            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 236            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 237            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 238            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 239            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 240            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 241            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 242            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 243            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 244            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 245            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 246            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 247            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 248            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 249            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 250            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 251            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 252            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 253            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 254            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 255            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 256            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 257            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 258            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 259            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 260            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 261            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 262            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 263            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 264            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 265            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 266            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 267            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 268            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 269            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 270            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 271            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 272            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 273            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 274            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 275            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 276            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 277            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 278            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 279            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 280            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 281            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 282            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 283            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 284            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 285            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 286            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 287            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 288            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 289            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 290            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 291            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 292            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 293            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 294            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 295            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 296            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 297            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 298            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 299            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 300            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 301            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 302            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 303            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 304            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 305            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 306            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 307            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 308            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 309            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 310            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 311            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 312            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 313            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 314            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 315            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 316            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 317            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 318            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 319            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 320            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 321            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 322            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 323            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 324            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 325            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 326            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 327            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 328            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 329            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 330            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 331            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 332            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 333            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 334            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 335            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 336            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 337            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 338            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 339            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 340            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 341            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 342            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 343            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 344            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 345            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 346            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 347            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 348            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 349            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 350            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 351            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 352            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 353            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 354            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 355            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 356            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 357            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 358            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 359            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 360            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 361            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 362            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 363            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 364            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 365            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 366            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 367            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 368            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 369            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 370            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 371            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 372            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 373            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 374            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 375            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 376            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 377            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 378            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 379            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 380            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 381            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 382            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 383            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 384            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 385            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 386            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 387            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 388            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 389            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 390            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 391            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 392            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 393            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 394            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 395            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 396            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 397            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 398            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 399            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 400            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 401            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 402            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 403            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 404            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 405            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 406            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 407            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 408            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 409            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 410            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 411            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 412            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 413            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 414            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 415            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 416            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 417            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 418            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 419            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 420            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 421            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 422            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 423            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 424            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 425            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 426            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 427            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 428            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 429            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#> 430            <NA>                 <NA>           <NA> 2026-01-28 08:57:42
+#>     file_index
+#> 1            1
+#> 2            1
+#> 3            1
+#> 4            1
+#> 5            1
+#> 6            1
+#> 7            1
+#> 8            1
+#> 9            1
+#> 10           1
+#> 11           1
+#> 12           1
+#> 13           1
+#> 14           1
+#> 15           1
+#> 16           1
+#> 17           1
+#> 18           1
+#> 19           1
+#> 20           1
+#> 21           1
+#> 22           1
+#> 23           1
+#> 24           1
+#> 25           1
+#> 26           1
+#> 27           1
+#> 28           1
+#> 29           1
+#> 30           1
+#> 31           1
+#> 32           1
+#> 33           1
+#> 34           1
+#> 35           1
+#> 36           1
+#> 37           1
+#> 38           1
+#> 39           1
+#> 40           1
+#> 41           1
+#> 42           1
+#> 43           1
+#> 44           1
+#> 45           1
+#> 46           1
+#> 47           1
+#> 48           1
+#> 49           1
+#> 50           1
+#> 51           1
+#> 52           1
+#> 53           1
+#> 54           1
+#> 55           1
+#> 56           1
+#> 57           1
+#> 58           1
+#> 59           1
+#> 60           1
+#> 61           1
+#> 62           1
+#> 63           1
+#> 64           1
+#> 65           1
+#> 66           1
+#> 67           1
+#> 68           1
+#> 69           1
+#> 70           1
+#> 71           1
+#> 72           1
+#> 73           1
+#> 74           1
+#> 75           1
+#> 76           1
+#> 77           1
+#> 78           1
+#> 79           1
+#> 80           1
+#> 81           1
+#> 82           1
+#> 83           1
+#> 84           1
+#> 85           1
+#> 86           1
+#> 87           1
+#> 88           1
+#> 89           1
+#> 90           1
+#> 91           1
+#> 92           1
+#> 93           1
+#> 94           1
+#> 95           1
+#> 96           1
+#> 97           1
+#> 98           1
+#> 99           1
+#> 100          1
+#> 101          1
+#> 102          1
+#> 103          1
+#> 104          1
+#> 105          1
+#> 106          1
+#> 107          1
+#> 108          1
+#> 109          1
+#> 110          1
+#> 111          1
+#> 112          1
+#> 113          1
+#> 114          1
+#> 115          1
+#> 116          1
+#> 117          1
+#> 118          1
+#> 119          1
+#> 120          1
+#> 121          1
+#> 122          1
+#> 123          1
+#> 124          1
+#> 125          1
+#> 126          1
+#> 127          1
+#> 128          1
+#> 129          1
+#> 130          1
+#> 131          1
+#> 132          1
+#> 133          1
+#> 134          1
+#> 135          1
+#> 136          1
+#> 137          1
+#> 138          1
+#> 139          1
+#> 140          1
+#> 141          1
+#> 142          1
+#> 143          1
+#> 144          1
+#> 145          1
+#> 146          1
+#> 147          1
+#> 148          1
+#> 149          1
+#> 150          1
+#> 151          1
+#> 152          1
+#> 153          1
+#> 154          1
+#> 155          1
+#> 156          1
+#> 157          1
+#> 158          1
+#> 159          1
+#> 160          1
+#> 161          1
+#> 162          1
+#> 163          1
+#> 164          1
+#> 165          1
+#> 166          1
+#> 167          1
+#> 168          1
+#> 169          1
+#> 170          1
+#> 171          1
+#> 172          1
+#> 173          1
+#> 174          1
+#> 175          1
+#> 176          1
+#> 177          1
+#> 178          1
+#> 179          1
+#> 180          1
+#> 181          1
+#> 182          1
+#> 183          1
+#> 184          1
+#> 185          1
+#> 186          1
+#> 187          1
+#> 188          1
+#> 189          1
+#> 190          1
+#> 191          1
+#> 192          1
+#> 193          1
+#> 194          1
+#> 195          1
+#> 196          1
+#> 197          1
+#> 198          1
+#> 199          1
+#> 200          1
+#> 201          1
+#> 202          1
+#> 203          1
+#> 204          1
+#> 205          1
+#> 206          1
+#> 207          1
+#> 208          1
+#> 209          1
+#> 210          1
+#> 211          1
+#> 212          1
+#> 213          1
+#> 214          1
+#> 215          1
+#> 216          1
+#> 217          1
+#> 218          1
+#> 219          1
+#> 220          1
+#> 221          1
+#> 222          1
+#> 223          1
+#> 224          1
+#> 225          1
+#> 226          1
+#> 227          1
+#> 228          1
+#> 229          1
+#> 230          1
+#> 231          1
+#> 232          1
+#> 233          1
+#> 234          1
+#> 235          1
+#> 236          1
+#> 237          1
+#> 238          1
+#> 239          1
+#> 240          1
+#> 241          1
+#> 242          1
+#> 243          1
+#> 244          1
+#> 245          1
+#> 246          1
+#> 247          1
+#> 248          1
+#> 249          1
+#> 250          1
+#> 251          1
+#> 252          1
+#> 253          1
+#> 254          1
+#> 255          1
+#> 256          1
+#> 257          1
+#> 258          1
+#> 259          1
+#> 260          1
+#> 261          1
+#> 262          1
+#> 263          1
+#> 264          1
+#> 265          1
+#> 266          1
+#> 267          1
+#> 268          1
+#> 269          1
+#> 270          1
+#> 271          1
+#> 272          1
+#> 273          1
+#> 274          1
+#> 275          1
+#> 276          1
+#> 277          1
+#> 278          1
+#> 279          1
+#> 280          1
+#> 281          1
+#> 282          1
+#> 283          1
+#> 284          1
+#> 285          1
+#> 286          1
+#> 287          1
+#> 288          1
+#> 289          1
+#> 290          1
+#> 291          1
+#> 292          1
+#> 293          1
+#> 294          1
+#> 295          1
+#> 296          1
+#> 297          1
+#> 298          1
+#> 299          1
+#> 300          1
+#> 301          1
+#> 302          1
+#> 303          1
+#> 304          1
+#> 305          1
+#> 306          1
+#> 307          1
+#> 308          1
+#> 309          1
+#> 310          1
+#> 311          1
+#> 312          1
+#> 313          1
+#> 314          1
+#> 315          1
+#> 316          1
+#> 317          1
+#> 318          1
+#> 319          1
+#> 320          1
+#> 321          1
+#> 322          1
+#> 323          1
+#> 324          1
+#> 325          1
+#> 326          1
+#> 327          1
+#> 328          1
+#> 329          1
+#> 330          1
+#> 331          1
+#> 332          1
+#> 333          1
+#> 334          1
+#> 335          1
+#> 336          1
+#> 337          1
+#> 338          1
+#> 339          1
+#> 340          1
+#> 341          1
+#> 342          1
+#> 343          1
+#> 344          1
+#> 345          1
+#> 346          1
+#> 347          1
+#> 348          1
+#> 349          1
+#> 350          1
+#> 351          1
+#> 352          1
+#> 353          1
+#> 354          1
+#> 355          1
+#> 356          1
+#> 357          1
+#> 358          1
+#> 359          1
+#> 360          1
+#> 361          1
+#> 362          1
+#> 363          1
+#> 364          1
+#> 365          1
+#> 366          1
+#> 367          1
+#> 368          1
+#> 369          1
+#> 370          1
+#> 371          1
+#> 372          1
+#> 373          1
+#> 374          1
+#> 375          1
+#> 376          1
+#> 377          1
+#> 378          1
+#> 379          1
+#> 380          1
+#> 381          1
+#> 382          1
+#> 383          1
+#> 384          1
+#> 385          1
+#> 386          1
+#> 387          1
+#> 388          1
+#> 389          1
+#> 390          1
+#> 391          1
+#> 392          1
+#> 393          1
+#> 394          1
+#> 395          1
+#> 396          1
+#> 397          1
+#> 398          1
+#> 399          1
+#> 400          1
+#> 401          1
+#> 402          1
+#> 403          1
+#> 404          1
+#> 405          1
+#> 406          1
+#> 407          1
+#> 408          1
+#> 409          1
+#> 410          1
+#> 411          1
+#> 412          1
+#> 413          1
+#> 414          1
+#> 415          1
+#> 416          1
+#> 417          1
+#> 418          1
+#> 419          1
+#> 420          1
+#> 421          1
+#> 422          1
+#> 423          1
+#> 424          1
+#> 425          1
+#> 426          1
+#> 427          1
+#> 428          1
+#> 429          1
+#> 430          1
 ```
