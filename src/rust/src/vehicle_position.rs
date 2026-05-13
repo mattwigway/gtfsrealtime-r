@@ -45,6 +45,8 @@ pub struct RVehiclePosition {
 
     // timestamp of file generation
     file_timestamp: Option<u64>,
+    // index of file when reading multiple files
+    file_index: i32,
 }
 
 // Read GTFS-RT vehicle positions
@@ -54,7 +56,8 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
 
     let content: Vec<RVehiclePosition> = msgs
         .iter()
-        .map(|msg| {
+        .enumerate()
+        .map(|(file_idx, msg)| {
             // it is expected that IDs are duplicated between messages in a zip file of (say) a day of data
             let mut id_deduplicator = IdDeduplicator::new();
 
@@ -106,6 +109,7 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
                             .as_ref()
                             .map_or(None, |veh| veh.wheelchair_accessible),
                         file_timestamp: msg.header.timestamp,
+                        file_index: (file_idx + 1) as i32, // convert to R one-based convention
                     }
                 })
         })

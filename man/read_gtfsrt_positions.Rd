@@ -8,7 +8,9 @@ read_gtfsrt_positions(filename, timezone, as_sf = FALSE, label_values = TRUE)
 }
 \arguments{
 \item{filename}{filename to read. Can be uncompressed or compressed with
-gzip or bzip2. Can also be an http: or https: URL.}
+gzip or bzip2, or can be a ZIP file containing multiple feeds (e.g.,
+all positions for a whole day). Can also be an http:// or https:// URL
+(ZIP files are not supported when reading from a URL, but gzip and bzip2 are).}
 
 \item{timezone}{timezone of feed, in Olson format. Times in GTFS-realtime are
 stored as Unix time in UTC; this option will convert to local times. If you
@@ -178,6 +180,9 @@ can overwrite the wheelchair_accessible value from the static GTFS. (path: \code
 \item WHEELCHAIR_ACCESSIBLE The trip is wheelchair accessible. This value will overwrite the value from the GTFS.
 \item WHEELCHAIR_INACCESSIBLEThe trip is not wheelchair accessible. This value will overwrite the value from the GTFS.
 }
+\item \code{file_timestamp}: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
+\item \code{file_index}: When reading a ZIP file, a one-based index of which file each observation came from
+Note that it is in the the order the files appeared in the ZIP file, which may not be chronological.
 }
 }
 \examples{

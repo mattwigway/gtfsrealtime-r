@@ -45,6 +45,7 @@ pub struct RStopTimeUpdate {
     stop_schedule_relationship: Option<i32>,
 
     file_timestamp: Option<u64>,
+    file_index: i32,
 }
 
 // Read GTFS-RT trip updates (result is expanded to one row per stop update)
@@ -54,7 +55,8 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
 
     let content: Vec<RStopTimeUpdate> = msgs
         .iter()
-        .map(|msg| {
+        .enumerate()
+        .map(|(file_idx, msg)| {
             // we define the ID deduplicator inside each message, because it is expected that multiple
             // messages would have duplicate IDs
             let mut id_deduplicator = IdDeduplicator::new();
@@ -114,6 +116,7 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
                                     departure_occupancy_status: stupd.departure_occupancy_status,
                                     stop_schedule_relationship: stupd.schedule_relationship,
                                     file_timestamp: msg.header.timestamp,
+                                    file_index: (file_idx + 1) as i32, // convert to R one-based convention
                                 }
                             })
                             .collect::<Vec<RStopTimeUpdate>>()
@@ -145,6 +148,7 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
                             departure_occupancy_status: None,
                             stop_schedule_relationship: None,
                             file_timestamp: msg.header.timestamp,
+                            file_index: (file_idx + 1) as i32, // convert to R one-based convention
                         }]
                     }
                 })

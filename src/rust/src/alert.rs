@@ -42,6 +42,7 @@ pub struct RAlert {
     // image_type: Option<String>,
     // image_alternative_text: Option<String>
     file_timestamp: Option<u64>,
+    file_index: i32,
 }
 
 fn accumulate_languages(
@@ -93,7 +94,8 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
 
     let content = msgs
         .iter()
-        .map(|msg| {
+        .enumerate()
+        .map(|(file_idx, msg)| {
             // IDs expected to be unique only within a feed
             let mut id_deduplicator = IdDeduplicator::new();
 
@@ -223,6 +225,7 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
                                                 ),
                                                 severity_level: alert.severity_level,
                                                 file_timestamp: msg.header.timestamp,
+                                                file_index: (file_idx + 1) as i32, // convert to R one-based convention
                                             }
                                         })
                                         .collect::<Vec<RAlert>>()
