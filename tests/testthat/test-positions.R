@@ -252,13 +252,33 @@ test_that("duplicate ids are deduplicated", {
 })
 
 test_that("can read from zip", {
+  warnings = list(warnings = list())
+  local_mocked_bindings(cli_warn = function(x) warnings$warnings <<- append(warnings$warnings, x), .package = "cli")
+
   dir = tempfile()
   dir.create(dir)
+
   test_data_enum_roundtrip_positions(file.path(dir, "feed1.pb"))
   test_data_positions_all_values(file.path(dir, "feed2.pb"))
+
+  # add a non-GTFS-realtime file
+  # This should be ignored with a warning
+  # is is intentionally only two bytes, to test that even if there aren't enough bytes for the
+  # gzip or bzip2 magic number the file is still read correctly.
+  writeLines(c("t"), file.path(dir, "garbage.txt"))
+
+  # and one that is longer so will make it to protobuf decoder
+  writeLines(c("this is a test of the emergency broadcast system"), file.path(dir, "garbage2.txt"))
+
+  # .DS_Store should be silently ignored
+  writeLines(c("t"), file.path(dir, ".DS_Store"))
+
   zfile = tempfile(fileext = ".zip")
   # enforce order
-  zip(zfile, c(file.path(dir, "feed1.pb"), file.path(dir, "feed2.pb")))
+  oldwd = getwd()
+  setwd(dir)
+  zip(zfile, c("feed1.pb", "feed2.pb", "garbage.txt", "garbage2.txt", ".DS_Store"))
+  setwd(oldwd)
   positions = read_gtfsrt_positions(zfile, "America/New_York")
   expected = rbind(
     read_gtfsrt_positions(file.path(dir, "feed1.pb"), "America/New_York") |>
@@ -271,4 +291,16 @@ test_that("can read from zip", {
   file.remove(zfile)
 
   expect_equal(positions, expected)
+  expect_equal(
+    warnings$warnings,
+    list(
+      "!" = "Failed to read garbage.txt",
+      "x" = "File is not a GTFS realtime feed",
+      "i" = "This file will be skipped",
+      "!" = "Failed to read garbage2.txt",
+      # this might be a little fragile if Prost changes their error messages
+      "x" = "failed to decode Protobuf message: unexpected end group tag",
+      "i" = "This file will be skipped"
+    )
+  )
 })
