@@ -39,7 +39,8 @@ Suggests:
     testthat (>= 3.3.0),
     jsonlite,
     tidyselect,
-    tibble
+    tibble,
+    stringr
 BugReports: https://github.com/mattwigway/gtfsrealtime-r/issues
 VignetteBuilder: knitr
 URL: http://projects.indicatrix.org/gtfsrealtime-r/
