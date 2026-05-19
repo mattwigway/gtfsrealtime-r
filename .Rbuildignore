@@ -3,8 +3,8 @@
 ^LICENSE\.md$
 ^\.vscode$
 ^src/\.cargo$
-^src/rust/vendor$
-^src/rust/target$
+^src/.*/vendor$
+^src/.*/target$
 ^src/Makevars$
 ^src/Makevars\.win$
 ^_pkgdown\.yml$
