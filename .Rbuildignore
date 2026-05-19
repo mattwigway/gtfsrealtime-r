@@ -16,9 +16,7 @@
 ^vignette-prerender$
 ^nyc-bus-demo$
 ^nyc-bus-demo.zip$
-^vignettes/archived.Rmd$
-^vignettes/nyc-bus-demo$
-^vignettes/figures/nyc_bus_anim.gif$
+^vignettes/articles$
 ^vignettes/.*.R$
 ^vignettes/.*.html$
 \.gitkeep$

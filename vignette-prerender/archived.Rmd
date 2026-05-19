@@ -1,10 +1,6 @@
 ---
 title: "Working with archived data"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{archived}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 <!--

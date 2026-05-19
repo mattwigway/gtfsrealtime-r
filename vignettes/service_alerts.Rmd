@@ -1,0 +1,94 @@
+---
+title: "Service alerts"
+author: "Matthew Palm"
+date: "2026-05-05"
+output: html_vignette
+vignette: > 
+  %\VignetteIndexEntry{Service alerts}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include= FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette shows how to read GTFS-realtime service alerts into R using the {gtfsrealtime} package. Service alerts describe disruptions, planned work, stop closures, detours, and other rider-facing information. The {gtfsrealtime} package reads the nested GTFS-realtime alert format and flattens it into a data frame that is easier to inspect and analyze in R.
+
+## Load libraries
+
+First, we load {gtfsrealtime} to read GTFS-realtime files, {dplyr} to inspect and summarize the resulting data frame, and {stringr} to shorten long alert messages for display.
+
+```{r setup, message= FALSE}
+library(gtfsrealtime)
+library(dplyr)
+library(stringr)
+```
+
+## Load a GTFS-realtime service alerts feed
+
+This example uses a New York City service alerts feed included with {gtfsrealtime}. The file is compressed with bzip2 to save space. {gtfsrealtime} can automatically detect and read uncompressed files as well as files compressed with zip, gzip, or bzip2. Zip files can contain multiple GTFS-realtime files, in which case {gtfsrealtime} will read all of them. You can differentiate which file each update came from based on the `file_index` field.
+
+GTFS-realtime time values are stored as Unix timestamps, which are interpreted relative to UTC. To convert to local time, we provide a local time zone.  Time zones are specified in standardized TZ database format (generally `Continent/City`; for a list, [see here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If you do not want to convert times, you can specify a time zone of `Etc/UTC`.
+
+```{r read-alerts}
+alerts <- read_gtfsrt_alerts(
+  system.file("nyc-service-alerts.pb.bz2", package = "gtfsrealtime"),
+  "America/New_York"
+)
+```
+
+## Explore the alerts
+
+GTFS-realtime alerts are [nested](https://gtfs.org/documentation/realtime/reference/#message-alert): one alert can include multiple active time periods and multiple informed entities, such as routes, stops, trips, or agencies affected by the alert. `read_gtfsrt_alerts()` flattens this structure into a data frame. As a result, the same alert `id` may appear in multiple rows when an alert applies to more than one entity or time period.
+
+```{r glimpse-alerts}
+glimpse(alerts)
+```
+
+## Inspecting a single alert
+
+Because a single alert can apply to more than one route, stop, or trip, it is useful to inspect all rows associated with one alert id. In the example below, we select the first alert in the feed and display the affected route or stop fields along with the rider-facing alert text.
+
+```{r inspect-alert}
+alerts |>
+  filter(id == first(id)) |>
+  select(id, route_id, stop_id, header_text, description_text)
+```
+
+## Summarizing affected routes
+
+We can also summarize which routes appear most often in the alerts feed. Route IDs appear in two places in the alerts feed: in the `route_id` column and in the `trip_route_id` column (which correspond to alerts that apply to an entire route, and those that correspond to a single trip on a route). First, we put those together, and then we count the number of routes. Note that `trip_route_id` is optional if the trip ID itself is specified, so it might be necessary to refer to the static GTFS to map trip IDs to route IDs with some feeds, though in the example feed all updates have route IDs or trip route IDs. It is also possible to have service alerts that apply to specific stops, modes (bus/tram/etc), or agency, and do not have a route ID, though there are none in the New York MTA example feed. If alerts have translated strings or multiple time periods, they may be in multiple rows in the data frame, so we make sure to group by the alert ID and select only a single instance before counting the number of alerts by route.
+
+```{r summarize-alert}
+# make sure trip_route_id and route_id always agree if both are specified
+stopifnot(with(alerts, all(is.na(route_id) | is.na(trip_route_id) | route_id == trip_route_id)))
+
+# make sure every update has a route id
+stopifnot(with(alerts, all(!is.na(route_id) | !is.na(trip_route_id))))
+
+alerts |>
+  mutate(route_id = coalesce(route_id, trip_route_id)) |>
+  group_by(id) |>
+  slice_head(n=1) |>
+  ungroup() |>
+  count(route_id, sort = TRUE) |>
+  head(10)
+```
+
+## Working with alert text
+
+The alert text fields contain the rider-facing message. `header_text` usually provides a short summary, while `description_text` provides more detail. All fields are described in the documentation for [`read_gtfsrt_alerts()`].
+
+```{r alert-text}
+ alerts |>
+     distinct(id, header_text, description_text) |>
+     mutate(
+         header_text = str_trunc(header_text, 80),
+         description_text = str_trunc(description_text, 120)
+     ) |>
+     head()
+```
