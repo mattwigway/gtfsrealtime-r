@@ -4,4 +4,4 @@
 
 * This is a new release.
 * There are no academic references discussing the methods in this package.
-* The source package is 15.6 MB (slightly more than the requested 10 MB) due to vendored Rust crates.
+* The source package is 15.2 MB (slightly more than the requested 10 MB) due to vendored Rust crates.
