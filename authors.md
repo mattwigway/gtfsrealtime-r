@@ -4,6 +4,8 @@
 
 - **Matthew Bhagat-Conway**. Author, maintainer, copyright holder.
 
+- **Matthew Palm**. Contributor.
+
 - **The GTFS-realtime authors and the authors of bundled Rust crates**.
   Contributor, copyright holder.  
   See inst/AUTHORS.md for information on bundled dependencies and their
