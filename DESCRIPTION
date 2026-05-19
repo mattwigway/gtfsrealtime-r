@@ -25,7 +25,6 @@ Depends:
     R (>= 4.2)
 Imports: 
     cli,
-    glue,
     sf
 Suggests: 
     knitr,

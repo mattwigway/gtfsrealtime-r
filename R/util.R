@@ -40,7 +40,7 @@ check_timezone = function(timezone) {
     cli_abort(c(
       "Invalid time zone",
       "i" = "Specify a timezone in Olson format, e.g. \"America/New_York\" or \"Etc/UTC\"",
-      "x" = glue("You specified \"{timezone}\"")
+      "x" = sprintf("You specified \"%s\"", timezone)
     ))
   }
 }
