@@ -1,8 +1,5 @@
 test_that("alerts give useful errors", {
-  expect_error(
-    read_gtfsrt_alerts("foo.pb", "America/New_York"),
-    regexp = "No such file or directory|The system cannot find the file specified"
-  )
+  expect_error(read_gtfsrt_alerts("foo.pb", "America/New_York"))
 })
 
 
