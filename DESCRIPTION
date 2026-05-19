@@ -4,6 +4,11 @@ Version: 0.1.0.9000
 Authors@R: c( 
     person("Matthew", "Bhagat-Conway", , "mwbc@unc.edu", role = c("aut", "cre", "cph")),
     person(
+        given = "Matthew",
+        family = "Palm",
+        role = c("ctb")
+    ),
+    person(
         given = "The GTFS-realtime authors and the authors of bundled Rust crates",
         role = c("ctb", "cph"),
         comment = "See inst/AUTHORS.md for information on bundled dependencies and their licensing and copyright status."))

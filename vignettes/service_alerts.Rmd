@@ -1,0 +1,83 @@
+---
+title: "Service alerts"
+author: "Matthew Palm"
+date: "2026-05-05"
+output: html_vignette
+vignette: > 
+  %\VignetteIndexEntry{Service alerts}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include= FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette shows how to read GTFS-realtime service alerts into R using the {gtfsrealtime} package. Service alerts describe disruptions, planned work, stop closures, detours, and other rider-facing information. The {gtfsrealtime} package reads the nested GTFS-realtime alert format and flattens it into a data frame that is easier to inspect and analyze in R.
+
+## Load libraries
+
+First, we load {gtfsrealtime} to read GTFS-realtime files, {dplyr} to inspect and summarize the resulting data frame, and {stringr} to shorten long alert messages for display.
+
+```{r setup, message= FALSE}
+library(gtfsrealtime)
+library(dplyr)
+library(stringr)
+```
+
+## Load a GTFS-realtime service alerts feed
+
+This example uses a New York City service alerts feed included with {gtfsrealtime}. The file is compressed with bzip2 to save space. {gtfsrealtime} can automatically detect and read uncompressed files as well as files compressed with gzip or bzip2. GTFS-realtime time values are stored as Unix timestamps, which are interpreted relative to UTC. To convert to local time, we provide a local time zone.  Time zones are specified in standardized TZ database format (generally `Continent/City`; for a list, [see here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If you do not want to convert times, you can specify a time zone of `Etc/UTC`.
+
+```{r read-alerts}
+alerts <- read_gtfsrt_alerts(
+  system.file("nyc-service-alerts.pb.bz2", package = "gtfsrealtime"),
+  "America/New_York"
+)
+```
+
+## Explore the alerts
+
+GTFS-realtime alerts are [nested](https://gtfs.org/documentation/realtime/reference/#message-alert): one alert can include multiple active time periods and multiple informed entities, such as routes, stops, trips, or agencies affected by the alert. `read_gtfsrt_alerts()` flattens this structure into a data frame. As a result, the same alert `id` may appear in multiple rows when an alert applies to more than one entity or time period.
+
+```{r glimpse-alerts}
+glimpse(alerts)
+```
+
+## Inspecting a single alert
+
+Because a single alert can apply to more than one route, stop, or trip, it is useful to inspect all rows associated with one alert id. In the example below, we select the first alert in the feed and display the affected route or stop fields along with the rider-facing alert text.
+
+```{r inspect-alert}
+alerts |>
+  filter(id == first(id)) |>
+  select(id, route_id, stop_id, header_text, description_text)
+```
+
+## Summarizing affected routes
+
+We can also summarize which routes appear most often in the alerts feed. Some alerts are not tied to a specific `route_id`, so we remove missing route IDs before counting.
+
+```{r summarize-alert}
+alerts |>
+  filter(!is.na(route_id)) |>
+  count(route_id, sort = TRUE) |>
+  head(10)
+```
+
+## Working with alert text
+
+The alert text fields contain the rider-facing message. `header_text` usually provides a short summary, while `description_text` provides more detail.
+
+```{r alert-text}
+ alerts |>
+     distinct(id, header_text, description_text) |>
+     mutate(
+         header_text = str_trunc(header_text, 80),
+         description_text = str_trunc(description_text, 120)
+     ) |>
+     head()
+```

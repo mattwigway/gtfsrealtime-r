@@ -1,0 +1,69 @@
+---
+title: "Trip updates"
+author: "Matthew Palm"
+date: "2026-05-18"
+output: html_vignette
+vignette: >
+  %\VignetteIndexEntry{Trip updates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include= FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette shows how to read GTFS-realtime trip updates into R using the {gtfsrealtime} package. Trip updates describe the real-time progress of a vehicle along a scheduled trip, including predicted arrival and departure times, delays, skipped stops, canceled trips, and other real-time information. The {gtfsrealtime} package reads the nested GTFS-realtime trip update format and flattens it into a data frame that is easier to inspect and analyze in R.
+
+## Load libraries
+
+First, we load {gtfsrealtime} to read GTFS-realtime files and {dplyr} to inspect and summarize the resulting data frame.
+
+```{r setup, message=FALSE}
+library(gtfsrealtime)
+library(dplyr)
+```
+
+## Load a GTFS-realtime trip updates feed
+
+This example uses a New York City trip updates feed included with {gtfsrealtime}. The file is compressed with bzip2 to save space. {gtfsrealtime} can automatically detect and read uncompressed files as well as files compressed with gzip or bzip2. GTFS-realtime time values are stored as Unix timestamps, which are interpreted relative to UTC. To convert to local time, we provide a local time zone. Time zones are specified in standardized TZ database format, generally Continent/City. If you do not want to convert times, you can specify a time zone of Etc/UTC.
+
+```{r read-updates, warning=FALSE}
+updates <- read_gtfsrt_trip_updates(
+  system.file("nyc-trip-updates.pb.bz2", package = "gtfsrealtime"),
+  "America/New_York"
+)
+```
+
+When reading this example feed, {gtfsrealtime} may warn that some GTFS-realtime entity IDs are duplicated. In these cases, the package appends suffixes such as `_duplicated_1` so that each row can be represented with a unique `id`. These warnings are suppressed here to keep the vignette readable, but they are useful in practice: duplicated entity IDs can affect workflows that join records across GTFS-realtime files or across multiple files within a ZIP archive.
+
+## Explore trip updates
+
+GTFS-realtime trip updates are [hierarchical](https://gtfs.org/documentation/realtime/reference/#message-tripupdate) one trip update can contain information about the trip as a whole as well as updates for multiple stops along that trip. `read_gtfsrt_trip_updates()` flattens that structure into a data frame. As a result, the same `trip_id` may appear in multiple rows when the feed contains stop-level updates for multiple stops.
+
+```{r glimpse-updates}
+glimpse(updates)
+```
+
+## Inspecting one trip across its stops
+
+Because a single trip can include predictions for multiple stops, it is useful to inspect all rows associated with one `trip_id`. In the example below, we select the first trip in the feed and display the route, stop sequence, stop ID, and predicted arrival and departure times for each stop.
+
+```{r inpsect-updates}
+updates |>
+  filter(trip_id == first(trip_id)) |>
+  select(
+    trip_id,
+    route_id,
+    stop_id,
+    stop_sequence,
+    arrival_time,
+    departure_time,
+    arrival_delay,
+    departure_delay
+  )
+```
+
