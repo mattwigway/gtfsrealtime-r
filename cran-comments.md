@@ -1,3 +1,8 @@
+## Resubmission
+
+* Corrected missing `\value` section, my apologies.
+* There are no academic references describing the methods used in this package.
+
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
