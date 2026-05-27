@@ -22,18 +22,8 @@ want to read times in UTC, specify "Etc/UTC"}
 be converted to factors with their English labels. If false, they
 will be left as numeric codes? Default TRUE}
 }
-\description{
-Reads vehicle position data from a GTFS-realtime feed into a data.frame with
-one row per position update. GTFS-realtime timestamps are represented in Unix
-time; a timezone must be specified to convert these to time-zone-aware R date-time
-objects (i.e. POSIXct).
-}
-\details{
-Typically, GTFS-realtime feeds will contain only a single type of entity, but if there
-are multiple types of entities in a single feed, this function will read only the
-vehicle positions. Each vehicle position will become a single row in the data frame.
-
-#' @returns data frame containing vehicle position data. The data frame will have the following columns.
+\value{
+Data frame containing vehicle position data. The data frame will have the following columns.
 Note that most of these columns can contain NAs (and in most feeds, many will be entirely NA).
 GTFS-realtime is a hierarchical format that is
 converted to a flat format for use in R; the paths refer to where each column comes from
@@ -182,6 +172,17 @@ can overwrite the wheelchair_accessible value from the static GTFS. (path: \code
 \item \code{file_index}: When reading a ZIP file, a one-based index of which file each observation came from
 Note that it is in the the order the files appeared in the ZIP file, which may not be chronological.
 }
+}
+\description{
+Reads vehicle position data from a GTFS-realtime feed into a data.frame with
+one row per position update. GTFS-realtime timestamps are represented in Unix
+time; a timezone must be specified to convert these to time-zone-aware R date-time
+objects (i.e. POSIXct).
+}
+\details{
+Typically, GTFS-realtime feeds will contain only a single type of entity, but if there
+are multiple types of entities in a single feed, this function will read only the
+vehicle positions. Each vehicle position will become a single row in the data frame.
 }
 \examples{
 # This will read a positions feed included with gtfsrealtime. Replace with

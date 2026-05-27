@@ -9,7 +9,7 @@
 #' are multiple types of entities in a single feed, this function will read only the
 #' vehicle positions. Each vehicle position will become a single row in the data frame.
 #'
-#' #' @returns data frame containing vehicle position data. The data frame will have the following columns.
+#' @returns Data frame containing vehicle position data. The data frame will have the following columns.
 #' Note that most of these columns can contain NAs (and in most feeds, many will be entirely NA).
 #' GTFS-realtime is a hierarchical format that is
 #' converted to a flat format for use in R; the paths refer to where each column comes from
