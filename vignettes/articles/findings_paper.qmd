@@ -28,6 +28,9 @@ bibliography: bibliography.bib
 format:
   wordcount-pdf:
     count-code-cells: false
+include-in-header:
+  text: |
+    \usepackage{placeins}
 ---
 
 ```{r}
@@ -38,6 +41,13 @@ suppressMessages({
     download.file(
       "https://files.indicatrix.org/gtfsrealtime-r/nyc-bus-demo.zip",
       "nyc-bus-demo.zip"
+    )
+  }
+
+    if (!file.exists("brooklyn-bus.zip")) {
+    download.file(
+      "https://files.indicatrix.org/gtfsrealtime-r/brooklyn-bus.zip",
+      "brooklyn-bus.zip"
     )
   }
 })
@@ -72,10 +82,10 @@ Once installed, it can be loaded (along with a few other packages we will be usi
 ```{r}
 #| output: false
 library(gtfsrealtime)
-library(ggplot2)
-library(dplyr)
-library(data.table)
-library(sf)
+library(ggplot2) # for plotting
+library(dplyr) # for general data manipulation
+library(data.table) # for high-performance data filtering
+library(sf) # for spatial data analysis
 ```
 
 ```{r}
@@ -90,7 +100,8 @@ Vehicle position feeds can be read with `read_gtfsrt_positions`. The feed used b
 GTFS-realtime does not include time zone information; all times are specified in UTC. We specify a time zone so that times are automatically converted to local time. Time zones are specified in standardized TZ database format (generally `Continent/City`; for a list, [see here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If you do not want to convert times, you can specify a time zone of `Etc/UTC`. The `{sf}` package is an R package for geographic data manipulation [@sf1; @sf2]; specifying `as_sf=TRUE` will convert the data to `{sf}` format so it can be mapped or analyzed spatially.
 
 ```{r}
-VEHICLE_POSITIONS_FILE = system.file("nyc-vehicle-positions.pb.bz2", package = "gtfsrealtime")
+VEHICLE_POSITIONS_FILE = system.file("nyc-vehicle-positions.pb.bz2",
+  package = "gtfsrealtime")
 
 positions = read_gtfsrt_positions(
   VEHICLE_POSITIONS_FILE,
@@ -99,33 +110,47 @@ positions = read_gtfsrt_positions(
 )
 ```
 
-We can get some idea what the feed looks like. The hierarchical [GTFS-realtime vehicle position](https://gtfs.org/documentation/realtime/reference/#message-vehicleposition) is flattened to a tabular format as that is what R is best suited for, but otherwise shows all of the data available in the feed other than status of individual carriages in trains (as those do not map neatly to the tabular format).
+\FloatBarrier
 
-```{r}
-#| eval: false
-head(positions)
-```
-
-<!--# how to deal with how wide this table is? transpose? -->
+This produces a data frame with the information from the GTFS-realtime positions file. The first few rows are shown in @tbl-pos (with only the most relevant columns shown to save space; all columns are fully documented in the documentation that ships with `{gtfsrealtime}`).
 
 ```{r}
 #| echo: false
+#| tbl-cap: Key columns in a vehicle position feed
+#| label: tbl-pos
+shorten = function (text, length) {
+  lens = stringr::str_length(text)
+
+  lenstart = floor(length / 2)
+  lenend = length - 1 - lenstart
+
+  ifelse(lens > length, paste0(
+    stringr::str_sub(text, 1, lenstart),
+    "\u2026",
+    stringr::str_sub(text, lens - lenend + 1)
+    ), text)
+}
+
 head(positions) |>
   sf::st_drop_geometry() |>
-  gt::gt()
+  select(vehicle_id, timestamp, trip_id, route_id, stop_id) |>
+  mutate(across(ends_with("id"), \(x) shorten(x, 12))) |>
+  gt::gt() |>
+    gt::fmt_datetime(timestamp)
 ```
 
-Since we read the data using `as_sf = TRUE`, we can also map the locations of all vehicles in the feed, colored by how full they are.
+Since we read the data using `as_sf = TRUE`, we can also map the locations of all vehicles in the feed, colored by how full they are (@fig-pos).
 
 ```{r}
 #| fig-width: 6
 #| fig-height: 4
 #| fig-cap: Bus positions in NYC
 #| fig-alt: Map showing bus positions in New York City with no background; the positions create an outline of the city. They are colored by how full they are, with most having many seats available.
+#| label: fig-pos
 positions |>
-  ggplot(aes(color=occupancy_status)) +
-    geom_sf(size=0.1) +
-    theme_void()
+  ggplot(aes(color = occupancy_status)) +
+  geom_sf(size = 0.1) +
+  theme_void()
 ```
 
 
@@ -135,13 +160,16 @@ positions |>
 
 ```{r read-updates}
 #| warning: false
-TRIP_UPDATES_FILE = system.file("nyc-trip-updates.pb.bz2", package = "gtfsrealtime")
+TRIP_UPDATES_FILE = system.file("nyc-trip-updates.pb.bz2",
+  package = "gtfsrealtime")
 
 updates = read_gtfsrt_trip_updates(
   TRIP_UPDATES_FILE,
   "America/New_York"
 )
 ```
+
+\FloatBarrier
 
 When reading this example feed, `{gtfsrealtime}` warns that some GTFS-realtime entity IDs are duplicated. In these cases, the package appends suffixes such as `_duplicated_1` so that each row can be represented with a unique `id`. There are quite a few of them, so they are suppressed for readability, but the first two are:
 
@@ -154,26 +182,26 @@ When reading this example feed, `{gtfsrealtime}` warns that some GTFS-realtime e
 
 These warnings are useful in practice: duplicated entity IDs can affect workflows that join records across GTFS-realtime files, or with GTFS-static.
 
-GTFS-realtime trip updates are [hierarchical](https://gtfs.org/documentation/realtime/reference/#message-tripupdate); one trip update can contain information about the trip as a whole as well as updates for multiple stops along that trip. `read_gtfsrt_trip_updates()` flattens that structure into a data frame. As a result, the same `trip_id` may appear in multiple rows when the feed contains stop-level updates for multiple stops. Below, we inspect all rows associated with one `trip_id`. If a trip update has no stop time updates, it will appear as a single row with all the stop-specific fields NA.
-
-```{r}
-#| eval: false
-updates |>
-  filter(trip_id == first(trip_id))
-```
+GTFS-realtime trip updates are [hierarchical](https://gtfs.org/documentation/realtime/reference/#message-tripupdate); one trip update can contain information about the trip as a whole as well as updates for multiple stops along that trip. `read_gtfsrt_trip_updates()` flattens that structure into a data frame. As a result, the same `id` may appear in multiple rows when the feed contains stop-level updates for multiple stops. In @tbl-arrival, we inspect all rows associated with one `id` (and show the most relevant columns). If a trip update has no stop time updates, it will appear as a single row with all the stop-specific fields NA.
 
 ```{r}
 #| echo: false
+#| tbl-cap: Example arrival time predictions for a single trip.
+#| label: tbl-arrival
 updates |>
-  filter(trip_id == first(trip_id)) |>
-  gt::gt()
+  filter(id == first(id)) |>
+  select(id, trip_id, route_id, stop_id, arrival_time) |>
+  mutate(across(ends_with("id"), \(x) shorten(x, 12))) |>
+  gt::gt() |>
+      gt::fmt_datetime(arrival_time)
 ```
 
 ### `read_gtfsrt_alerts`
 
 
 ```{r read-alerts}
-ALERTS_FILE = system.file("nyc-service-alerts.pb.bz2", package = "gtfsrealtime")
+ALERTS_FILE = system.file("nyc-service-alerts.pb.bz2",
+  package = "gtfsrealtime")
 
 alerts = read_gtfsrt_alerts(
   ALERTS_FILE,
@@ -181,21 +209,27 @@ alerts = read_gtfsrt_alerts(
 )
 ```
 
+\FloatBarrier
+
 Like trip updates, GTFS-realtime alerts are [hierarchical](https://gtfs.org/documentation/realtime/reference/#message-alert): one alert can include multiple active time periods, multiple "informed entities" (such as routes, stops, trips, or agencies), and multiple languages affected by the alert. `read_gtfsrt_alerts()` flattens this structure into a data frame, repeating the alert for every combination of time period, entity, and language. As a result, the same alert `id` may appear in multiple rows when an alert applies to more than one entity or time period.
 
-Because a single alert can apply to more than one route, stop, or trip, it is useful to inspect all rows associated with one alert id. In the example below, we select the first alert in the feed and display the affected route or stop fields along with the rider-facing alert text. This alert appears as two separate rows because it affects two routes: the X28 and the X38.
-
-```{r inspect-alert}
-#| eval: false
-alerts |>
-  filter(id == first(id))
-```
+Because a single alert can apply to more than one route, stop, or trip, it is useful to inspect all rows associated with one alert id. In @tbl-alert, we select the first alert in the feed and display the affected route or stop fields along with the rider-facing alert text. This alert appears as two separate rows because it affects two routes: the X28 and the X38.
 
 ```{r}
 #| echo: false
-alerts |>
+#| tbl-cap: Example alerts data
+#| label: tbl-alert
+#| output: asis
+cat(alerts |>
   filter(id == first(id)) |>
-  gt::gt()
+  select(id, start, end, route_id, stop_id, header_text) |>
+  mutate(across(ends_with("id"), \(x) shorten(x, 12))) |>
+  gt::gt() |>
+      gt::fmt_datetime(start) |>
+      gt::as_latex() |>
+      # wrap the header_text column
+      stringr::str_replace("lrrlcl", "lrrlcp{3cm}"))
+      
 ```
 
 ### Archived data
@@ -203,7 +237,8 @@ alerts |>
 A GTFS-realtime feed is a snapshot in time of a transit system. Most often, it will be more analytically interesting to work with a group of feeds archived over some time period. Frequent archiving can quickly create an unwieldy number of files, so all `{gtfsrealtime}` functions can work with a ZIP file containing multiple feeds. For instance, the code below will read all bus positions from the New York City MTA over the course of a day, from a ZIP file containing one feed per minute, and converts it to a `data.table` for efficient manipulation [@data.table]. This file is too large to include with the package, but is available for download at <https://files.indicatrix.org/gtfsrealtime-r/nyc-bus-demo.zip>. Reading the whole day of vehicle locations takes 44 seconds on an M1 Macbook Pro.
 
 ```{r}
-daily_positions = read_gtfsrt_positions("nyc-bus-demo.zip", "America/New_York") |> data.table()
+daily_positions = read_gtfsrt_positions("nyc-bus-demo.zip", "America/New_York") |>
+  data.table()
 ```
 
 Some of the observations are duplicates, as not every bus reports in every minute. The syntax below groups by timestamp and vehicle ID and then selects a single observation for each. At least in the New York data, there are sometimes multiple reports with the same timestamp and vehicle ID but different locations. This is a data error, so we arbitrarily pick one. After deduplication, we have 2.8 million observations.
@@ -215,8 +250,71 @@ nrow(daily_positions)
 
 Since there are multiple feeds within the ZIP file, the `file_index` field will contain a numeric identifier for each feed. Note that this is based on the order the feeds occur in the ZIP file, it may not be chronological. There is also a `file_timestamp` field identifying when the file containing each observation was produced, but this is not guaranteed to be unique across files.
 
-There is a wealth of applications of a combined dataset like this—for example, accessibility analysis [e.g., @wessel_accuracy_2019], operations [e.g., @aemmer_measurement_2022], or passenger information evaluation [e.g, @newmark_assessing_2024]. We hope that the `{gtfsrealtime}` package will support these types of analysis and more, and will underly development of additional standardized packages for common analyses using realtime data.
+For example, by combining a file like this with the static GTFS, we can make a stringline plot showing the progress of vehicles in each direction along the route. The plot clearly shows that there was some bunching on this day around rush hour (@fig-string). The code to produce this plot is not reproduced here for brevity but is in the "Stringline" vignette included with the package.
+
+```{r}
+#| echo: false
+#| fig-width: 6
+#| fig-height: 6
+#| fig-cap: Stringline plot of vehicles on New York City MTA route B4.
+#| fig-alt: Plot showing time on the x axis and stops on the y axis, with diagonal lines indicating vehicle progress along the route. Buses bound for Knapp St/Harkness Ave are in pink, while buses bound for Narrows Ave/77 St afe in green. In a number of places there are large gaps along the x axis followed by many lines of one color, indicating bunching.
+#| label: fig-string
+# find all trips on the B4 with direction id 0
+static = gtfstools::read_gtfs("brooklyn-bus.zip")
+
+ROUTE_ID = "B4"
+trips = static$trips[route_id == ROUTE_ID & direction_id == 0, trip_id]
+stop_times = static$stop_times[trips, on = .(trip_id)]
+fwd_stop_sequences = stop_times[, .(stop_sequence = median(stop_sequence), timepoint = first(timepoint)), by = stop_id]
+fwd_stop_sequences = static$stops[fwd_stop_sequences, on = .(stop_id)]
+
+# now, figure out the reverse direction
+reverse_trips = static$trips[route_id == ROUTE_ID & direction_id == 1, trip_id]
+reverse_stop_times = static$stop_times[reverse_trips, on = .(trip_id)]
+reverse_stops = unique(reverse_stop_times[, .(stop_id)])
+reverse_stops = static$stops[reverse_stops, on = .(stop_id)]
+
+# spatially join the reverse stops to the forward stops to get the closest stop sequence
+fwd_stop_sequences = st_as_sf(fwd_stop_sequences, coords = c("stop_lon", "stop_lat"), crs = 4326) |>
+  st_transform(32118)
+reverse_stops = st_as_sf(reverse_stops, coords = c("stop_lon", "stop_lat"), crs = 4326) |>
+  st_transform(32118)
+reverse_stops = st_join(reverse_stops, select(fwd_stop_sequences, stop_sequence), join = st_nearest_feature)
+
+stop_sequences = rbind(
+  select(fwd_stop_sequences, stop_id, stop_sequence) |> st_drop_geometry(),
+  select(reverse_stops, stop_id, stop_sequence) |> st_drop_geometry()
+) |>
+  # make sure stops that appear in both aren't duplicated
+  group_by(stop_id) |>
+  slice_head(n = 1) |>
+  ungroup()
+
+route_positions = daily_positions |>
+  filter(route_id == ROUTE_ID)
+
+route_positions |>
+  left_join(stop_sequences, by = "stop_id") |>
+  left_join(select(fwd_stop_sequences, stop_sequence, stop_name), by = "stop_sequence") |>
+  group_by(vehicle_id, trip_id, stop_sequence) |>
+  slice_max(timestamp) |> # the latest time reported before passing the stop
+  ungroup() |>
+  arrange(vehicle_id, timestamp) |>
+  ggplot(aes(
+    x = reorder(stringr::str_to_title(stop_name), stop_sequence),
+    y = timestamp,
+    group = paste(vehicle_id, trip_id),
+    color = factor(direction_id)
+  )) +
+  geom_path(size = 0.1) +
+  theme(legend.position = "none") +
+  xlab("Stop (timepoints labeled)") +
+  ylab("Time") +
+  scale_x_discrete(breaks = stringr::str_to_title(fwd_stop_sequences[fwd_stop_sequences$timepoint == 1, ]$stop_name)) +
+  coord_flip() +
+  scale_y_datetime(labels = \(dt) strftime(dt, "%H:%M"))
+```
 
 ## Findings {#sec-findings}
 
-This article has introduced the `{gtfsrealtime}` R package. GTFS-realtime feeds contain a wealth of operational information about transit systems, and can support any number of analytical applications. It can efficiently work with large feeds or groups of feeds.
+This article has introduced the `{gtfsrealtime}` R package, an efficient package for reading GTFS-realtime. There is a wealth of applications of real-time transit data---for example, accessibility analysis [e.g., @wessel_accuracy_2019], operations [e.g., @aemmer_measurement_2022], or passenger information evaluation [e.g, @newmark_assessing_2024]. We hope that the `{gtfsrealtime}` package will support these types of analysis and more, and will underly development of additional standardized packages for common analyses using realtime data.
