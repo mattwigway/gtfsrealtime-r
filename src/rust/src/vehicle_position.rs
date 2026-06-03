@@ -4,6 +4,8 @@ use crate::id_deduplicator::IdDeduplicator;
 use crate::read::read_feed;
 use crate::transit_realtime::{self, trip_descriptor};
 use extendr_api::prelude::*;
+use extendr_api::error::Result;
+
 
 #[derive(IntoDataFrameRow, Debug, PartialEq)]
 pub struct RVehiclePosition {

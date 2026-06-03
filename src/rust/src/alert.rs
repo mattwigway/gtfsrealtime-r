@@ -1,4 +1,6 @@
 use extendr_api::prelude::*;
+use extendr_api::error::Result;
+
 
 use crate::{
     check_types::{check_types, MessageType},
@@ -91,7 +93,7 @@ fn message_for_language(
 // Read a GTFS-rt service alerts feed.
 #[extendr]
 pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
-    let msgs = read_feed(file)?;
+    let msgs: Vec<transit_realtime::FeedMessage> = read_feed(file)?;
 
     let content = msgs
         .iter()
@@ -102,7 +104,7 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
 
             msg.entity
                 .iter()
-                .filter(|e| e.alert.is_some())
+                .filter(|e: &&transit_realtime::FeedEntity| e.alert.is_some())
                 .map(move |entity| {
                     let alert = entity.alert.as_ref().unwrap();
                     let id = id_deduplicator.deduplicate_id(entity.id.clone());

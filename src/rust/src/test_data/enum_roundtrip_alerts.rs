@@ -1,5 +1,7 @@
 use extendr_api::extendr_module;
 use extendr_api::prelude::*;
+use extendr_api::error::Result;
+
 use std::string::ToString;
 use strum::VariantArray;
 

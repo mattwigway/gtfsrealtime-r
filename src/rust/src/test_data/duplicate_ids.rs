@@ -2,6 +2,8 @@ use std::fs;
 
 use bytes::BytesMut;
 use extendr_api::prelude::*;
+use extendr_api::error::Result;
+
 use prost::Message as _;
 
 use crate::transit_realtime::{

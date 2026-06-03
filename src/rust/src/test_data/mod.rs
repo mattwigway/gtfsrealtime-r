@@ -12,6 +12,8 @@ mod trip_update_unwrapping;
 use bytes::BytesMut;
 use extendr_api::extendr_module;
 use extendr_api::prelude::*;
+use extendr_api::error::Result;
+
 use prost::Message;
 use std::{fs, string::ToString};
 

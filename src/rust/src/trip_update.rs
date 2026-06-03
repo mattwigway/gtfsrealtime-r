@@ -1,4 +1,6 @@
 use extendr_api::prelude::*;
+use extendr_api::error::Result;
+
 
 use crate::enums::enum_to_list;
 use crate::id_deduplicator::IdDeduplicator;
