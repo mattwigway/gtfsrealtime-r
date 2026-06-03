@@ -25,3 +25,4 @@ src/rust/vendor-config.toml
 src/rust/src/generated/transit_realtime.rs
 LICENSE.d/*.txt
 nyc-bus-demo.zip
+brooklyn-bus.zip
