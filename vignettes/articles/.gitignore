@@ -2,3 +2,5 @@
 *.R
 *_files
 *.pdf
+/.quarto/
+**/*.quarto_ipynb

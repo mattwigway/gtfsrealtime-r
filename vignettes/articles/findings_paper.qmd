@@ -35,26 +35,6 @@ abstract: |
   Many transit agencies publish real-time data on vehicle positions, arrival predictions, and service alerts in GTFS-realtime format. While these data provide a wealth of information, to date they have been underutilized in research. In part, this is due to a lack of tooling for reading the bespoke binary format into commonly-used research platforms. This article introduces the `{gtfsrealtime}` R package which allows reading GTFS-realtime into the R statistical programming environment for analysis.
 ---
 
-```{r}
-#| echo: false
-# make sure the GTFS archived data is available
-suppressMessages({
-  if (!file.exists("nyc-bus-demo.zip")) {
-    download.file(
-      "https://files.indicatrix.org/gtfsrealtime-r/nyc-bus-demo.zip",
-      "nyc-bus-demo.zip"
-    )
-  }
-
-    if (!file.exists("brooklyn-bus.zip")) {
-    download.file(
-      "https://files.indicatrix.org/gtfsrealtime-r/brooklyn-bus.zip",
-      "brooklyn-bus.zip"
-    )
-  }
-})
-```
-
 ## Questions
 
 The General Transit Feed Specification (GTFS) is one of the great successes of open data standards. GTFS is a standardized format for communicating transit schedule data [@voulgaris_predictors_2023]. While GTFS was originally intended to support customer-facing trip planning apps [@mchugh_pioneering_2013], it has seen extensive use in research [@ho_general_2021]. Many open source tools are available for analyzing GTFS data [e.g., @herszenhut_gtfstools_2022; @pereira_r5r_2021; @reynolds_social_2025; @kocsis_gtfs2net_2025], many using the R statistical programming language [@r_2026].
