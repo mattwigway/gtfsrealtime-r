@@ -2,6 +2,7 @@
 
 export(read_gtfsrt_alerts)
 export(read_gtfsrt_positions)
+export(read_gtfsrt_trip_modifications)
 export(read_gtfsrt_trip_updates)
 importFrom(cli,cli_abort)
 importFrom(cli,cli_warn)
