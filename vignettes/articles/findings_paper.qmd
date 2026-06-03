@@ -57,7 +57,7 @@ suppressMessages({
 
 The General Transit Feed Specification (GTFS) is one of the great successes of open data standards. GTFS is a standardized format for communicating transit schedule data [@voulgaris_predictors_2023]. While GTFS was originally intended to support customer-facing trip planning apps [@mchugh_pioneering_2013], it has seen extensive use in research [@ho_general_2021]. Many open source tools are available for analyzing GTFS data [e.g., @herszenhut_gtfstools_2022; @pereira_r5r_2021; @reynolds_social_2025; @kocsis_gtfs2net_2025], many using the R statistical programming language [@r_2026].
 
-Originally, GTFS only provided data on scheduled arrival times. In 2011, GTFS-realtime was released, allowing agencies to provide real-time information [@gtfrst_2026]. To date, most analytical applications have used the original GTFS specification (retroactively renamed GTFS-static), with some exceptions [@liu_realizable_2023; @javanmard_using_2025]. One factor is the lack of tooling for working with GTFS-realtime data, despite the need for specialized tools to read its binary format. This article introduces the `{gtfsrealtime}` R package, which efficiently reads GTFS-realtime feeds into standard R data frames for further analysis.
+Originally, GTFS only provided data on scheduled arrival times. In 2011, GTFS-realtime was released, allowing agencies to provide real-time information [@gtfrst_2026]. To date, most analytical applications have used the original GTFS specification (retroactively renamed GTFS-static), with some exceptions [@liu_realizable_2023; @javanmard_using_2025]. One factor is the lack of tooling to read its binary format. This article introduces the `{gtfsrealtime}` R package, which efficiently reads GTFS-realtime feeds into standard R data frames for further analysis.
 
 <!--# while Findings means this as "what are the methods used" i.e. the types of analysis, I am taking it literally as the methods/functions exported. -->
 ## Methods
@@ -178,7 +178,7 @@ ID UP_A6-Weekday-SDon-094800_B6_243 is duplicated. Replacing with UP_A6-Weekday-
 
 This deduplication applies only to the `id` field; for example `trip_id` will still correctly join with GTFS-static. Deduplication also happens with alerts and vehicle position `id`s.
 
-GTFS-realtime trip updates are [hierarchical](https://gtfs.org/documentation/realtime/reference/#message-tripupdate); one trip update can contain information about the trip as a whole as well as updates for multiple stops along that trip. `read_gtfsrt_trip_updates()` flattens that structure into a data frame. As a result, the same `id` may appear in multiple rows when the feed contains stop-level updates for multiple stops. In @tbl-arrival, we inspect all rows associated with one `id` (and show the most relevant columns). If a trip update has no stop time updates, it will appear as a single row with all the stop-specific fields NA.
+GTFS-realtime trip updates are hierarchical; one trip update can contain information about the trip as a whole as well as updates for multiple stops along that trip. `read_gtfsrt_trip_updates()` flattens that structure into a data frame. As a result, the same `id` may appear in multiple rows when the feed contains stop-level updates for multiple stops. In @tbl-arrival, we inspect all rows associated with one `id` (and show the most relevant columns). If a trip update has no stop time updates, it will appear as a single row with all the stop-specific fields NA.
 
 ```{r}
 #| echo: false
@@ -191,6 +191,8 @@ updates |>
   gt::gt() |>
       gt::fmt_datetime(arrival_time)
 ```
+
+\FloatBarrier
 
 ### `read_gtfsrt_alerts`
 
@@ -206,7 +208,7 @@ alerts = read_gtfsrt_alerts(
 
 \FloatBarrier
 
-Like trip updates, alerts are [hierarchical](https://gtfs.org/documentation/realtime/reference/#message-alert): one alert can include multiple time periods, "informed entities" (such as routes or stops), and languages. `read_gtfsrt_alerts()` flattens this structure, repeating the alert for every combination of time period, entity, and language. Therefore, the same alert `id` may appear in multiple rows.
+Like trip updates, alerts are hierarchical; one alert can include multiple time periods, "informed entities" (such as routes or stops), and languages. `read_gtfsrt_alerts()` flattens this structure, repeating the alert for every combination of time period, entity, and language. Therefore, the same alert `id` may appear in multiple rows.
 
 In @tbl-alert, we select the first alert and display the route or stop fields and the alert text. This alert appears as two rows because it affects two routes.
 
@@ -229,7 +231,7 @@ cat(alerts |>
 
 ### Archived data
 
-Archived data is often useful for analytical applications; `{gtfsrealtime}` also supports reading directly from ZIP files containing multiple GTFS-realtime feeds (for example, all vehicle positions over the course of a day). Examples of working with archived data are in the `{gtfsrealtime}` documentation.
+Archived data is often useful for analytical applications; `{gtfsrealtime}` also supports reading directly from ZIP files containing multiple GTFS-realtime feeds (for example, all vehicle positions over the course of a day). Examples of working with archived data, including vehicle position animations and stringline charts, are in the `{gtfsrealtime}` documentation.
 
 ## Findings {#sec-findings}
 
