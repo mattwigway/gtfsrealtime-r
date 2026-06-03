@@ -1,4 +1,6 @@
 use extendr_api::prelude::*;
+use extendr_api::error::Result;
+
 
 use crate::transit_realtime::FeedMessage;
 
