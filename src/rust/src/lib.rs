@@ -20,11 +20,10 @@ mod read;
 mod test_data;
 mod trip_update;
 mod vehicle_position;
+mod trip_modifications;
+mod util;
 
 use extendr_api::prelude::*;
-
-pub use trip_update::read_gtfsrt_trip_updates_internal;
-pub use vehicle_position::read_gtfsrt_positions_internal;
 
 extendr_module! {
     mod gtfsrealtime;
@@ -32,4 +31,5 @@ extendr_module! {
     use trip_update;
     use alert;
     use test_data;
+    use trip_modifications;
 }
