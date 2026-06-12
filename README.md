@@ -8,10 +8,10 @@ Fast library to read GTFS-realtime files into R data frames.
 
 ## Installation
 
-The package is installable from [mattwigway.r-universe.dev](https://mattwigway.r-universe.dev/gtfsrealtime). Run the following at your R prompt:
+The package is installable from CRAN, and can be installed in the usual way:
 
 ```r
-install.packages('gtfsrealtime', repos = c('https://mattwigway.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages('gtfsrealtime')
 ```
 
 It requires the current or previous release of R (currently 4.6 or 4.5); older versions are likely to work as well but will require building code from scratch which requires a Rust development environment. If you get errors about `rustc` not being found, you likely need to upgrade your version of R.
@@ -25,3 +25,13 @@ GTFS-realtime feeds come in three flavors: vehicle positions, trip updates, and 
 For most analytical applications of GTFS-realtime, you will want to work with archived data. GTFS-realtime feeds can be quite large, so the package supports reading feeds compressed with ZIP, `gzip`, or `bzip2` (anecdotally, `bzip2` seems to provide slightly better compression than `gzip`). For zip files, it is also possible to have multiple GTFS-realtime feeds in a single file; in this case, the functions above will read all of the files in the ZIP file. You can differentiate records from different files with the `file_index` column. We also have [an article demonstrating working with a day of archived data](https://projects.indicatrix.org/gtfsrealtime-r/articles/archived.html).
 
 GTFS-realtime is a hierarchical format, and R data frames are flat tables. Thus, a single trip update or alert will become multiple rows in the output, with a common `id`. See the individual function documentation for details.
+
+## Development versions and contributions
+
+Development versions of the package are available from [mattwigway.r-universe.dev](https://mattwigway.r-universe.dev/gtfsrealtime). To install the latest development version, run:
+
+```{r}
+install.packages('gtfsrealtime', repos = c('https://mattwigway.r-universe.dev', 'https://cloud.r-project.org'))
+```
+
+If you want to make contributions to the package, you'll need to build from source. This package contains compiled [extendr](https://extendr.rs) Rust code to efficiently read GTFS-realtime. You will need a Rust development environment; you can build the Rust code by running `rextendr::document()`. You will also need to install [`protoc`](https://protobuf.dev/installation/) if you are working with the Git source (the `.tar.gz` source builds from CRAN compile the protobuf files as part of the package build process, and do not require `protoc`).

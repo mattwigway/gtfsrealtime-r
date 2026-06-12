@@ -20,13 +20,9 @@ library(ggplot2)
 
 ## Load a GTFS-realtime vehicle positions feed
 
-<<<<<<< HEAD
-This feed comes from the New York City bus network. This file is included with {gtfsrealtime} and is bzipped to save space. {gtfsrealtime} can automatically detect and read uncompressed files as well as those compressed with gzip and bzip2; it can also read ZIP files containing multiple position updates, and read directly from an `http://` or `https://` URL (though it cannot read a ZIP file from a URL). `as_sf` tells {gtfsrealtime} to load the positions to an {sf} object rather than a plain data frame. GTFS-realtime does not include time zone information; all times are specified in UTC. We specify a time zone so that times are automatically converted to local time. Time zones are specified in standardized TZ database format (generally `Continent/City`; for a list, [see here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If you do not want to convert times, you can specify a time zone of `Etc/UTC`.
-=======
 This feed comes from the New York City bus network. This file is included with {gtfsrealtime} and is bzipped to save space. {gtfsrealtime} can automatically detect and read uncompressed files as well as files compressed with zip, gzip, or bzip2. Zip files can contain multiple GTFS-realtime files, in which case {gtfsrealtime} will read all of them. You can differentiate which file each update came from based on the `file_index` field.
 
 `as_sf` tells {gtfsrealtime} to load the positions to an {sf} object rather than a plain data frame. GTFS-realtime does not include time zone information; all times are specified in UTC. We specify a time zone so that times are automatically converted to local time. Time zones are specified in standardized TZ database format (generally `Continent/City`; for a list, [see here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). If you do not want to convert times, you can specify a time zone of `Etc/UTC`.
->>>>>>> b6a1258 (vignette cleanup)
 
 ```{r}
 positions = read_gtfsrt_positions(
