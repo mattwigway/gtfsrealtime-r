@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 library(gtfsrealtime)
 library(gtfstools)
 library(data.table)
+library(sf)
 ```
 
 ### Archived data
