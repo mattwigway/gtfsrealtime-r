@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">gtfsrealtime</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,9 +65,9 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The package is installable from <a href="https://mattwigway.r-universe.dev/gtfsrealtime" class="external-link">mattwigway.r-universe.dev</a>. Run the following at your R prompt:</p>
+<p>The package is installable from CRAN, and can be installed in the usual way:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'gtfsrealtime'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://mattwigway.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'gtfsrealtime'</span><span class="op">)</span></span></code></pre></div>
 <p>It requires the current or previous release of R (currently 4.6 or 4.5); older versions are likely to work as well but will require building code from scratch which requires a Rust development environment. If you get errors about <code>rustc</code> not being found, you likely need to upgrade your version of R.</p>
 <p>If you want to build from source, this package contains compiled <a href="https://extendr.rs" class="external-link">extendr</a> Rust code to efficiently read GTFS-realtime. You will need a Rust development environment; you can build the Rust code by running <code><a href="https://extendr.github.io/rextendr/reference/document.html" class="external-link">rextendr::document()</a></code>.</p>
 </div>
@@ -78,10 +78,18 @@
 <p>For most analytical applications of GTFS-realtime, you will want to work with archived data. GTFS-realtime feeds can be quite large, so the package supports reading feeds compressed with ZIP, <code>gzip</code>, or <code>bzip2</code> (anecdotally, <code>bzip2</code> seems to provide slightly better compression than <code>gzip</code>). For zip files, it is also possible to have multiple GTFS-realtime feeds in a single file; in this case, the functions above will read all of the files in the ZIP file. You can differentiate records from different files with the <code>file_index</code> column. We also have <a href="https://projects.indicatrix.org/gtfsrealtime-r/articles/archived.html">an article demonstrating working with a day of archived data</a>.</p>
 <p>GTFS-realtime is a hierarchical format, and R data frames are flat tables. Thus, a single trip update or alert will become multiple rows in the output, with a common <code>id</code>. See the individual function documentation for details.</p>
 </div>
+<div class="section level2">
+<h2 id="development-versions-and-contributions">Development versions and contributions<a class="anchor" aria-label="anchor" href="#development-versions-and-contributions"></a>
+</h2>
+<p>Development versions of the package are available from <a href="https://mattwigway.r-universe.dev/gtfsrealtime" class="external-link">mattwigway.r-universe.dev</a>. To install the latest development version, run:</p>
+<p><code>{r} install.packages('gtfsrealtime', repos = c('https://mattwigway.r-universe.dev', 'https://cloud.r-project.org'))</code></p>
+<p>If you want to make contributions to the package, you’ll need to build from source. This package contains compiled <a href="https://extendr.rs" class="external-link">extendr</a> Rust code to efficiently read GTFS-realtime. You will need a Rust development environment; you can build the Rust code by running <code><a href="https://extendr.github.io/rextendr/reference/document.html" class="external-link">rextendr::document()</a></code>. You will also need to install <a href="https://protobuf.dev/installation/" class="external-link"><code>protoc</code></a> if you are working with the Git source (the <code>.tar.gz</code> source builds from CRAN compile the protobuf files as part of the package build process, and do not require <code>protoc</code>).</p>
+</div>
 
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=gtfsrealtime" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/mattwigway/gtfsrealtime-r/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/mattwigway/gtfsrealtime-r/issues" class="external-link">Report a bug</a></li>
 </ul>
@@ -106,7 +114,7 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Matthew Bhagat-Conway <br><small class="roles"> Author, maintainer, copyright holder </small>   </li>
+<li>Matthew Bhagat-Conway <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0002-1210-2982" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
