@@ -32,14 +32,16 @@ include-in-header:
   text: |
     \usepackage{placeins}
 abstract: |
-  Many transit agencies publish real-time data on vehicle positions, arrival predictions, and service alerts in GTFS-realtime format. While these data provide a wealth of information, to date they have been underutilized in research. In part, this is due to a lack of tooling for reading the bespoke binary format into commonly-used research platforms. This article introduces the `{gtfsrealtime}` R package which allows reading GTFS-realtime into the R statistical programming environment for analysis.
+  Many transit agencies publish real-time data on vehicle positions, arrival predictions, and service alerts in GTFS-realtime format. While these data provide a wealth of information, to date they have been underutilized in research. In part, this is due to a lack of tooling for reading the bespoke binary format into commonly-used research platforms. This article introduces the `{gtfsrealtime}` R package which allows reading GTFS-realtime into the R statistical programming environment.
+
+  Keywords: gtfs, gtfsrealtime, transit, r
 ---
 
 ## Questions
 
 The General Transit Feed Specification (GTFS) is one of the great successes of open data standards. GTFS is a standardized format for communicating transit schedule data [@voulgaris_predictors_2023]. While GTFS was originally intended to support customer-facing trip planning apps [@mchugh_pioneering_2013], it has seen extensive use in research [@ho_general_2021]. Many open source tools are available for analyzing GTFS data [e.g., @herszenhut_gtfstools_2022; @pereira_r5r_2021; @reynolds_social_2025; @kocsis_gtfs2net_2025], many using the R statistical programming language [@r_2026].
 
-Originally, GTFS only provided data on scheduled arrival times. In 2011, GTFS-realtime was released, allowing agencies to provide real-time information [@gtfrst_2026]. To date, most analytical applications have used the original GTFS specification (retroactively renamed GTFS-static), with some exceptions [@liu_realizable_2023; @javanmard_using_2025]. One factor is the lack of tooling to read its bespoke binary format. This article introduces the `{gtfsrealtime}` R package, which efficiently reads GTFS-realtime feeds into standard R data frames for further analysis.
+Originally, GTFS only provided data on scheduled arrival times. In 2011, GTFS-realtime was released, allowing agencies to provide real-time information [@gtfrst_2026]. To date, most analytical applications have used the original GTFS specification (retroactively renamed GTFS-static), with some exceptions [@liu_realizable_2023; @javanmard_using_2025]. One factor is the lack of tooling to read GTFS-realtime's bespoke binary format. This article introduces the `{gtfsrealtime}` R package, which efficiently reads GTFS-realtime feeds into standard R data frames for further analysis.
 
 <!--# while Findings means this as "what are the methods used" i.e. the types of analysis, I am taking it literally as the methods/functions exported. -->
 ## Methods
@@ -75,7 +77,7 @@ library(ggunc)
 
 ### `read_gtfsrt_positions`
 
-Read vehicle positions with `read_gtfsrt_positions`. The feed used below comes from the New York City bus network. This file is included with `{gtfsrealtime}` and is compressed with `bzip2`. `{gtfsrealtime}` can read uncompressed files and files compressed with `zip,`, `gzip`, or `bzip2`, from the local machine or a URL. To use with your own feed, replace `VEHICLE_POSITIONS_FILE` with your own file or URL. 
+Read vehicle positions with `read_gtfsrt_positions`. The feed used below comes from the New York City bus network. This file is included with `{gtfsrealtime}` and is compressed with `bzip2`. `{gtfsrealtime}` can read uncompressed files and files compressed with `zip`, `gzip`, or `bzip2`, from the local machine or a URL. To use with your own feed, replace `VEHICLE_POSITIONS_FILE` with your own file or URL. 
 
 GTFS-realtime does not include timezone information. We specify a timezone so that times are automatically converted to local time. Timezones are specified in standardized TZ database format (generally `Continent/City`; [see list here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). `{sf}` is an R package for geographic data [@sf1; @sf2]; specifying `as_sf=TRUE` will convert the data to `{sf}` format so it can be mapped.
 
