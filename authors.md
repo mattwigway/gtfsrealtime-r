@@ -15,9 +15,6 @@
 
 ## Citation
 
-Source:
-[`DESCRIPTION`](https://github.com/mattwigway/gtfsrealtime-r/blob/main/DESCRIPTION)
-
 Bhagat-Conway M (2026). *gtfsrealtime: Read GTFS-Realtime Files into
 Data Frames*. R package version 0.2.1,
 <http://projects.indicatrix.org/gtfsrealtime-r/>.

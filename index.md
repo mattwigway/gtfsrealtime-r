@@ -1,7 +1,8 @@
 ## {gtfsrealtime}
 
 [![R-CMD-check](https://github.com/mattwigway/gtfsrealtime-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mattwigway/gtfsrealtime-r/actions/workflows/R-CMD-check.yaml)
-
+[![CRAN
+status](https://www.r-pkg.org/badges/version/gtfsrealtime)](https://CRAN.R-project.org/package=gtfsrealtime)
 ![maintenance-status:
 actively-developed](https://img.shields.io/badge/maintenance-actively_developed-blue.svg)
 
