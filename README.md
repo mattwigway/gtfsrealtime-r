@@ -1,8 +1,9 @@
 ## {gtfsrealtime}
 
-  [![R-CMD-check](https://github.com/mattwigway/gtfsrealtime-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mattwigway/gtfsrealtime-r/actions/workflows/R-CMD-check.yaml)
-
+[![R-CMD-check](https://github.com/mattwigway/gtfsrealtime-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mattwigway/gtfsrealtime-r/actions/workflows/R-CMD-check.yaml)
+[![CRAN status](https://www.r-pkg.org/badges/version/gtfsrealtime)](https://CRAN.R-project.org/package=gtfsrealtime)
 <img src="https://img.shields.io/badge/maintenance-actively_developed-blue.svg" alt="maintenance-status: actively-developed" />
+
 
 Fast library to read GTFS-realtime files into R data frames.
 
