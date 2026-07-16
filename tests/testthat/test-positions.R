@@ -106,7 +106,7 @@ test_that("Louisville debug JSON matches read_gtfsrt_positions", {
   ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
     dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col))) |>
-    dplyr::select(-c("file_timestamp", "file_index")) |>
+    dplyr::select(-c("feed_timestamp", "file_index")) |>
     tibble::as_tibble()
 
   expect_true(nrow(actual) > 0)
@@ -144,7 +144,7 @@ test_that("all columns read correctly", {
       vehicle_label = "label",
       vehicle_license_plate = "LIC-4242",
       vehicle_wheelchair_accessible = "WHEELCHAIR_ACCESSIBLE",
-      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
       file_index = 1
     ),
 
@@ -173,7 +173,7 @@ test_that("all columns read correctly", {
       vehicle_label = NA,
       vehicle_license_plate = NA,
       vehicle_wheelchair_accessible = NA,
-      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
       file_index = 1
     ),
 
@@ -202,7 +202,7 @@ test_that("all columns read correctly", {
       vehicle_label = NA,
       vehicle_license_plate = NA,
       vehicle_wheelchair_accessible = NA,
-      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
       file_index = 1
     )
   )

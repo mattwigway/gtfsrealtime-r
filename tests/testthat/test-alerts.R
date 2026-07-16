@@ -87,7 +87,7 @@ test_that("unwrapping works", {
       id = as.character(id),
       start = as.POSIXct(start, tz = "America/New_York"),
       end = as.POSIXct(end, tz = "America/New_York"),
-      file_timestamp = as.POSIXct(file_timestamp, tz = "America/New_York"),
+      feed_timestamp = as.POSIXct(feed_timestamp, tz = "America/New_York"),
       trip_start_date = as.character(trip_start_date),
       trip_modification_id = as.character(trip_modification_id)
     )

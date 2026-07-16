@@ -41,7 +41,7 @@ pub struct RAlert {
     // image_type: Option<String>,
     // image_alternative_text: Option<String>
     feed_version: Option<String>,
-    file_timestamp: Option<u64>,
+    feed_timestamp: Option<u64>,
     file_index: i32,
 }
 
@@ -232,7 +232,7 @@ pub fn read_gtfsrt_alerts_internal(file: String) -> Result<Dataframe<RAlert>> {
                                                     &alert.tts_description_text,
                                                 ),
                                                 severity_level: alert.severity_level,
-                                                file_timestamp: msg.header.timestamp,
+                                                feed_timestamp: msg.header.timestamp,
                                                 feed_version: msg.header.feed_version.clone(),
                                                 file_index: (file_idx + 1) as i32, // convert to R one-based convention
                                             }
