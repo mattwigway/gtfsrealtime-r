@@ -11,10 +11,11 @@ mod positions_all_values;
 mod trip_update_unwrapping;
 
 use bytes::BytesMut;
+use extendr_api::error::Result;
 use extendr_api::extendr_module;
 use extendr_api::prelude::*;
-use extendr_api::error::Result;
 use prost::Message;
+use std::fs::File;
 use std::{fs, string::ToString};
 
 use crate::transit_realtime::{
@@ -101,6 +102,20 @@ fn write_alerts(filename: &str, alerts: Vec<Alert>) -> Result<()> {
     write_msg(filename, vec![], alerts, vec![])
 }
 
+/// Truncate a file (used to corrupt files for use in tests
+#[extendr]
+pub fn ftruncate(filename: &str, length: u64) -> Result<()> {
+    // ok to use unwrap here, if it fails the test should fail anyhow
+    File::options()
+        .read(true)
+        .write(true)
+        .open(filename)
+        .unwrap()
+        .set_len(length)
+        .unwrap();
+    Ok(())
+}
+
 extendr_module! {
     mod test_data;
     use enum_roundtrip_positions;
@@ -112,4 +127,5 @@ extendr_module! {
     use alert_unwrapping;
     use duplicate_ids;
     use differential_feed;
+    fn ftruncate;
 }
