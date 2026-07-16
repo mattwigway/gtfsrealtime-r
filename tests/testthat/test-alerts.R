@@ -158,3 +158,16 @@ test_that("correctly reports that this is not an alerts file", {
     )
   )
 })
+
+test_that("truncated feed generates error", {
+  file = tempfile()
+  test_data_duplicate_ids_alerts(file)
+  ftruncate(file, floor(file.size(file) * 2))
+  expect_error(
+    {
+      read_gtfsrt_alerts(file, "America/New_York")
+    },
+    regexp = "failed to decode"
+  )
+  unlink(file)
+})

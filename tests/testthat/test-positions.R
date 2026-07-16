@@ -321,3 +321,16 @@ test_that("correctly reports that this is not a positions file", {
     )
   )
 })
+
+test_that("truncated feed generates error", {
+  file = tempfile()
+  test_data_duplicate_ids_positions(file)
+  ftruncate(file, floor(file.size(file) * 2))
+  expect_error(
+    {
+      read_gtfsrt_positions(file, "America/New_York")
+    },
+    regexp = "failed to decode"
+  )
+  unlink(file)
+})
