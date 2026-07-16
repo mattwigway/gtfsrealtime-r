@@ -199,7 +199,8 @@ numbers spelled out, etc.) (path: \code{tts_description_text})
 \item \code{WARNING}
 \item \code{SEVERE}
 }
-\item \code{feed_timestamp}: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
+\item \code{feed_timestamp}: Timestamp of the GTFS-realtime feed itself (i.e. when the file was generated, not when the updates were generated)
+\item ``
 \item \code{file_index}: When reading a ZIP file, a one-based index of which file each observation came from
 Note that it is in the the order the files appeared in the ZIP file, which may not be chronological.
 }

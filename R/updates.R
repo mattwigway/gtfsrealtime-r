@@ -212,7 +212,7 @@
 #'          `stop_schedule_relationship`: `UNSCHEDULED` must also set the `trip_schedule_relationship`: `UNSCHEDULED`
 #'
 #'           Caution: this field is still experimental, and subject to change. It may be formally adopted in the future.
-#' - `feed_timestamp`: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
+#' - `feed_timestamp`: Timestamp of the GTFS-realtime feed itself (i.e. when the file was generated, not when the updates were generated)
 #' - `file_index`: When reading a ZIP file, a one-based index of which file each observation came from
 #'    Note that it is in the the order the files appeared in the ZIP file, which may not be chronological.
 #'
