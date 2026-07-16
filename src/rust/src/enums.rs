@@ -1,4 +1,5 @@
 use extendr_api::prelude::*;
+use extendr_api::error::Result;
 use std::any::type_name;
 use strum::VariantArray;
 
