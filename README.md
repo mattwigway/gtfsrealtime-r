@@ -26,6 +26,8 @@ For most analytical applications of GTFS-realtime, you will want to work with ar
 
 GTFS-realtime is a hierarchical format, and R data frames are flat tables. Thus, a single trip update or alert will become multiple rows in the output, with a common `id`. See the individual function documentation for details.
 
+GTFS-realtime has several experimental extensions, which are not currently supported. Furthermore, GTFS-realtime differential updates (e.g. just providing some new vehicle positions) are considered unsupported by the current GTFS-realtime specification, and thus we do not support them. If you have a feed that uses any of these features, please [open an issue](https://github.com/mattwigway/gtfsrealtime-r/issues/new)!
+
 ## Development versions and contributions
 
 Development versions of the package are available from [mattwigway.r-universe.dev](https://mattwigway.r-universe.dev/gtfsrealtime). To install the latest development version, run:
