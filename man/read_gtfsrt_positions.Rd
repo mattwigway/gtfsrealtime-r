@@ -168,7 +168,7 @@ can overwrite the wheelchair_accessible value from the static GTFS. (path: \code
 \item WHEELCHAIR_ACCESSIBLE The trip is wheelchair accessible. This value will overwrite the value from the GTFS.
 \item WHEELCHAIR_INACCESSIBLEThe trip is not wheelchair accessible. This value will overwrite the value from the GTFS.
 }
-\item \code{file_timestamp}: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
+\item \code{feed_timestamp}: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
 \item \code{file_index}: When reading a ZIP file, a one-based index of which file each observation came from
 Note that it is in the the order the files appeared in the ZIP file, which may not be chronological.
 }

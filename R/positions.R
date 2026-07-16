@@ -145,7 +145,7 @@
 #'    can overwrite the wheelchair_accessible value from the static GTFS. (path: `vehicle.wheelchair_accessible`). Possible values:
 #' ```{r child="man/rmd/wheelchair_accessible.md"}
 #' ```
-#' - `file_timestamp`: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
+#' - `feed_timestamp`: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
 #' - `file_index`: When reading a ZIP file, a one-based index of which file each observation came from
 #'    Note that it is in the the order the files appeared in the ZIP file, which may not be chronological.
 #'
@@ -181,7 +181,7 @@ read_gtfsrt_positions = function(filename, timezone, as_sf = FALSE, label_values
   }
 
   result$timestamp = as.POSIXct(result$timestamp, tz = timezone)
-  result$file_timestamp = as.POSIXct(result$file_timestamp, tz = timezone)
+  result$feed_timestamp = as.POSIXct(result$feed_timestamp, tz = timezone)
 
   if (label_values) {
     result$schedule_relationship = enum_to_factor(

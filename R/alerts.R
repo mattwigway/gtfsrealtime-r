@@ -185,7 +185,7 @@
 #'     - `INFO`
 #'     - `WARNING`
 #'     - `SEVERE`
-#' - `file_timestamp`: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
+#' - `feed_timestamp`: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
 #' - `file_index`: When reading a ZIP file, a one-based index of which file each observation came from
 #'    Note that it is in the the order the files appeared in the ZIP file, which may not be chronological.
 #'
@@ -222,7 +222,7 @@ read_gtfsrt_alerts = function(filename, timezone, label_values = TRUE) {
 
   result$start = as.POSIXct(result$start, tz = timezone)
   result$end = as.POSIXct(result$end, tz = timezone)
-  result$file_timestamp = as.POSIXct(result$file_timestamp, tz = timezone)
+  result$feed_timestamp = as.POSIXct(result$feed_timestamp, tz = timezone)
 
   if (label_values) {
     result$trip_schedule_relationship = enum_to_factor(

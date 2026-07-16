@@ -92,7 +92,7 @@ test_that("updates are unwrapped correctly", {
   expect_equal(rt$departure_scheduled_time, as.POSIXct(c(1775059524, NA, NA, NA, NA, NA), "Australia/Sydney"))
   expect_equal(rt$departure_uncertainty, c(25, 27, 24, NA, NA, NA))
   expect_all_equal(
-    rt$file_timestamp,
+    rt$feed_timestamp,
     lubridate::with_tz(lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"), "Australia/Sydney")
   )
   expect_all_equal(rt$file_index, 1)
@@ -181,7 +181,7 @@ test_that("updates match debug json", {
   ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
     dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col))) |>
-    dplyr::select(-c("file_timestamp", "file_index")) |>
+    dplyr::select(-c("feed_timestamp", "file_index")) |>
     tibble::as_tibble()
 
   expect_equal(nrow(actual), 15216)
