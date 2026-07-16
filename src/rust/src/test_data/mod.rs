@@ -36,7 +36,7 @@ fn write_msg(
             gtfs_realtime_version: "2.0".to_owned(),
             incrementality: Some(Incrementality::FullDataset as i32),
             timestamp: Some(1774967578),
-            feed_version: None,
+            feed_version: Some("the_feed".to_string()),
         },
         entity: positions
             .into_iter()

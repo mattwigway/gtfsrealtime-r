@@ -1,5 +1,5 @@
-use extendr_api::prelude::*;
 use extendr_api::error::Result;
+use extendr_api::prelude::*;
 
 use crate::enums::enum_to_list;
 use crate::id_deduplicator::IdDeduplicator;
@@ -46,6 +46,7 @@ pub struct RStopTimeUpdate {
     stop_schedule_relationship: Option<i32>,
 
     file_timestamp: Option<u64>,
+    feed_version: Option<String>,
     file_index: i32,
 }
 
@@ -117,6 +118,7 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
                                     departure_occupancy_status: stupd.departure_occupancy_status,
                                     stop_schedule_relationship: stupd.schedule_relationship,
                                     file_timestamp: msg.header.timestamp,
+                                    feed_version: msg.header.feed_version.clone(),
                                     file_index: (file_idx + 1) as i32, // convert to R one-based convention
                                 }
                             })
@@ -149,6 +151,7 @@ pub fn read_gtfsrt_trip_updates_internal(file: String) -> Result<Dataframe<RStop
                             departure_occupancy_status: None,
                             stop_schedule_relationship: None,
                             file_timestamp: msg.header.timestamp,
+                            feed_version: msg.header.feed_version.clone(),
                             file_index: (file_idx + 1) as i32, // convert to R one-based convention
                         }]
                     }

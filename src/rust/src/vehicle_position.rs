@@ -3,8 +3,8 @@ use crate::enums::enum_to_list;
 use crate::id_deduplicator::IdDeduplicator;
 use crate::read::read_feed;
 use crate::transit_realtime::{self, trip_descriptor};
-use extendr_api::prelude::*;
 use extendr_api::error::Result;
+use extendr_api::prelude::*;
 
 #[derive(IntoDataFrameRow, Debug, PartialEq)]
 pub struct RVehiclePosition {
@@ -46,6 +46,9 @@ pub struct RVehiclePosition {
 
     // timestamp of file generation
     file_timestamp: Option<u64>,
+
+    feed_version: Option<String>,
+
     // index of file when reading multiple files
     file_index: i32,
 }
@@ -110,6 +113,7 @@ pub fn read_gtfsrt_positions_internal(file: String) -> Result<Dataframe<RVehicle
                             .as_ref()
                             .map_or(None, |veh| veh.wheelchair_accessible),
                         file_timestamp: msg.header.timestamp,
+                        feed_version: msg.header.feed_version.clone(),
                         file_index: (file_idx + 1) as i32, // convert to R one-based convention
                     }
                 })

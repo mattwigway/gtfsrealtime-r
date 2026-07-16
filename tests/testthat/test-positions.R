@@ -36,12 +36,13 @@ test_that("error handling works", {
 
 # This has Rust write out a feed that has every value of every enum, and then
 # also return their expected order to make sure they match.
-test_that("enums are correctly specified", {
+test_that("enums are correctly specified/feed version works", {
   feed = tempfile()
   expected = test_data_enum_roundtrip_positions(feed)$ok
   actual = read_gtfsrt_positions(feed, "Etc/UTC")
   unlink(feed)
 
+  expect_all_equal(actual$feed_version, "the_feed")
   expect_equal(as.character(actual$schedule_relationship), expected$schedule_relationship)
   expect_equal(as.character(actual$vehicle_wheelchair_accessible), expected$vehicle_wheelchair_accessible)
   expect_equal(as.character(actual$current_status), expected$current_status)

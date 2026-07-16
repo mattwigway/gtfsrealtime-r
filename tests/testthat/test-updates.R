@@ -44,12 +44,13 @@ test_that("timezones work", {
 
 # This has Rust write out a feed that has every value of every enum, and then
 # also return their expected order to make sure they match.
-test_that("enum roundtrip is correct", {
+test_that("enum roundtrip is correct/feed version works", {
   file = tempfile()
   expected = test_data_enum_roundtrip_updates(file)$ok
   actual = read_gtfsrt_trip_updates(file, "Australia/Sydney")
   unlink(file)
 
+  expect_all_equal(actual$feed_version, "the_feed")
   expect_equal(as.character(actual$trip_schedule_relationship), expected$trip_schedule_relationship)
   expect_equal(as.character(actual$vehicle_wheelchair_accessible), expected$vehicle_wheelchair_accessible)
   expect_equal(as.character(actual$departure_occupancy_status), expected$departure_occupancy_status)
