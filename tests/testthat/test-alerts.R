@@ -52,12 +52,13 @@ test_that("timezones work", {
 
 # This has Rust write out a feed that has every value of every enum, and then
 # also return their expected order to make sure they match.
-test_that("enums are correctly specified", {
+test_that("enums are correctly specified/feed version is correct", {
   feed = tempfile()
   expected = test_data_enum_roundtrip_alerts(feed)$ok
   actual = read_gtfsrt_alerts(feed, "America/New_York")
   unlink(feed)
 
+  expect_all_equal(actual$feed_version, "the_feed")
   expect_equal(as.character(actual$trip_schedule_relationship), expected$trip_schedule_relationship)
   expect_equal(as.character(actual$cause), expected$cause)
   expect_equal(as.character(actual$effect), expected$effect)
