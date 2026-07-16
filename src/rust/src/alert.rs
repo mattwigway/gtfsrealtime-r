@@ -1,4 +1,5 @@
 use extendr_api::prelude::*;
+use extendr_api::error::Result;
 
 use crate::{
     check_types::{check_types, MessageType},

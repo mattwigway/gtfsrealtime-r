@@ -1,5 +1,6 @@
 // code to create various GTFS-realtime datasets for use in tests
 mod alert_unwrapping;
+mod differential_feed;
 mod duplicate_ids;
 mod enum_roundtrip;
 mod enum_roundtrip_alerts;
@@ -12,6 +13,7 @@ mod trip_update_unwrapping;
 use bytes::BytesMut;
 use extendr_api::extendr_module;
 use extendr_api::prelude::*;
+use extendr_api::error::Result;
 use prost::Message;
 use std::{fs, string::ToString};
 
@@ -109,4 +111,5 @@ extendr_module! {
     use positions_all_values;
     use alert_unwrapping;
     use duplicate_ids;
+    use differential_feed;
 }
