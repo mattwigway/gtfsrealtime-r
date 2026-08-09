@@ -104,7 +104,7 @@ fn read_one_feed(mut buf: Vec<u8>) -> std::result::Result<FeedMessage, Box<dyn s
     let byt = BytesMut::from(buf.as_slice());
     let msg = FeedMessage::decode(byt)?;
 
-    if msg.header.incrementality != Some(Incrementality::FullDataset as i32) {
+    if msg.header.incrementality == Some(Incrementality::Differential as i32) {
         return Err(Box::new(extendr_api::Error::Other(
             "Differential GTFS-realtime feeds are not supported".to_string(),
         )));
