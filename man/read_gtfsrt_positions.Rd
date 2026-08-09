@@ -33,9 +33,16 @@ its definition, many of which come verbatim from the \href{https://gtfs.org/docu
 \item \code{id}: GTFS-realtime entity ID. These are required by the specification to be unique within a
 GTFS-realtime file, but sometimes are not. If there are non-unique IDs in the feed, they will
 be made unique when data are loaded by appending \verb{_duplicate_1}, \verb{_duplicate_2}, and so on
-and a warning will be issued, which guarantees that all rows from a single file have unique IDs.
+and a warning will be issued, which guarantees that all entities from a single file have unique IDs.
 When working with archived data, there will quite likely be duplicated IDs between files archived
-at different times (path: \code{id} property of \code{FeedEntity} containing this \code{VehiclePosition}).
+at different times; in this case \code{file_index} should be used in combination with \code{id} to uniquely identify
+vehicle positions. The GTFS-realtime specification makes no guarantees about the stability of
+entity IDs between feeds, so these should not be used to join data from multiple GTFS-realtime
+feeds (e.g. from different times of day).
+}
+
+(path: \code{id} property of \code{FeedEntity} containing this \code{VehiclePosition})
+\itemize{
 \item \code{latitude}: reported latitude of vehicle (path: \code{position.latitude}).
 \item \code{longitude}: reported latitude of vehicle (path: \code{position.latitude}).
 \item \code{bearing}: current bearing (compass heading) of vehicle, in degrees
