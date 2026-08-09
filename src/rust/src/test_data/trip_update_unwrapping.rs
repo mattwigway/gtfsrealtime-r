@@ -1,5 +1,5 @@
-use extendr_api::prelude::*;
 use extendr_api::error::Result;
+use extendr_api::prelude::*;
 
 use crate::{
     test_data::write_updates,
