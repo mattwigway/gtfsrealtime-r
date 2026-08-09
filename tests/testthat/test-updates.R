@@ -181,7 +181,7 @@ test_that("updates match debug json", {
   ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
     dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col))) |>
-    dplyr::select(-c("feed_timestamp", "file_index")) |>
+    dplyr::select(-c("feed_version", "feed_timestamp", "file_index")) |>
     tibble::as_tibble()
 
   expect_equal(nrow(actual), 15216)
@@ -202,7 +202,7 @@ test_that("id deduplication works", {
   expect_equal(
     warnings$warnings,
     list(
-      "!" = "ID id is duplicated. Replacing with id_duplicated_1 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect."
+      "!" = "ID id is duplicated. Replacing with id_duplicated_1"
     )
   )
 
