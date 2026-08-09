@@ -24,7 +24,11 @@ GTFS-realtime feeds come in three flavors: vehicle positions, trip updates, and 
 
 For most analytical applications of GTFS-realtime, you will want to work with archived data. GTFS-realtime feeds can be quite large, so the package supports reading feeds compressed with ZIP, `gzip`, or `bzip2` (anecdotally, `bzip2` seems to provide slightly better compression than `gzip`). For zip files, it is also possible to have multiple GTFS-realtime feeds in a single file; in this case, the functions above will read all of the files in the ZIP file. You can differentiate records from different files with the `file_index` column. We also have [an article demonstrating working with a day of archived data](https://projects.indicatrix.org/gtfsrealtime-r/articles/archived.html).
 
+### Hierarchical data
+
 GTFS-realtime is a hierarchical format, and R data frames are flat tables. Thus, a single trip update or alert will become multiple rows in the output, with a common `id`. See the individual function documentation for details.
+
+### Experimental extensions
 
 GTFS-realtime has several experimental extensions, which are not currently supported. Furthermore, GTFS-realtime differential updates (e.g. just providing some new vehicle positions) are considered unsupported by the current GTFS-realtime specification, and thus we do not support them. If you have a feed where you encounter any of these situations, please [open an issue](https://github.com/mattwigway/gtfsrealtime-r/issues/new) (and attach the feed if you can)!
 
