@@ -32,8 +32,14 @@
 #'      GTFS-realtime file, but sometimes are not. If there are non-unique IDs in the feed, they will
 #'      be made unique when data are loaded by appending `_duplicated_1`, `_duplicated_2`, and so on
 #'      and a warning will be issued, which guarantees that all rows from a single file have unique IDs.
+#'
 #'      When working with archived data, there will quite likely be duplicated IDs between files archived
-#'      at different times (path: `id` property of `FeedEntity` containing this `Alert`).
+#'      at different times; in this case `file_index` should be used in combination with `id` to uniquely identify
+#'     vehicle positions. The GTFS-realtime specification makes no guarantees about the stability of
+#'     entity IDs between feeds, so these should not be used to join data from multiple GTFS-realtime
+#'     feeds (e.g. from different times of day).
+#'
+#'     (path: `id` property of `FeedEntity` containing this `Alert`).
 #' - `start`: Time when the alert should first be shown. If missing, the alert should be shown as long as it appears in
 #'      the feed. Converted to local time based on the `timezone` argument. One alert may have multiple
 #'      start and end times, in which case it will be presented in multiple rows. (path: `active_period.start`)

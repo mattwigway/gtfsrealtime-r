@@ -30,6 +30,7 @@ enum_Alert_Effect <- function() .Call(wrap__enum_Alert_Effect)
 enum_Alert_SeverityLevel <- function() .Call(wrap__enum_Alert_SeverityLevel)
 
 #' Truncate a file (used to corrupt files for use in tests
+#' @noRd
 ftruncate <- function(filename, length) .Call(wrap__ftruncate, filename, length)
 
 test_data_enum_roundtrip_positions <- function(filename) .Call(wrap__test_data_enum_roundtrip_positions, filename)

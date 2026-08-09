@@ -103,6 +103,7 @@ fn write_alerts(filename: &str, alerts: Vec<Alert>) -> Result<()> {
 }
 
 /// Truncate a file (used to corrupt files for use in tests
+/// @noRd
 #[extendr]
 pub fn ftruncate(filename: &str, length: u64) -> Result<()> {
     // ok to use unwrap here, if it fails the test should fail anyhow
