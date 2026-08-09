@@ -110,7 +110,7 @@ test_that("id deduplication works", {
   expect_equal(
     warnings$warnings,
     list(
-      "!" = "ID id is duplicated. Replacing with id_duplicated_1 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect."
+      "!" = "ID id is duplicated. Replacing with id_duplicated_1"
     )
   )
 

@@ -93,7 +93,8 @@ test_that("Louisville debug JSON matches read_gtfsrt_positions", {
       vehicle_id = null_to_na(p$Vehicle$Id),
       vehicle_label = null_to_na(p$Vehicle$Label),
       vehicle_license_plate = null_to_na(p$Vehicle$LicensePlate),
-      vehicle_wheelchair_accessible = null_to_na(p$Vehicle$WheelchairAccessible)
+      vehicle_wheelchair_accessible = null_to_na(p$Vehicle$WheelchairAccessible),
+      feed_version = NA
     )
   }) |>
     purrr::list_rbind()
@@ -145,6 +146,7 @@ test_that("all columns read correctly", {
       vehicle_license_plate = "LIC-4242",
       vehicle_wheelchair_accessible = "WHEELCHAIR_ACCESSIBLE",
       feed_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_version = "the_feed",
       file_index = 1
     ),
 
@@ -174,6 +176,7 @@ test_that("all columns read correctly", {
       vehicle_license_plate = NA,
       vehicle_wheelchair_accessible = NA,
       feed_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_version = "the_feed",
       file_index = 1
     ),
 
@@ -203,6 +206,7 @@ test_that("all columns read correctly", {
       vehicle_license_plate = NA,
       vehicle_wheelchair_accessible = NA,
       feed_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_version = "the_feed",
       file_index = 1
     )
   )
@@ -233,8 +237,8 @@ test_that("duplicate ids are deduplicated", {
     # the c("!" = ... gets unwrapped when appended to a list, and then the list has two duplicate elements,
     # which somehow R is okay with (?)
     list(
-      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_1 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect.',
-      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_2 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect.'
+      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_1',
+      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_2'
     )
   )
 
