@@ -84,14 +84,17 @@
   keywords = {GTFS,gtfs2gps,L90,Public transport,R40,Time geography,Transport networks}
 }
 
-@article{reynolds_social_2025,
+@inproceedings{reynolds_social_2025,
   title = {Social Needs and Gaps in Transit Service: {{New GTFS}} Tools \& Updates to 2021 Data},
+  booktitle = {Australasian {{Transport Research Forum}}},
   author = {Reynolds, James and Currie, Graham and Qu, Yanda},
   year = 2025,
+  address = {Auckland, NZ},
   abstract = {Public transport often provides mobility to those who cannot drive themselves or who otherwise lack access to motorised transport. Hence, social equity perspectives on policymaking might suggest directing resources towards where those with greater needs live. Along these lines Currie (2010) presented a method for identifying locations with very high social needs for transport but little or no transit supply, and used it to assess needs-gaps in Greater Melbourne in 2006. However, undertaking similar assessments elsewhere may have been challenging at the time due to the need to process large amounts of timetable data. General Transit Feed Specification (GTFS) datasets are now provided by many operators. As of yet there are no known tools for using this data in social needs-gaps analysis as per the Currie (2010) approach. This paper reports the development of an R package with such tools, and results for Melbourne in 2016 and 2021 for comparison with those from 2006. Results indicate a 140\% increase in the number of residents living in areas with Very High needs but Very Low or Zero transit supply (139,004 in 2006 to 333,887 in 2021), compared to only 46\% population growth (3.4 to 4.9m). This means the share of Greater Melbourne's residents living in areas with the largest needs-gaps has increased (4.2\% to 6.8\%). The paper also briefly revisits a case study of an early-2010s development in the outer south-east suburbs, reported in Delbosc et al. (2015), finding positive changes in service level at this local scale, but that needs-gaps and lack of services remain a challenge. While Melbourne may be an outlier in terms of population growth and (low) density, these results suggest that those most in need may be continuing to receive only limited transit supply. Directions for further research and limitations are also identified.},
   langid = {english},
   file = {/Users/mwbc/Zotero/storage/86B4HQPZ/Reynolds et al. - 2025 - Social needs and gaps in transit service New GTFS tools & updates to 2021 data.pdf}
 }
+
 @article{pereira_r5r_2021,
   title = {R5r: {{Rapid}} Realistic Routing on Multimodal Transport Networks with {{R5}} in {{R}}},
   author = {Pereira, Rafael H M and Saraiva, Marcus and Herszenhut, Daniel and Braga, Carlos Kaue Vieira and Conway, Matthew Wigginton},
@@ -112,18 +115,12 @@
     doi = {10.32614/R.manuals},
     url = {https://www.R-project.org/},
   }
-@misc{gtfrst_2026,
-  title = {Full Revision History - {{General Transit Feed Specification}}},
-  author = {{Mobility Data}},
-  year = 2011,
-  urldate = {2026-05-27},
-  url = {https://gtfs.org/documentation/realtime/change-history/revision-history/},
-  file = {/Users/mwbc/Zotero/storage/MDRFQVG5/revision-history.html}
-}
+
 @misc{rychev_introducing_2011,
   title = {Introducing {{GTFS-realtime}} to Exchange Realtime Transit Updates},
   author = {Rychev, Vladimir},
   journal = {Google Lat Long},
+  url = {https://maps.googleblog.com/2011/08/introducing-gtfs-realtime-to-exchange.html},
   date = {2011},
   urldate = {2026-08-08},
   abstract = {(Cross-posted from the Google Code Blog )    In June, we launched Live Transit Updates , a feature that adds realtime public transport infor...},
@@ -314,7 +311,8 @@
   title = {Gtfsway},
   author = {Cooley, David},
   urldate = {2026-08-08},
-  abstract = {Reading and parsing GTFS-realtime data in R}
+  abstract = {Reading and parsing GTFS-realtime data in R},
+  url = {https://github.com/SymbolixAU/gtfsway}
 }
 
 @Manual{ggspatial,
