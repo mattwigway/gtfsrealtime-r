@@ -1,6 +1,6 @@
 ---
 title: "{gtfsrealtime}: a Package for Working with GTFS-Realtime Transit Data in R"
-subtitle: "Word count: {{< words-body >}}"
+subtitle: "Under review at _Findings_"
 authors:
   - name: Matthew Wigginton Bhagat-Conway
     affiliations:
@@ -41,12 +41,12 @@ abstract: |
 
 The General Transit Feed Specification (GTFS) is one of the great successes of open data standards. GTFS is a standardized format for communicating transit schedule data [@voulgaris_predictors_2023]. While GTFS was originally intended to support customer-facing trip planning apps [@mchugh_pioneering_2013], it has seen extensive use in research [@ho_general_2021]. Many open source tools are available for analyzing GTFS data [e.g., @herszenhut_gtfstools_2022; @pereira_r5r_2021; @reynolds_social_2025; @kocsis_gtfs2net_2025], many using the R statistical programming language [@r_2026].
 
-Originally, GTFS only provided data on scheduled arrival times. In 2011, GTFS-realtime was released, allowing agencies to provide real-time information [@gtfrst_2026]. To date, most analytical applications have used the original GTFS specification (retroactively renamed GTFS-static), with some exceptions [@liu_realizable_2023; @javanmard_using_2025]. One factor is the lack of tooling to read GTFS-realtime's bespoke binary format. This article introduces the `{gtfsrealtime}` R package, which efficiently reads GTFS-realtime feeds into standard R data frames for further analysis.
+Originally, GTFS only provided data on scheduled arrival times. In 2011, GTFS-realtime was released, allowing agencies to provide real-time information [@rychev_introducing_2011]. To date, most analytical applications have used the original GTFS specification (retroactively renamed GTFS-static), with some exceptions [e.g., @liu_realizable_2023; @javanmard_using_2025]; a Scopus search for GTFS-realtime returns only 17 articles.^[The exact search used was `( gtfs realtime ) OR ( gtfsrealtime ) OR ( gtfs-realtime ) OR ( gtfs AND realtime )`] One factor is the lack of tooling to read GTFS-realtime's bespoke binary format. This article introduces the `{gtfsrealtime}` R package, which reads GTFS-realtime feeds into standard R data frames. It answers in the affirmative the question of whether R can be efficiently used to analyze large GTFS-realtime feeds.
 
 <!--# while Findings means this as "what are the methods used" i.e. the types of analysis, I am taking it literally as the methods/functions exported. -->
 ## Methods
 
-GTFS-realtime feeds come in three types: vehicle positions, trip updates, and service alerts. The `{gtfsrealtime}` package exposes three functions for reading these: `read_gtfsrt_positions`, `read_gtfsrt_trip_updates`, and `read_gtfsrt_alerts`, which are detailed below.
+GTFS-realtime feeds come in three types: vehicle positions, trip updates, and service alerts. The `{gtfsrealtime}` package exposes three functions for reading these: `read_gtfsrt_positions`, `read_gtfsrt_trip_updates`, and `read_gtfsrt_alerts`, which are detailed below. There are several experimental extensions to GTFS-realtime, which are not currently supported.
 
 `{gtfsrealtime}` can be installed through the Comprehensive R Archive Network (CRAN):
 
@@ -55,9 +55,9 @@ GTFS-realtime feeds come in three types: vehicle positions, trip updates, and se
 install.packages("gtfsrealtime")
 ```
 
-For performance, `{gtfsrealtime}` has components written in Rust [@klabnik_rust_2026]. CRAN provides binary packages for the most recent version of R on Windows and macOS. If you get error messages about `rustc` not being available, you likely need to upgrade to the latest version of R. For Linux users, [the Posit Public Package Manager](https://packagemanager.posit.co/) provides binary packages.
+The current version is 0.2.1. `{gtfsrealtime}` source code and development versions are available from <https://github.com/mattwigway/gtfsrealtime-r>.
 
-`{gtfsrealtime}` source code and development versions are available from <https://github.com/mattwigway/gtfsrealtime-r>.
+For performance, `{gtfsrealtime}` has components written in Rust [@rust188]; CRAN provides binary packages for the most recent version of R on Windows and macOS (if you experience installation issues, ensure you are using the latest version of R). 
 
 Once installed, it can be loaded (along with a few other packages we will be using):
 
@@ -74,6 +74,8 @@ library(sf) # for spatial data analysis
 #| include: false
 library(ggunc)
 ```
+
+The following sections demonstrate the main functions of the package, using example data shipped with the package. Note that the example vehicle positions are from a different time period than the other datasets and cannot be joined with them.
 
 ### `read_gtfsrt_positions`
 
@@ -116,12 +118,15 @@ shorten = function (text, length) {
 head(positions) |>
   sf::st_drop_geometry() |>
   select(vehicle_id, timestamp, trip_id, route_id, stop_id) |>
-  mutate(across(ends_with("id"), \(x) shorten(x, 12))) |>
+  mutate(across(ends_with("id"), \(x) shorten(x, 13))) |>
   gt::gt() |>
     gt::fmt_datetime(timestamp)
 ```
 
-Since we read the data using `as_sf=TRUE`, we can also map the locations of all vehicles, colored by how full they are (@fig-pos).
+\FloatBarrier
+
+Since we read the data using `as_sf=TRUE`, we can also map the locations of all vehicles, colored by how full they are (@fig-pos). One could use other packages such as `ggspatial` [@ggspatial] to add a basemap, scale bar, etc.; this is left to the reader for brevity.
+
 
 ```{r}
 #| fig-width: 6
@@ -131,7 +136,7 @@ Since we read the data using `as_sf=TRUE`, we can also map the locations of all 
 #| label: fig-pos
 positions |>
   ggplot(aes(color = occupancy_status)) +
-  geom_sf(size = 0.1) +
+  geom_sf(size = 0.5) +
   theme_void()
 ```
 
@@ -153,15 +158,6 @@ updates = read_gtfsrt_trip_updates(
 
 \FloatBarrier
 
-When reading this example feed, `{gtfsrealtime}` warns that some GTFS-realtime entity IDs are duplicated. In these cases, the package appends suffixes such as `_duplicated_1` so that each trip update can be represented with a unique `id`. There are quite a few of them; the first is:
-
-```
-ID UP_A6-Weekday-SDon-094800_B6_243 is duplicated. Replacing with UP_A6-Weekday-SDon-094800_B6_243_duplicated_1 . This may cause joins between different
-  GTFS-realtime files (even within a ZIP archive) to be incorrect.
-```
-
-This deduplication applies only to the `id` field; for example `trip_id` will still correctly join with GTFS-static. Deduplication also happens with alerts and vehicle position `id`s.
-
 GTFS-realtime trip updates are hierarchical; one trip update can contain information about the trip as a whole as well as updates for multiple stops along that trip. `read_gtfsrt_trip_updates()` flattens that structure into a data frame. As a result, the same `id` may appear in multiple rows when the feed contains stop-level updates for multiple stops. In @tbl-arrival, we inspect all rows associated with one `id` (and show the most relevant columns). If a trip update has no stop time updates, it will appear as a single row with all the stop-specific fields NA.
 
 ```{r}
@@ -171,10 +167,12 @@ GTFS-realtime trip updates are hierarchical; one trip update can contain informa
 updates |>
   filter(id == first(id)) |>
   select(id, trip_id, route_id, stop_id, arrival_time) |>
-  mutate(across(ends_with("id"), \(x) shorten(x, 12))) |>
+  mutate(across(ends_with("id"), \(x) shorten(x, 13))) |>
   gt::gt() |>
       gt::fmt_datetime(arrival_time)
 ```
+
+When reading this example feed, `{gtfsrealtime}` warns that some GTFS-realtime entity IDs are duplicated, which is problematic since these are used to identify the rows belonging to a single trip update. In these cases, the package appends suffixes such as `_duplicated_1` so that each trip update can be represented with a unique `id` within a feed (when reading a ZIP file containing multiple feeds, `id`s are only unique within each of the contained feeds, which can be disambiguated with the `file_index` field). This deduplication applies only to the `id` field. Other fields, for example `trip_id`, are not modified so they will still correctly join with GTFS-static. Deduplication also happens with alerts and vehicle position `id`s.
 
 \FloatBarrier
 
@@ -204,7 +202,7 @@ In @tbl-alert, we select the first alert and display the route or stop fields an
 cat(alerts |>
   filter(id == first(id)) |>
   select(id, start, end, route_id, stop_id, header_text) |>
-  mutate(across(ends_with("id"), \(x) shorten(x, 12))) |>
+  mutate(across(ends_with("id"), \(x) shorten(x, 13)), header_text=shorten(header_text, 52)) |>
   gt::gt() |>
       gt::fmt_datetime(start) |>
       gt::as_latex() |>
@@ -219,6 +217,10 @@ Archived data is often useful for analytical applications; `{gtfsrealtime}` also
 
 ## Findings {#sec-findings}
 
-This article has introduced the `{gtfsrealtime}` R package, an efficient package for reading GTFS-realtime. There is a wealth of applications of real-time transit data---for example, accessibility analysis [e.g., @wessel_accuracy_2019], operations [e.g., @aemmer_measurement_2022], or passenger information evaluation [e.g, @newmark_assessing_2024]. We hope that the `{gtfsrealtime}` package will support these types of analysis and more, and will underly development of additional standardized packages for common analyses using realtime data.
+This article has introduced the `{gtfsrealtime}` R package, an open-source (MIT-licensed) package for reading GTFS-realtime data into R data frames. As far as we know, this is the only actively-maintained package for reading GTFS-realtime into R. It reads the hierarchical GTFS-realtime format into a tabular format, which is conducive to efficient analysis in R. It aims to be as user-friendly as possible, handling duplicate IDs, adding factor columns rather than numeric codes for categorical variables, and processing timestamps into R date-time objects. It is fast, reading a full day of New York City vehicle positions (_n_=2.8 million) in 16 seconds on an M1 Macbook Pro—fast enough to readily analyze months or years of data.
+
+We are aware of only one other actively-maintained option for reading GTFS-realtime data into R. GTFS-realtime is based on the Protocol Buffers format, and as such the `{RProtoBuf}` package [@eddelbuettel_rprotobuf_2016], a general-purpose package for reading any Protocol Buffers-based format, can read it.  `{RProtoBuf}` actually reads GTFS-realtime somewhat faster than `{gtfsrealtime}` (the same full day of vehicle positions takes only 3 seconds to read). However, it returns data in a hierarchical format that is not conducive to efficient analysis in R. Converting to the tabular format necessary for further analysis takes an additional 25 minutes using `vapply` and `lapply`.^[Full details of this test are [in the Performance article available in the `{gtfsrealtime}` documentation](https://projects.indicatrix.org/gtfsrealtime-r/articles/performance.html).] `RProtoBuf` also does not provide GTFS-realtime specific features such as data compression, ID deduplication, or time zone parsing. Another package, `{gtfsway}`, has not been maintained in many years and is formally archived [@_gtfsway_2025]. There are of course also GTFS-realtime bindings in many other languages, such as Python.
+
+There is a wealth of applications of real-time transit data---for example, accessibility analysis [e.g., @wessel_accuracy_2019], operations [e.g., @aemmer_measurement_2022], or passenger information evaluation [e.g, @newmark_assessing_2024]. We hope that the `{gtfsrealtime}` package will support these types of analysis and more, and will underly development of additional standardized packages for common analyses using realtime data.
 
 ## References
