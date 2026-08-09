@@ -1,5 +1,5 @@
-use extendr_api::prelude::*;
 use extendr_api::error::Result;
+use extendr_api::prelude::*;
 use strum::VariantArray;
 
 use crate::test_data::enum_roundtrip::get_or_none;

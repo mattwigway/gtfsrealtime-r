@@ -1,8 +1,8 @@
 use std::fs;
 
 use bytes::BytesMut;
-use extendr_api::prelude::*;
 use extendr_api::error::Result;
+use extendr_api::prelude::*;
 use prost::Message;
 
 use crate::transit_realtime::{feed_header::Incrementality, FeedHeader, FeedMessage};
