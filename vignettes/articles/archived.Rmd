@@ -149,7 +149,7 @@ system.time({positions = read_gtfsrt_positions("nyc-bus-demo.zip", "America/New_
 
 ```
 ##    user  system elapsed 
-##   9.748   3.169  14.550
+##   9.606   3.041  13.933
 ```
 
 ``` r
@@ -367,7 +367,8 @@ trajectories = positions |>
 ## ℹ Summaries were computed grouped by vehicle_id and trip_id.
 ## ℹ Output is grouped by vehicle_id.
 ## ℹ Use `summarise(.groups = "drop_last")` to silence this message.
-## ℹ Use `summarise(.by = c(vehicle_id, trip_id))` for per-operation grouping (`?dplyr::dplyr_by`) instead.
+## ℹ Use `summarise(.by = c(vehicle_id, trip_id))` for per-operation grouping
+##   (`?dplyr::dplyr_by`) instead.
 ```
 
 We can then plot all of those trajectories over the course of the day:

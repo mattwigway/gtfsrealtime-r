@@ -99,11 +99,49 @@ system.time({
 })
 ```
 
-This is actually significantly faster, but is not a fair comparison. The output of `RProtoBuf::Read` is a hierarchical object, which is notoriously slow and difficult to work with in R, and which will need to be converted to tabular to work with with common, performant libraries in R. The output of `gtfsrealtime` is already in tabular format.
+This is actually significantly faster, but is not a fair comparison. The output of `RProtoBuf::read` is a hierarchical object, which is notoriously slow and difficult to work with in R, and which will need to be converted to tabular to work with with common, performant libraries in R. The output of `gtfsrealtime` is already in tabular format.
 
 ### Reading and converting to tabular format with RProtoBuf
 
 For a truly fair test, we need to also convert the RProtoBuf output to data frames like the GTFS-rt output. We do this two ways, once with a "row-wise" approach where each vehicle position is converted to a data frame and then row-bound, and oncw with a "column-wise" where a single data frame is constructed from columns that are constructed from the hierarchical data with `vapply`. This is still not a completely fair comparison, as it doesn't have some of the features `gtfsrealtime` has, such as ID deduplication or human readable enum columns, but should be close in terms of functionality.
+
+#### Column-wise approach
+
+
+```{r}
+flatten_position_message = function(message) {
+  data.frame(
+    id = vapply(message$entity, \(x) x$id, ""),
+    latitude = vapply(message$entity, \(e) e$vehicle$position$latitude, 42.0),
+    longitude = vapply(message$entity, \(e) e$vehicle$position$longitude, 42.0),
+    bearing = vapply(message$entity, \(e) e$vehicle$position$bearing, 42.0),
+    odometer = vapply(message$entity, \(e) e$vehicle$position$odometer, 42.0),
+    speed = vapply(message$entity, \(e) e$vehicle$position$speed, 42.0),
+    trip_id = vapply(message$entity, \(e) e$vehicle$trip$trip_id, ""),
+    route_id = vapply(message$entity, \(e) e$vehicle$trip$route_id, ""),
+    direction_id = vapply(message$entity, \(e) e$vehicle$trip$direction_id, 0),
+    start_time = vapply(message$entity, \(e) e$vehicle$trip$start_time, ""),
+    start_date = vapply(message$entity, \(e) e$vehicle$trip$start_date, ""),
+    schedule_relationship = vapply(message$entity, \(e) e$vehicle$trip$schedule_relationship, 0L),
+    stop_id = vapply(message$entity, \(e) e$vehicle$stop_id, ""),
+    current_stop_sequence = vapply(message$entity, \(e) e$vehicle$current_stop_sequence, 42.0),
+    current_status = vapply(message$entity, \(e) e$vehicle$current_status, 0L),
+    timestamp = as.POSIXct(vapply(message$entity, \(e) e$vehicle$timestamp, 42.0), "America/New_York"),
+    congestion_level = vapply(message$entity, \(e) e$vehicle$congestion_level, 0L),
+    occupancy_status = vapply(message$entity, \(e) e$vehicle$occupancy_status, 0L),
+    occupancy_percentage = vapply(message$entity, \(e) e$vehicle$occupancy_percentage, 42.0),
+    vehicle_id = vapply(message$entity, \(e) e$vehicle$vehicle$id, ""),
+    vehicle_label = vapply(message$entity, \(e) e$vehicle$vehicle$label, ""),
+    vehicle_license_plate = vapply(message$entity, \(e) e$vehicle$vehicle$license_plate, ""),
+    wheelchair_accessible = vapply(message$entity, \(e) e$vehicle$vehicle$wheelchair_accessible, 0L)
+  )
+}
+
+
+system.time({
+  data_rpbf_columnwise = lapply(input_files, \(f) flatten_position_message(RProtoBuf::read(transit_realtime.FeedMessage, f)))
+})
+```
 
 #### Row-wise approach
 
@@ -145,44 +183,6 @@ system.time({
     msg = RProtoBuf::read(transit_realtime.FeedMessage, f)
     lapply(msg$entity, flatten_position_update) |> rbind()
   })
-})
-```
-
-#### Column-wise approach
-
-
-```{r}
-flatten_position_message = function(message) {
-  data.frame(
-    id = vapply(message$entity, \(x) x$id, ""),
-    latitude = vapply(message$entity, \(e) e$vehicle$position$latitude, 42.0),
-    longitude = vapply(message$entity, \(e) e$vehicle$position$longitude, 42.0),
-    bearing = vapply(message$entity, \(e) e$vehicle$position$bearing, 42.0),
-    odometer = vapply(message$entity, \(e) e$vehicle$position$odometer, 42.0),
-    speed = vapply(message$entity, \(e) e$vehicle$position$speed, 42.0),
-    trip_id = vapply(message$entity, \(e) e$vehicle$trip$trip_id, ""),
-    route_id = vapply(message$entity, \(e) e$vehicle$trip$route_id, ""),
-    direction_id = vapply(message$entity, \(e) e$vehicle$trip$direction_id, 0),
-    start_time = vapply(message$entity, \(e) e$vehicle$trip$start_time, ""),
-    start_date = vapply(message$entity, \(e) e$vehicle$trip$start_date, ""),
-    schedule_relationship = vapply(message$entity, \(e) e$vehicle$trip$schedule_relationship, 0L),
-    stop_id = vapply(message$entity, \(e) e$vehicle$stop_id, ""),
-    current_stop_sequence = vapply(message$entity, \(e) e$vehicle$current_stop_sequence, 42.0),
-    current_status = vapply(message$entity, \(e) e$vehicle$current_status, 0L),
-    timestamp = as.POSIXct(vapply(message$entity, \(e) e$vehicle$timestamp, 42.0), "America/New_York"),
-    congestion_level = vapply(message$entity, \(e) e$vehicle$congestion_level, 0L),
-    occupancy_status = vapply(message$entity, \(e) e$vehicle$occupancy_status, 0L),
-    occupancy_percentage = vapply(message$entity, \(e) e$vehicle$occupancy_percentage, 42.0),
-    vehicle_id = vapply(message$entity, \(e) e$vehicle$vehicle$id, ""),
-    vehicle_label = vapply(message$entity, \(e) e$vehicle$vehicle$label, ""),
-    vehicle_license_plate = vapply(message$entity, \(e) e$vehicle$vehicle$license_plate, ""),
-    wheelchair_accessible = vapply(message$entity, \(e) e$vehicle$vehicle$wheelchair_accessible, 0L)
-  )
-}
-
-
-system.time({
-  data_rpbf_columnwise = lapply(input_files, \(f) flatten_position_message(RProtoBuf::read(transit_realtime.FeedMessage, f)))
 })
 ```
 
