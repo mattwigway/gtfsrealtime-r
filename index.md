@@ -27,8 +27,7 @@ version of R.
 If you want to build from source, this package contains compiled
 [extendr](https://extendr.rs) Rust code to efficiently read
 GTFS-realtime. You will need a Rust development environment; you can
-build the Rust code by running
-[`rextendr::document()`](https://extendr.github.io/rextendr/reference/document.html).
+build the Rust code by running `rextendr::document()`.
 
 ## Usage
 
@@ -74,10 +73,8 @@ If you want to make contributions to the package, you’ll need to build
 from source. This package contains compiled
 [extendr](https://extendr.rs) Rust code to efficiently read
 GTFS-realtime. You will need a Rust development environment; you can
-build the Rust code by running
-[`rextendr::document()`](https://extendr.github.io/rextendr/reference/document.html).
-You will also need to install
-[`protoc`](https://protobuf.dev/installation/) if you are working with
-the Git source (the `.tar.gz` source builds from CRAN compile the
-protobuf files as part of the package build process, and do not require
-`protoc`).
+build the Rust code by running `rextendr::document()`. You will also
+need to install [`protoc`](https://protobuf.dev/installation/) if you
+are working with the Git source (the `.tar.gz` source builds from CRAN
+compile the protobuf files as part of the package build process, and do
+not require `protoc`).

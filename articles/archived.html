@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/archived.html">Working with archived data</a></li>
+    <li><a class="dropdown-item" href="../articles/performance.html">Performance</a></li>
     <li><a class="dropdown-item" href="../articles/positions.html">Vehicle positions</a></li>
     <li><a class="dropdown-item" href="../articles/service_alerts.html">Service alerts</a></li>
     <li><a class="dropdown-item" href="../articles/stringline.html">Stringline plots</a></li>
@@ -191,7 +192,7 @@ zone of <code>Etc/UTC</code>.</p>
 <code class="sourceCode R"><span><span class="co"># gtfsrealtime can read multiple GTFS realtime feeds in a zip file, as long as there is nothing else in the ZIP file</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span><span class="va">positions</span> <span class="op">=</span> <span class="fu"><a href="../reference/read_gtfsrt_positions.html">read_gtfsrt_positions</a></span><span class="op">(</span><span class="st">"nyc-bus-demo.zip"</span>, <span class="st">"America/New_York"</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   9.983   2.821  13.996</span></span></code></pre>
+<span><span class="co">##   9.606   3.041  13.933</span></span></code></pre>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">positions</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##              id latitude longitude   bearing odometer speed                            trip_id route_id direction_id</span></span>
@@ -368,7 +369,8 @@ and converting the combined points into a linestring (line feature).</p>
 <span><span class="co">## ℹ Summaries were computed grouped by vehicle_id and trip_id.</span></span>
 <span><span class="co">## ℹ Output is grouped by vehicle_id.</span></span>
 <span><span class="co">## ℹ Use `summarise(.groups = "drop_last")` to silence this message.</span></span>
-<span><span class="co">## ℹ Use `summarise(.by = c(vehicle_id, trip_id))` for per-operation grouping (`?dplyr::dplyr_by`) instead.</span></span></code></pre>
+<span><span class="co">## ℹ Use `summarise(.by = c(vehicle_id, trip_id))` for per-operation grouping</span></span>
+<span><span class="co">##   (`?dplyr::dplyr_by`) instead.</span></span></code></pre>
 <p>We can then plot all of those trajectories over the course of the
 day:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
@@ -423,7 +425,7 @@ plot of chunk unnamed-chunk-16
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

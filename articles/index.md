@@ -4,6 +4,7 @@
 
 - [Working with archived
   data](https://projects.indicatrix.org/gtfsrealtime-r/articles/archived.md):
+- [Performance](https://projects.indicatrix.org/gtfsrealtime-r/articles/performance.md):
 - [Vehicle
   positions](https://projects.indicatrix.org/gtfsrealtime-r/articles/positions.md):
 - [Service

@@ -36,6 +36,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/archived.html">Working with archived data</a></li>
+    <li><a class="dropdown-item" href="articles/performance.html">Performance</a></li>
     <li><a class="dropdown-item" href="articles/positions.html">Vehicle positions</a></li>
     <li><a class="dropdown-item" href="articles/service_alerts.html">Service alerts</a></li>
     <li><a class="dropdown-item" href="articles/stringline.html">Stringline plots</a></li>
@@ -68,7 +69,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'gtfsrealtime'</span><span class="op">)</span></span></code></pre></div>
 <p>It requires the current or previous release of R (currently 4.6 or 4.5); older versions are likely to work as well but will require building code from scratch which requires a Rust development environment. If you get errors about <code>rustc</code> not being found, you likely need to upgrade your version of R.</p>
-<p>If you want to build from source, this package contains compiled <a href="https://extendr.rs" class="external-link">extendr</a> Rust code to efficiently read GTFS-realtime. You will need a Rust development environment; you can build the Rust code by running <code><a href="https://extendr.github.io/rextendr/reference/document.html" class="external-link">rextendr::document()</a></code>.</p>
+<p>If you want to build from source, this package contains compiled <a href="https://extendr.rs" class="external-link">extendr</a> Rust code to efficiently read GTFS-realtime. You will need a Rust development environment; you can build the Rust code by running <code>rextendr::document()</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -82,7 +83,7 @@
 </h2>
 <p>Development versions of the package are available from <a href="https://mattwigway.r-universe.dev/gtfsrealtime" class="external-link">mattwigway.r-universe.dev</a>. To install the latest development version, run:</p>
 <p><code>{r} install.packages('gtfsrealtime', repos = c('https://mattwigway.r-universe.dev', 'https://cloud.r-project.org'))</code></p>
-<p>If you want to make contributions to the package, you’ll need to build from source. This package contains compiled <a href="https://extendr.rs" class="external-link">extendr</a> Rust code to efficiently read GTFS-realtime. You will need a Rust development environment; you can build the Rust code by running <code><a href="https://extendr.github.io/rextendr/reference/document.html" class="external-link">rextendr::document()</a></code>. You will also need to install <a href="https://protobuf.dev/installation/" class="external-link"><code>protoc</code></a> if you are working with the Git source (the <code>.tar.gz</code> source builds from CRAN compile the protobuf files as part of the package build process, and do not require <code>protoc</code>).</p>
+<p>If you want to make contributions to the package, you’ll need to build from source. This package contains compiled <a href="https://extendr.rs" class="external-link">extendr</a> Rust code to efficiently read GTFS-realtime. You will need a Rust development environment; you can build the Rust code by running <code>rextendr::document()</code>. You will also need to install <a href="https://protobuf.dev/installation/" class="external-link"><code>protoc</code></a> if you are working with the Git source (the <code>.tar.gz</code> source builds from CRAN compile the protobuf files as part of the package build process, and do not require <code>protoc</code>).</p>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
@@ -127,7 +128,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
