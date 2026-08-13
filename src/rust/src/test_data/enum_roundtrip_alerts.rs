@@ -1,3 +1,4 @@
+use extendr_api::error::Result;
 use extendr_api::extendr_module;
 use extendr_api::prelude::*;
 use std::string::ToString;

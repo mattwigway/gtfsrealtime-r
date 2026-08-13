@@ -53,7 +53,7 @@ These warnings are useful in practice: duplicated entity IDs can affect workflow
 
 ## Explore trip updates
 
-GTFS-realtime trip updates are [hierarchical](https://gtfs.org/documentation/realtime/reference/#message-tripupdate); one trip update can contain information about the trip as a whole as well as updates for multiple stops along that trip. `read_gtfsrt_trip_updates()` flattens that structure into a data frame. As a result, the same `trip_id` may appear in multiple rows when the feed contains stop-level updates for multiple stops.
+GTFS-realtime trip updates are [hierarchical](https://gtfs.org/documentation/realtime/reference/#message-tripupdate); one trip update can contain information about the trip as a whole as well as updates for multiple stops along that trip. `read_gtfsrt_trip_updates()` flattens that structure into a data frame. As a result, the same `id` may appear in multiple rows when the feed contains stop-level updates for multiple stops. Note that the `id` uniquely identifies a single trip update; the `trip_id` field is not deduplicated so that duplicate records can still be joined to static GTFS.
 
 ```{r glimpse-updates}
 glimpse(updates)
@@ -61,12 +61,13 @@ glimpse(updates)
 
 ## Inspecting one trip across its stops
 
-Because a single trip can include predictions for multiple stops, it is useful to inspect all rows associated with one `trip_id`. In the example below, we select the first trip in the feed and display the route, stop sequence, stop ID, and predicted arrival and departure times for each stop. If a trip update has no stop time updates, it will appear as a single row with all the `stop_*` fields NA. Documentation for all of the columns is in the documentation for `read_gtfsrt_trip_updates()`.
+Because a single trip can include predictions for multiple stops, it is useful to inspect all rows associated with one `id`. In the example below, we select the first trip in the feed and display the route, stop sequence, stop ID, and predicted arrival and departure times for each stop. If a trip update has no stop time updates, it will appear as a single row with all the `stop_*` fields NA. Documentation for all of the columns is in the documentation for `read_gtfsrt_trip_updates()`.
 
 ```{r inpsect-updates}
 updates |>
-  filter(trip_id == first(trip_id)) |>
+  filter(id == first(id)) |>
   select(
+    id,
     trip_id,
     route_id,
     stop_id,

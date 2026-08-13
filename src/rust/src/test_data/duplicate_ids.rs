@@ -1,6 +1,7 @@
 use std::fs;
 
 use bytes::BytesMut;
+use extendr_api::error::Result;
 use extendr_api::prelude::*;
 use prost::Message as _;
 

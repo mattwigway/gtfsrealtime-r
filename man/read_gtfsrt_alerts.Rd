@@ -36,8 +36,14 @@ IDs are required by the specification to be unique within a
 GTFS-realtime file, but sometimes are not. If there are non-unique IDs in the feed, they will
 be made unique when data are loaded by appending \verb{_duplicated_1}, \verb{_duplicated_2}, and so on
 and a warning will be issued, which guarantees that all rows from a single file have unique IDs.
+
 When working with archived data, there will quite likely be duplicated IDs between files archived
-at different times (path: \code{id} property of \code{FeedEntity} containing this \code{Alert}).
+at different times; in this case \code{file_index} should be used in combination with \code{id} to uniquely identify
+vehicle positions. The GTFS-realtime specification makes no guarantees about the stability of
+entity IDs between feeds, so these should not be used to join data from multiple GTFS-realtime
+feeds (e.g. from different times of day).
+
+(path: \code{id} property of \code{FeedEntity} containing this \code{Alert}).
 \item \code{start}: Time when the alert should first be shown. If missing, the alert should be shown as long as it appears in
 the feed. Converted to local time based on the \code{timezone} argument. One alert may have multiple
 start and end times, in which case it will be presented in multiple rows. (path: \code{active_period.start})
@@ -199,7 +205,8 @@ numbers spelled out, etc.) (path: \code{tts_description_text})
 \item \code{WARNING}
 \item \code{SEVERE}
 }
-\item \code{file_timestamp}: Timestamp of the GTFS-realtime file itself (i.e. when the file was generated, not when the updates were generated)
+\item \code{feed_timestamp}: Timestamp of the GTFS-realtime feed itself (i.e. when the file was generated, not when the updates were generated)
+\item \code{feed_version}: Version of static GTFS data that this feed is associated with (matches the field \code{feed_version} in \code{feed_info.txt})
 \item \code{file_index}: When reading a ZIP file, a one-based index of which file each observation came from
 Note that it is in the the order the files appeared in the ZIP file, which may not be chronological.
 }

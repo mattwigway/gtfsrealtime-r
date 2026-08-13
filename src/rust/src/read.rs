@@ -10,7 +10,7 @@ use flate2::read::GzDecoder;
 use prost::Message;
 use zip::ZipArchive;
 
-use crate::transit_realtime::FeedMessage;
+use crate::transit_realtime::{feed_header::Incrementality, FeedMessage};
 
 const BZIP2_MAGIC_BYTES: [u8; 3] = [b'B', b'Z', b'h'];
 const GZIP_MAGIC_BYTES: [u8; 3] = [0x1f, 0x8b, 0x08];
@@ -103,5 +103,12 @@ fn read_one_feed(mut buf: Vec<u8>) -> std::result::Result<FeedMessage, Box<dyn s
 
     let byt = BytesMut::from(buf.as_slice());
     let msg = FeedMessage::decode(byt)?;
+
+    if msg.header.incrementality == Some(Incrementality::Differential as i32) {
+        return Err(Box::new(extendr_api::Error::Other(
+            "Differential GTFS-realtime feeds are not supported".to_string(),
+        )));
+    }
+
     return Ok(msg);
 }

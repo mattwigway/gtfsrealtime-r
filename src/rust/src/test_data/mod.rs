@@ -1,5 +1,6 @@
 // code to create various GTFS-realtime datasets for use in tests
 mod alert_unwrapping;
+mod differential_feed;
 mod duplicate_ids;
 mod enum_roundtrip;
 mod enum_roundtrip_alerts;
@@ -10,9 +11,11 @@ mod positions_all_values;
 mod trip_update_unwrapping;
 
 use bytes::BytesMut;
+use extendr_api::error::Result;
 use extendr_api::extendr_module;
 use extendr_api::prelude::*;
 use prost::Message;
+use std::fs::File;
 use std::{fs, string::ToString};
 
 use crate::transit_realtime::{
@@ -34,7 +37,7 @@ fn write_msg(
             gtfs_realtime_version: "2.0".to_owned(),
             incrementality: Some(Incrementality::FullDataset as i32),
             timestamp: Some(1774967578),
-            feed_version: None,
+            feed_version: Some("the_feed".to_string()),
         },
         entity: positions
             .into_iter()
@@ -99,6 +102,21 @@ fn write_alerts(filename: &str, alerts: Vec<Alert>) -> Result<()> {
     write_msg(filename, vec![], alerts, vec![])
 }
 
+/// Truncate a file (used to corrupt files for use in tests
+/// @noRd
+#[extendr]
+pub fn ftruncate(filename: &str, length: u64) -> Result<()> {
+    // ok to use unwrap here, if it fails the test should fail anyhow
+    File::options()
+        .read(true)
+        .write(true)
+        .open(filename)
+        .unwrap()
+        .set_len(length)
+        .unwrap();
+    Ok(())
+}
+
 extendr_module! {
     mod test_data;
     use enum_roundtrip_positions;
@@ -109,4 +127,6 @@ extendr_module! {
     use positions_all_values;
     use alert_unwrapping;
     use duplicate_ids;
+    use differential_feed;
+    fn ftruncate;
 }

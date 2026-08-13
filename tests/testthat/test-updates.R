@@ -44,12 +44,13 @@ test_that("timezones work", {
 
 # This has Rust write out a feed that has every value of every enum, and then
 # also return their expected order to make sure they match.
-test_that("enum roundtrip is correct", {
+test_that("enum roundtrip is correct/feed version works", {
   file = tempfile()
   expected = test_data_enum_roundtrip_updates(file)$ok
   actual = read_gtfsrt_trip_updates(file, "Australia/Sydney")
   unlink(file)
 
+  expect_all_equal(actual$feed_version, "the_feed")
   expect_equal(as.character(actual$trip_schedule_relationship), expected$trip_schedule_relationship)
   expect_equal(as.character(actual$vehicle_wheelchair_accessible), expected$vehicle_wheelchair_accessible)
   expect_equal(as.character(actual$departure_occupancy_status), expected$departure_occupancy_status)
@@ -91,7 +92,7 @@ test_that("updates are unwrapped correctly", {
   expect_equal(rt$departure_scheduled_time, as.POSIXct(c(1775059524, NA, NA, NA, NA, NA), "Australia/Sydney"))
   expect_equal(rt$departure_uncertainty, c(25, 27, 24, NA, NA, NA))
   expect_all_equal(
-    rt$file_timestamp,
+    rt$feed_timestamp,
     lubridate::with_tz(lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"), "Australia/Sydney")
   )
   expect_all_equal(rt$file_index, 1)
@@ -180,7 +181,7 @@ test_that("updates match debug json", {
   ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
     dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col))) |>
-    dplyr::select(-c("file_timestamp", "file_index")) |>
+    dplyr::select(-c("feed_version", "feed_timestamp", "file_index")) |>
     tibble::as_tibble()
 
   expect_equal(nrow(actual), 15216)
@@ -201,7 +202,7 @@ test_that("id deduplication works", {
   expect_equal(
     warnings$warnings,
     list(
-      "!" = "ID id is duplicated. Replacing with id_duplicated_1 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect."
+      "!" = "ID id is duplicated. Replacing with id_duplicated_1"
     )
   )
 
@@ -248,4 +249,17 @@ test_that("correctly reports that this is not an alerts file", {
       "v" = "You can read them with {.fn read_gtfsrt_positions}"
     )
   )
+})
+
+test_that("truncated feed generates error", {
+  file = tempfile()
+  test_data_duplicate_ids_updates(file)
+  ftruncate(file, floor(file.size(file) * 2))
+  expect_error(
+    {
+      read_gtfsrt_trip_updates(file, "America/New_York")
+    },
+    regexp = "failed to decode"
+  )
+  unlink(file)
 })
