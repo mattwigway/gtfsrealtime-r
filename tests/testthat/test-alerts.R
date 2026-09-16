@@ -52,12 +52,13 @@ test_that("timezones work", {
 
 # This has Rust write out a feed that has every value of every enum, and then
 # also return their expected order to make sure they match.
-test_that("enums are correctly specified", {
+test_that("enums are correctly specified/feed version is correct", {
   feed = tempfile()
   expected = test_data_enum_roundtrip_alerts(feed)$ok
   actual = read_gtfsrt_alerts(feed, "America/New_York")
   unlink(feed)
 
+  expect_all_equal(actual$feed_version, "the_feed")
   expect_equal(as.character(actual$trip_schedule_relationship), expected$trip_schedule_relationship)
   expect_equal(as.character(actual$cause), expected$cause)
   expect_equal(as.character(actual$effect), expected$effect)
@@ -86,7 +87,7 @@ test_that("unwrapping works", {
       id = as.character(id),
       start = as.POSIXct(start, tz = "America/New_York"),
       end = as.POSIXct(end, tz = "America/New_York"),
-      file_timestamp = as.POSIXct(file_timestamp, tz = "America/New_York"),
+      feed_timestamp = as.POSIXct(feed_timestamp, tz = "America/New_York"),
       trip_start_date = as.character(trip_start_date),
       trip_modification_id = as.character(trip_modification_id)
     )
@@ -109,7 +110,7 @@ test_that("id deduplication works", {
   expect_equal(
     warnings$warnings,
     list(
-      "!" = "ID id is duplicated. Replacing with id_duplicated_1 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect."
+      "!" = "ID id is duplicated. Replacing with id_duplicated_1"
     )
   )
 
@@ -156,4 +157,17 @@ test_that("correctly reports that this is not an alerts file", {
       "v" = "You can read them with {.fn read_gtfsrt_trip_updates}"
     )
   )
+})
+
+test_that("truncated feed generates error", {
+  file = tempfile()
+  test_data_duplicate_ids_alerts(file)
+  ftruncate(file, floor(file.size(file) * 2))
+  expect_error(
+    {
+      read_gtfsrt_alerts(file, "America/New_York")
+    },
+    regexp = "failed to decode"
+  )
+  unlink(file)
 })

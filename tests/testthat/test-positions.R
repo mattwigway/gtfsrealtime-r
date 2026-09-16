@@ -36,12 +36,13 @@ test_that("error handling works", {
 
 # This has Rust write out a feed that has every value of every enum, and then
 # also return their expected order to make sure they match.
-test_that("enums are correctly specified", {
+test_that("enums are correctly specified/feed version works", {
   feed = tempfile()
   expected = test_data_enum_roundtrip_positions(feed)$ok
   actual = read_gtfsrt_positions(feed, "Etc/UTC")
   unlink(feed)
 
+  expect_all_equal(actual$feed_version, "the_feed")
   expect_equal(as.character(actual$schedule_relationship), expected$schedule_relationship)
   expect_equal(as.character(actual$vehicle_wheelchair_accessible), expected$vehicle_wheelchair_accessible)
   expect_equal(as.character(actual$current_status), expected$current_status)
@@ -92,7 +93,8 @@ test_that("Louisville debug JSON matches read_gtfsrt_positions", {
       vehicle_id = null_to_na(p$Vehicle$Id),
       vehicle_label = null_to_na(p$Vehicle$Label),
       vehicle_license_plate = null_to_na(p$Vehicle$LicensePlate),
-      vehicle_wheelchair_accessible = null_to_na(p$Vehicle$WheelchairAccessible)
+      vehicle_wheelchair_accessible = null_to_na(p$Vehicle$WheelchairAccessible),
+      feed_version = NA
     )
   }) |>
     purrr::list_rbind()
@@ -105,7 +107,7 @@ test_that("Louisville debug JSON matches read_gtfsrt_positions", {
   ) |>
     # null_to_na makes logical vectors. so for columns where everything is NA, convert to logical
     dplyr::mutate(dplyr::across(dplyr::where(\(col) all(is.na(col))), \(col) as.logical(col))) |>
-    dplyr::select(-c("file_timestamp", "file_index")) |>
+    dplyr::select(-c("feed_timestamp", "file_index")) |>
     tibble::as_tibble()
 
   expect_true(nrow(actual) > 0)
@@ -143,7 +145,8 @@ test_that("all columns read correctly", {
       vehicle_label = "label",
       vehicle_license_plate = "LIC-4242",
       vehicle_wheelchair_accessible = "WHEELCHAIR_ACCESSIBLE",
-      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_version = "the_feed",
       file_index = 1
     ),
 
@@ -172,7 +175,8 @@ test_that("all columns read correctly", {
       vehicle_label = NA,
       vehicle_license_plate = NA,
       vehicle_wheelchair_accessible = NA,
-      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_version = "the_feed",
       file_index = 1
     ),
 
@@ -201,7 +205,8 @@ test_that("all columns read correctly", {
       vehicle_label = NA,
       vehicle_license_plate = NA,
       vehicle_wheelchair_accessible = NA,
-      file_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_timestamp = lubridate::ymd_hms("2026-03-31T10:32:58", tz = "America/New_York"),
+      feed_version = "the_feed",
       file_index = 1
     )
   )
@@ -232,8 +237,8 @@ test_that("duplicate ids are deduplicated", {
     # the c("!" = ... gets unwrapped when appended to a list, and then the list has two duplicate elements,
     # which somehow R is okay with (?)
     list(
-      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_1 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect.',
-      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_2 . This may cause joins between different GTFS-realtime files (even within a ZIP archive) to be incorrect.'
+      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_1',
+      "!" = 'ID )); stop("identifier with r code executed!")# is duplicated. Replacing with )); stop("identifier with r code executed!")#_duplicated_2'
     )
   )
 
@@ -319,4 +324,17 @@ test_that("correctly reports that this is not a positions file", {
       "v" = "You can read them with {.fn read_gtfsrt_alerts}"
     )
   )
+})
+
+test_that("truncated feed generates error", {
+  file = tempfile()
+  test_data_duplicate_ids_positions(file)
+  ftruncate(file, floor(file.size(file) * 2))
+  expect_error(
+    {
+      read_gtfsrt_positions(file, "America/New_York")
+    },
+    regexp = "failed to decode"
+  )
+  unlink(file)
 })
